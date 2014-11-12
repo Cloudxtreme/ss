@@ -1,0 +1,57 @@
+
+acl is.ikusoo.net.cn hdr_end(host) -i ikusoo.net.cn
+use_backend ikusoo.net.cn if is.ikusoo.net.cn
+
+acl is.likeface.com hdr_end(host) -i likeface.com
+use_backend likeface.com if is.likeface.com
+
+acl is.kx12.com hdr_end(host) -i kx12.com
+use_backend mediacdn if is.kx12.com
+
+acl is.pk601.com hdr_end(host) -i pk601.com
+use_backend mediacdn if is.pk601.com
+
+acl is.513top.com hdr_end(host) -i 513top.com
+use_backend 513top.com if is.513top.com
+
+acl is.86mmo.com hdr_end(host) -i 86mmo.com
+use_backend 86mmo.com if is.86mmo.com
+
+acl is.56uu.com hdr_end(host) -i 56uu.com
+use_backend 56uu if is.56uu.com
+
+acl is.da-game.com hdr_end(host) -i da-game.com
+use_backend da-game if is.da-game.com	
+
+acl is.91igame.com hdr_end(host) -i 91igame.com
+use_backend 91igame if is.91igame.com
+
+acl is.053135.com hdr_end(host) -i 053135.com
+use_backend 053135.com if is.053135.com
+acl is.6one.com.cn hdr_end(host) -i 6one.com.cn
+use_backend 6one.com.cn if is.6one.com.cn
+acl is.youkia.info hdr_end(host) -i youkia.info
+use_backend youkia.info if is.youkia.info
+acl is.0505u.com hdr_end(host) -i 0505u.com
+use_backend 0505u.com if is.0505u.com
+
+acl is.gyous.com hdr_end(host) -i gyous.com
+use_backend 91ophone.com if is.gyous.com
+acl is.91mips.com hdr_end(host) -i 91mips.com
+use_backend 91ophone.com if is.91mips.com
+acl is.91ophone.com hdr_end(host) -i 91ophone.com
+use_backend 91ophone.com if is.91ophone.com
+acl is.qiyou.com hdr_end(host) -i qiyou.com
+use_backend qiyou.com if is.qiyou.com
+acl is.tzgame.com hdr_end(host) -i tzgame.com
+use_backend tzgame.com if is.tzgame.com
+acl is.zjx20.com hdr_end(host) -i zjx20.com
+use_backend zjx20.com if is.zjx20.com
+acl is.wz600.com hdr_end(host) -i wz600.com
+use_backend wz600.com if is.wz600.com
+acl is.c119.cn hdr_end(host) -i c119.cn
+use_backend c119.cn if is.c119.cn
+acl is.c1680.com hdr_end(host) -i c1680.com
+use_backend c119.cn if is.c1680.com
+acl is.guanhegroup.com hdr_end(host) -i guanhegroup.com
+use_backend c119.cn if is.guanhegroup.com

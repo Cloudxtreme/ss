@@ -1,0 +1,423 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<title></title>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<link rel="stylesheet" href="__ROOT__/Public/js/artDialog/skins/blueskin.css?4.1.7" />
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/jquery.artDialog.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/plugins/iframeTools.source.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/highcharts.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/highcharts-more.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/exporting.js"></script>
+
+<script type="text/javascript" src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript">
+	var cur_gate = "", cur_vlan = "", cur_source = "", cur_dest = "";
+	var data_list, traffic_chart, qps_chart, db_chart, last_traffic, last_db, last_qps;
+	$(function () {
+		var strHref = window.location.href;
+		if (strHref.length > 0) {
+			if(strHref.getQuery("gate") != null){
+				cur_gate = strHref.getQuery("gate");
+				cur_vlan = strHref.getQuery("vlan");
+				cur_source = strHref.getQuery("source");
+				cur_dest = strHref.getQuery("dest");
+			}
+		}
+		//获取链路列表
+		$.ajax({
+			url: '__APP__/Vpn/link_stat',
+			dataType: 'json',
+			type: "POST",
+			success: function (data) {
+				if (data && data != null) {
+					var str = "";
+					for (var item in data.link) {
+						if(data.link[item].stat == "enable"){
+							if(data.link[item].gate == cur_gate && data.link[item].vlan == cur_vlan && data.link[item].source == cur_source && data.link[item].dest == cur_dest){
+								str += '<option selected id="'+ data.link[item].gate +'|'+ data.link[item].vlan +'|'+ data.link[item].source +'|'+ data.link[item].dest +'">下一跳：'+ data.link[item].gate+'('+data.link[item].mac+') >> vlan值：'+ data.link[item].vlan+' >> 本地：'+data.link[item].source+' >> 目标：'+data.link[item].dest+'</option>';
+							}else{
+								str += '<option id="'+ data.link[item].gate +'|'+ data.link[item].vlan +'|'+ data.link[item].source +'|'+ data.link[item].dest +'">下一跳：'+ data.link[item].gate+'('+data.link[item].mac+') >> vlan值：'+ data.link[item].vlan+' >> 本地：'+data.link[item].source+' >> 目标：'+data.link[item].dest+'</option>';
+							}
+						}
+					}
+					$("#link_list").append(str);
+				}
+			},
+			error: function (data) {
+				art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+				//alert(data.statusText);
+			}
+		});
+
+		Highcharts.setOptions({
+			global: {
+				useUTC: false
+			}
+		});
+
+		//流量监控
+		traffic_chart = new Highcharts.Chart({
+			chart: {
+				renderTo: 'container_1',
+				zoomType: 'x',
+				spacingRight: 20
+			},
+			title: {
+				text: '链路速度'
+			},
+			xAxis: {
+				type: 'datetime',
+				tickPixelInterval: 120
+			},
+			yAxis: {
+				title: {
+					text: '链路速度(bps)'
+				},
+				min: 0,
+				plotLines: [{
+					value: 0,
+					width: 1,
+					color: Highcharts.getOptions().colors[2] //'#808080'
+				}]
+			},
+			tooltip: {
+				formatter: function() {
+						return '<b>'+ this.series.name +'</b><br/>'+
+						Highcharts.dateFormat('%H:%M:%S', this.x) +'<br/>'+
+						this.y + ' bps';
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			plotOptions: {
+				area: {
+					fillColor: {
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+						stops: [
+							[0, Highcharts.getOptions().colors[2]],
+							[1, Highcharts.Color(Highcharts.getOptions().colors[2]).setOpacity(0).get('rgba')]
+						]
+					},
+					lineColor: Highcharts.getOptions().colors[2],//'#666666',
+					lineWidth: 1,
+					marker: {
+						enabled: false
+					},
+					shadow: false,
+					states: {
+						hover: {
+							lineWidth: 1
+						}
+					},
+					threshold: null
+				}
+			},
+			exporting: {
+				enabled: false
+			},
+			series: [{
+				type: 'area',
+				name: '链路速度',
+				//pointInterval: 1 * 1000,
+				//pointStart: Date.UTC(2013, 11, 01),
+				data: []
+			}]
+		});		
+
+		//并发监控
+		qps_chart = new Highcharts.Chart({
+			chart: {
+				renderTo: 'container_2',
+                zoomType: 'x',
+                spacingRight: 20
+            },
+            title: {
+				text: '链路并发'
+			},
+			xAxis: {
+				type: 'datetime',
+				tickPixelInterval: 120
+			},
+			yAxis: {
+				title: {
+					text: '并发量(包数/s)'
+				},
+				min: 0,
+				plotLines: [{
+					value: 0,
+					width: 1,
+					color: Highcharts.getOptions().colors[0] //'#808080'
+				}]
+			},
+			tooltip: {
+				formatter: function() {
+						return '<b>'+ this.series.name +'</b><br/>'+
+						Highcharts.dateFormat('%H:%M:%S', this.x) +'<br/>'+ this.y + ' 个/s';
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			plotOptions: {
+				area: {
+					fillColor: {
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+						stops: [
+							[0, Highcharts.getOptions().colors[0]],
+							[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+						]
+					},
+					lineColor: Highcharts.getOptions().colors[0],//'#666666',
+					lineWidth: 1,
+					marker: {
+						enabled: false
+					},
+					shadow: false,
+					states: {
+						hover: {
+							lineWidth: 1
+						}
+					},
+					threshold: null
+				}
+			},
+			exporting: {
+				enabled: false
+			},
+            series: [{
+                type: 'area',
+                name: '并发量',
+                //pointInterval: 1 * 1000,
+                //pointStart: Date.UTC(2006, 0, 01),
+                data: []
+            }]
+        });
+		
+		//延时和丢包
+		db_chart = new Highcharts.Chart({
+			chart: {
+				renderTo: 'container_3',
+				spacingRight: 20,
+                type: 'spline'
+            },
+            title: {
+                text: '延时和丢包',
+                x: -20 //center
+            },
+			xAxis: {
+				type: 'datetime',
+				tickPixelInterval: 120
+			},
+            yAxis: {
+                title: {
+                    text: '延时和丢包'
+                },
+				min: 0,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                //valueSuffix: '°C',
+				//enabled: false,
+				//shared: true,
+				crosshairs: true,
+				formatter: function() {
+					if(this.series.name == "丢包率"){
+						return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%H:%M:%S', this.x) +': '+ this.y +' %';
+					}else{
+						return '<b>'+ this.series.name +'</b><br/>'+
+                        Highcharts.dateFormat('%H:%M:%S', this.x) +': '+ this.y +' ms';
+					}
+                }
+            },
+			plotOptions: {
+                spline: {
+                    lineWidth: 2,
+                    states: {
+                        hover: {
+                            lineWidth: 3
+                        }
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }
+            },
+            legend: {
+                enabled: false
+            },
+			exporting: {
+				enabled: false
+			},
+            series: [{
+                name: '丢包率',
+				color: Highcharts.getOptions().colors[0],
+                data: []
+            }, {
+                name: '延时',
+				color: Highcharts.getOptions().colors[2],
+                data: []
+            }]
+        });
+		
+		//初始化
+		$.ajax({
+			url: '__APP__/Vpn/monitor_data?gate='+cur_gate+'&vlan='+cur_vlan+'&source='+cur_source+'&dest='+cur_dest,
+			dataType: 'json',
+			type: "GET",
+			success: function (result) {
+				//alert(data.link);
+				if (result) {
+					var data_speed = [], data_delay = [], data_lost = [], data_pps = [], i;
+					if(result.link.length > 0){
+						for (var i = 0; i < result.link.length; i++) {
+							var t = new Date(result.link[i]["datetime"].replace(/-/g,"/")).getTime();
+							data_speed.push({
+								x: t, //result.descmap[i]["time"],.getTime()
+								y: result.link[i]["speed"]
+							});
+							data_delay.push({
+								x: t,
+								y: result.link[i]["delay"]
+							});
+							data_lost.push({
+								x: t,
+								y: result.link[i]["lost"]
+							});
+							data_pps.push({
+								x: t,
+								y: result.link[i]["pps"]
+							});
+						}
+						last_traffic = result.link[result.link.length-1]["time"];
+						last_qps = last_traffic;
+						last_db = last_traffic;
+						//流量
+						traffic_chart.series[0].remove(false);
+						traffic_chart.addSeries({
+							name: "链路速度",
+							type: "area",
+							color: Highcharts.getOptions().colors[2],
+							data: data_speed
+						}, false);
+						traffic_chart.redraw();
+						//并发
+						qps_chart.series[0].remove(false);
+						qps_chart.addSeries({
+							name: "并发",
+							type: "area",
+							color: Highcharts.getOptions().colors[0],
+							data: data_pps
+						}, false);
+						qps_chart.redraw();
+						//延时和丢包
+						db_chart.series[0].remove(false);
+						//db_chart.series[1].remove(false);
+						db_chart.addSeries({
+							name: "延时",
+							type: "spline",
+							color: Highcharts.getOptions().colors[2],
+							data: data_delay
+						}, false);
+						db_chart.addSeries({
+							name: "丢包率",
+							type: "spline",
+							color: Highcharts.getOptions().colors[0],
+							data: data_lost
+						}, false);
+						db_chart.redraw();
+					}/*else{
+						art.dialog({content: '错误提示：没有获取到监控数据，请检查后台程序是否运行正常！', icon: 'error', lock: false, time: 1.5});
+						//alert("错误提示：没有获取到监控数据，请联系管理员！");
+					}*/
+				}/*else{
+					art.dialog({content: '错误提示：没有获取到监控数据，请检查后台程序是否运行正常！', icon: 'error', lock: false, time: 1.5});
+					//alert(result.error);
+				}*/
+			},
+			error: function (data) {
+				art.dialog({content: '状态检查请求出现错误，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+				//alert(data.statusText);
+			}
+		});
+    });
+	
+	window.setInterval(addPoint, 3000);
+
+	function addPoint(){
+		$.ajax({
+			url: '__APP__/Vpn/monitor_data?gate='+cur_gate+'&vlan='+cur_vlan+'&source='+cur_source+'&dest='+cur_dest+'&time='+last_traffic,
+			dataType: 'json',
+			type: "GET",
+			success: function (result) {
+				if(result && result.link.length > 0){
+					for (var i = 0; i < result.link.length; i++) {
+						var t = new Date(result.link[i]["datetime"].replace(/-/g,"/")).getTime();
+						//流量
+						traffic_chart.series[0].addPoint([t, result.link[i]["speed"]], true, true);
+						//并发
+						qps_chart.series[0].addPoint([t, result.link[i]["pps"]], true, true);
+						//延时和丢包
+						var series = db_chart.series;
+						series[1].addPoint([t, result.link[i]["delay"]], true, true);
+						series[2].addPoint([t, result.link[i]["lost"]], true, true);
+						//db_chart.redraw();
+					}
+					last_traffic = result.link[result.link.length-1]["time"];
+				}/*else{
+					art.dialog({content: '错误提示：没有获取到监控数据，请确定后台程序是否正常运行！', icon: 'error', lock: true, time: 1.5});
+				}*/
+			},
+			error: function (data) {
+				art.dialog({content: '错误提示：更新数据出错，返回代码：'+data.statusText+'！', icon: 'error', lock: true, time: 1.5});
+			}
+		});
+	}
+	
+	function selectLink(){
+		var str = $("#link_list").val();
+		//alert(str);
+		if(str == "全部链路"){
+			window.location.href = '__APP__/Vpn/monitor_chart?gate=all&vlan=all&source=all&dest=all';
+		}else{
+			var link = $("#link_list").find('option:selected').attr("id");
+			var arr = link.split("|");
+			window.location.href = '__APP__/Vpn/monitor_chart?gate='+arr[0]+'&vlan='+arr[1]+'&source='+arr[2]+'&dest='+arr[3];
+		}
+	}
+	
+
+</script>
+</head>
+<body>
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:16px;">
+	<tr>
+		<td height="58px" bgcolor="#1078b5" style="padding-left:20px;"><span style="color: #FFFFFF;font-weight: bold;">系统状态监控</span></td>
+	</tr>
+	<tr>
+		<td valign="top" style="y-scrolling:auto;">
+			<table width="98%" style="font-size:14px;margin:10px;">
+				<tr><td height="28px" width="10%" align="right">选择链路：</td><td>
+					<select style="width:100%;border:solid 1px #c3d7e3;height:26px;" border="0" type="text" placeholder="链路名称" id="link_list" onchange="selectLink();"><option>全部链路</option></select>
+				</td></tr>
+			</table>
+			<div id="container_1" style="width:100%;height:160px;"></div>
+			<div id="container_3" style="width:100%;height:160px;"></div>
+			<div id="container_2" style="width:100%;height:160px;"></div>
+		</td>
+	</tr>
+</table>
+</body>
+</html>

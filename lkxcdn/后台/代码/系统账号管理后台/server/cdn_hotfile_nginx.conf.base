@@ -1,0 +1,28 @@
+user root;
+
+worker_processes  2;
+
+error_log /dev/null;
+
+events { worker_connections  10240; }
+
+http {
+
+include       mime.types;
+default_type  application/octet-stream;
+
+log_format  mylog  '$remote_addr|$request|'
+                   '$status|$body_bytes_sent|$http_range|$sent_http_content_range|$http_referer|'
+                   '$http_user_agent';
+    
+sendfile        on;
+keepalive_timeout  65;
+
+proxy_cache_lock on; 
+proxy_cache_lock_timeout 3600s;
+
+proxy_temp_path /opt/nginx_cache_data/temp;
+proxy_cache_path /opt/nginx_cache_data/path levels=1:2 keys_zone=cache_one:100m inactive=3650d max_size=500g;
+
+upstream cdn_hotfile_fs_backend_server { server fs.src.cdnfile.cdn.efly.cc:9000 weight=1 max_fails=2 fail_timeout=30s; }
+

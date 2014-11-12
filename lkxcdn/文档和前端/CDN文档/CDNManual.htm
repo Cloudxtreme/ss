@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>睿江科技CDN用户手册</title>
+<style type="text/css">
+<!--
+.STYLE1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+-->
+</style>
+</head>
+
+<body>
+<h2 align="center">睿江科技CDN用户手册</h2>
+<dir>
+<li>
+  <h2 align="left"><a href="#HTTP%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">HTTP协议基础知识</a></h2>
+</li>
+<li><a href="#Last-Modified%EF%BC%8CEtag">Last-Modified，Etag</a></li>
+<li><a href="#Cache-Control">Cache-Control</a></li>
+<li><a href="#Expires">Expires</a></li>
+<li><a href="#HTTP%E5%B8%B8%E8%A7%81%E8%BF%94%E5%9B%9E%E5%80%BC">HTTP常见返回值</a></li>
+<li>
+  <h2 align="left"><a href="#DNS%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">DNS协议基础知识</a></h2>
+</li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFA%E8%AE%B0%E5%BD%95">什么是A记录</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFCNAME%E8%AE%B0%E5%BD%95">什么是CNAME记录</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFTTL%E5%80%BC">什么是TTL值</a></li>
+<li>
+  <h2><a href="#CDNFAQ">CDN FAQ</a></h2>
+</li>
+<li>  <a href="#CDN%E6%98%AF%E4%BB%80%E4%B9%88">CDN是什么</a></li>
+<li>  <a href="#CDN%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8">CDN有什么作用</a></li>
+<li>  <a href="#CDN%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88">CDN的原理是什么</a></li>
+<li>  <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E4%BB%80%E4%B9%88%E6%98%AF%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE">什么是静态数据，什么是动态数据</a></li>
+<li>  <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB">什么是动静分离</a></li>
+<li>  <a href="#%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8">动静分离有什么作用</a></li>
+<li>  <a href="#CDN%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E9%9D%99%E6%80%81%E6%95%B0%E6%8D%AE%E5%92%8C%E5%8A%A8%E6%80%81%E6%95%B0%E6%8D%AE">CDN如何处理静态数据和动态数据</a></li>
+<li>  <a href="#httpheader%E5%AF%B9%E4%BA%8E%E7%BC%93%E5%AD%98%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8">http header对于缓存有什么作用</a></li>
+<li>  <a href="#%E4%BB%80%E4%B9%88%E6%A0%B7%E6%95%B0%E6%8D%AE%E5%8F%AF%E4%BB%A5%E8%A2%ABCDN%E7%BC%93%E5%AD%98">什么样数据可以被CDN缓存</a></li>
+<li>  <a href="#%E6%95%B0%E6%8D%AE%E7%BC%93%E5%AD%98%E6%97%B6%E9%97%B4%E9%95%BF%E7%9F%AD%E5%A6%82%E4%BD%95%E8%AE%BE%E7%BD%AE">数据缓存时间长短如何设置</a></li>
+<li>  <a href="#%E5%85%B3%E4%BA%8ECDN%E7%BC%93%E5%AD%98%E6%95%88%E7%8E%87%E4%BD%8E">关于CDN 缓存效率低</a></li>
+<li>  <a href="#%E4%B8%BA%E4%BD%95%E5%AE%A2%E6%88%B7%E6%9B%B4%E6%96%B0%E4%BA%86%E6%BA%90%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E9%A1%B5%E9%9D%A2%E4%BD%86CDN%E8%8A%82%E7%82%B9%E6%B2%A1%E6%9C%89%E6%9B%B4%E6%96%B0%E5%88%B0">为何客户更新了源服务器的页面，但CDN节点没有更新到</a></li>
+<li>  <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BF%9E%E6%8E%A5%E5%91%BD%E4%B8%AD%E7%8E%87%E5%86%85%E5%AE%B9%E5%91%BD%E4%B8%AD%E7%8E%87">什么是连接命中率，内容命中率</a></li>
+<li>  <a href="#CDN%E6%9C%8D%E5%8A%A1%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B%E6%9C%89%E5%93%AA%E4%BA%9B">CDN服务使用流程有哪些</a></li>
+<li>
+  <h2><a href="#%E5%B8%B8%E8%A7%81webserver%E7%BC%93%E5%AD%98%E6%8E%A7%E5%88%B6%E9%85%8D%E7%BD%AE%E5%8F%82%E8%80%83">常见web server缓存控制配置参考</a></h2>
+</li>
+<li>  <a href="#Apache">Apache</a></li>
+<li><a href="#IIS">IIS</a></li>
+<li>  <a href="#Nginx">Nginx</a></li>
+</dir>
+<p align="left">&nbsp;</p>
+<h1><a name="HTTP协议基础知识">HTTP协议基础知识</a></h1>
+<h2><a name="Last-Modified，Etag">Last-Modified，Etag</a></h2>
+<p>服务器发出Etag，Last-Modified头后，下次浏览器再进行同样的请求，则会发出If-None-Match，If-
+Modified- 
+Since头，而后服务器根据这些信息来判断是否需要发送数据，如果没有更新，服务器就简单的发送一个304状态告诉浏览器用缓存就OK了，不用下载数据
+  了，从而节约了带宽。</p>
+<p>Etag - 作用</p>
+<p>Etag 主要为了解决 Last-Modified 无法解决的一些问题。</p>
+<p>1、一些文件也许会周期性的更改，但是他的内容并不改变(仅仅改变的修改时间)，这个时候我们并不希望客户端认为这个文件被修改了，而重新GET;</p>
+<p>2、某些文件修改非常频繁，比如在秒以下的时间内进行修改，(比方说1s内修改了N次)，If-Modified-Since能检查到的粒度是s级的，这种修改无法判断(或者说UNIX记录MTIME只能精确到秒)</p>
+<p>3、某些服务器不能精确的得到文件的最后修改时间；</p>
+<p>为此，HTTP/1.1 引入了 Etag(Entity 
+Tags).Etag仅仅是一个和文件相关的标记，可以是一个版本标记,比如说v1.0.0或者说"2e681a-6-5d044840"这么一串看起来
+ 很神秘的编码。但是HTTP/1.1标准并没有规定Etag的内容是什么或者说要怎么实现，唯一规定的是Etag需要放在""内。</p>
+<h2><a name="Cache-Control" id="Cache-Control"></a>Cache-Control</h2>
+<p>Cache-Control: cache-directive<br>
+  cache-directive可以为以下：<br>
+  request时用到：</p>
+<pre>| "no-cache"</pre>
+<pre>| "no-store"</pre>
+<pre>| "max-age" "=" delta-seconds</pre>
+<pre>| "max-stale" [ "=" delta-seconds ]</pre>
+<pre>| "min-fresh" "=" delta-seconds</pre>
+<pre>| "no-transform"</pre>
+<pre>| "only-if-cached"</pre>
+<pre>| "cache-extension"</pre>
+<p>response时用到：</p>
+<pre>| "public"</pre>
+<pre>| "private" [ "=" &lt;"&gt; field-name &lt;"&gt; ]</pre>
+<pre>| "no-cache" [ "=" &lt;"&gt; field-name &lt;"&gt; ]</pre>
+<pre>| "no-store"</pre>
+<pre>| "no-transform"</pre>
+<pre>| "must-revalidate"</pre>
+<pre>| "proxy-revalidate"</pre>
+<pre>| "max-age" "=" delta-seconds</pre>
+<pre>| "s-maxage" "=" delta-seconds</pre>
+<pre>| "cache-extension"</pre>
+<pre>部分说明：</pre>
+<pre>根据是否可缓存分为</pre>
+<pre>Public&nbsp; 指示响应可被任何缓存区缓存。</pre>
+<pre>Private&nbsp; 指示对于单个用户的整个或部分响应消息，不能被共享缓存处理。这允许服务器仅仅描述当用户的</pre>
+<pre>部分响应消息，此响应消息对于其他用户的请求无效。</pre>
+<pre>no-cache&nbsp; 指示请求或响应消息不能缓存（HTTP/1.0用Pragma的no-cache替换）</pre>
+<pre>根据什么能被缓存</pre>
+<pre>no-store&nbsp; 用于防止重要的信息被无意的发布。在请求消息中发送将使得请求和响应消息都不使用缓存。</pre>
+<pre>根据缓存超时</pre>
+<pre>max-age&nbsp; 指示客户机可以接收生存期不大于指定时间（以秒为单位）的响应。</pre>
+<pre>min-fresh&nbsp; 指示客户机可以接收响应时间小于当前时间加上指定时间的响应。</pre>
+<pre>max-stale&nbsp; 指示客户机可以接收超出超时期间的响应消息。如果指定max-stale消息的值，那么客户机可以</pre>
+<pre>接收超出超时期指定值之内的响应消息。</pre>
+<h2><a name="Expires" id="Expires"></a>Expires</h2>
+<pre>表示存在时间，允许客户端在这个时间之前不去检查（发请求），等同max-age的</pre>
+<pre>效果。但是如果同时存在，则被Cache-Control的max-age覆盖。</pre>
+<pre>格式：</pre>
+<pre>Expires = "Expires" ":" HTTP-date</pre>
+<pre>例如</pre>
+<pre>Expires: Thu, 01 Dec 1994 16:00:00 GMT （必须是GMT格式）</pre>
+<p>&nbsp;</p>
+<h2><a name="HTTP常见返回值" id="HTTP常见返回值"></a>HTTP常见返回值</h2>
+<p>HTTP状态码（HTTP Status Code）是用以表示网页服务器HTTP响应状态的3位数字<br>
+  代码。所有状态码的第一个数字代表了响应的五种状态之一。<br>
+  1XX---消息、2XX---成功、3XX---重定向、4XX---请求错误、5XX---服务器错误<br>
+  常见状态代码、状态描述、说明：<br>
+  200 OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //客户端请求成功<br>
+  400 Bad Request&nbsp; //客户端请求有语法错误，不能被服务器所理解<br>
+  401 Unauthorized//请求未经授权，必须和WWW-Authenticate报头域一起使用&nbsp;<br>
+  403 Forbidden&nbsp; //服务器收到请求，但是拒绝提供服务<br>
+  404 Not Found&nbsp; //请求资源不存在，eg：输入了错误的URL<br>
+  500 Internal Server Error //服务器发生不可预期的错误<br>
+  503 Server Unavailable&nbsp;//服务器当前不能处理客户端的请求，一段时间后可能恢复正常</p>
+<h1><a name="DNS协议基础知识" id="DNS协议基础知识"></a>DNS协议基础知识</h1>
+<h2><a name="什么是A记录" id="什么是A记录"></a>什么是A记录</h2>
+<p>A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设置您域名的二级域名。</p>
+<h2><a name="什么是CNAME记录" id="什么是CNAME记录"></a>什么是CNAME记录</h2>
+<p>CNAME记录，即：别名记录。这种记录允许您将多个名字映射到同一台计算机。 
+通常用于同时提供WWW和MAIL服务的计算机。例如，有一台计算机名为host.mydomain.com（A记录）。  
+它同时提供WWW和MAIL服务，为了便于用户访问服务。可以为该计算机设置两个别名（CNAME）：WWW和MAIL。  
+这两个别名的全称就是www.mydomain.com和mail.mydomain.com。实际上他们都指向host.mydomain.com。</p>
+<h2><a name="什么是TTL值" id="什么是TTL值"></a>什么是TTL值</h2>
+<p>TTL值全称是生存时间（Time To  Live)，简单的说它表示DNS记录在DNS服务器上缓存时间。</p>
+<h1><a name="CDNFAQ" id="CDNFAQ"></a>CDN FAQ</h1>
+<h2><a name="CDN是什么" id="CDN是什么"></a>CDN是什么</h2>
+<p>CDN的全称是Content Delivery 
+Network，即内容分发网络。其目的是通过在现有的Internet中增加一层新的网络架构，将网站的内容发布到最接近用户的网络“边缘”，使用户可
+以就近取得所需的内容，提高用户访问网站的响应速度。CDN有别于镜像，因为它比镜像更智能，或者可以做这样一个比喻：CDN=更智能的镜像+缓存+流量
+导流。因而，CDN可以明显提高Internet网络中信息流动的效率。从技术上全面解决由于网络带宽小、用户访问量大、网点分布不均等问题，提高用户访
+问网站的响应速度。</p>
+<h2><a name="CDN有什么作用" id="CDN有什么作用"></a>CDN有什么作用</h2>
+<p>解决了客户源服务器和带宽资源高昂的投入<br>
+  解决南北互联互通问题，对双线资源减少布点<br>
+  智能DNS解释用户访问最优节点，提高用户体验</p>
+<h2><a name="CDN的原理是什么" id="CDN的原理是什么"></a>CDN的原理是什么</h2>
+<p>帮客户把贵司的web页面或flash弹窗发布到睿江CDN在全国节点上（睿江CDN已覆盖全国各大区域）。客户域名cname到我们的服务器，然
+后通过我们的智能DNS把客户域名解析到我司各个节点,通过用户的的第一次访问，客户的域名URL缓存到我司CDN节点服务器。第二次访问开始直接从我司
+CDN服务器返回,可以在我司CDN节点缓存网站或flash文件的内容。</p>
+<h2><a name="什么是静态数据什么是动态数据" id="什么是静态数据什么是动态数据"></a>什么是静态数据，什么是动态数据</h2>
+<p>在http里面，静态数据是指那些在某个时间范围内不会变化的数据，比如图片，音频，flash等，动态数据则是指那些根据请求输入不同而生存不同的数据结构，如客户信息，账号信息等，因不用用户而返回对应的用户数据。</p>
+<h2><a name="什么是动静分离" id="什么是动静分离"></a>什么是动静分离</h2>
+<p>在web设计里面，一般用域名把静态数据和动态数据划分开来，例如img.test.com存放图片，flash.test.com存放flash，user.test.com处理用户信息等</p>
+<h2><a name="动静分离有什么作用" id="动静分离有什么作用"></a>动静分离有什么作用</h2>
+<p>数据层次更清晰明了，架构灵活性高，除此还有一个重要的作用是方便使用CDN</p>
+<h2><a name="CDN如何处理静态数据和动态数据" id="CDN如何处理静态数据和动态数据"></a>CDN如何处理静态数据和动态数据</h2>
+<p>CDN可以缓存静态数据，动态数据会转向到客户源服务器处理，然后把结果返回给用户</p>
+<h2><a name="httpheader对于缓存有什么作用" id="httpheader对于缓存有什么作用"></a>http header对于缓存有什么作用</h2>
+<p>http header对CDN效果有至关重要的影响，页面配了缓存控制相关的字段，CDN才可以缓存页面，例如有过期时间范围Last-Modified，Expires，cache-control不能为no或者private这些不缓存字段</p>
+<h2><a name="什么样数据可以被CDN缓存" id="什么样数据可以被CDN缓存"></a>什么样数据可以被CDN缓存</h2>
+<p>数据是否被CDN缓存，完全由客户通过http header来控制是否缓存和缓存时间长短</p>
+<h2><a name="数据缓存时间长短如何设置" id="数据缓存时间长短如何设置"></a>数据缓存时间长短如何设置</h2>
+<p>根据客户自身对数据的更新频率来设置，例如图片我是1小时更新一次，那缓存时间就不要设置超过1小时</p>
+<h2><a name="关于CDN缓存效率低" id="关于CDN缓存效率低"></a>关于CDN 缓存效率低</h2>
+<p>缓存效率低，影响客户的用户体现。用户访问节点，再由节点去访问源服务器，然后节点把内容返回给用户。这问题主要是客户自身的网站或flash设置不合理导致的。常见的有<br>
+  没有设置web服务器的缓存时间expire,cache-control等参数。<br>
+  动态，静态内容没有分离好。<br>
+  清理好不存在域名下的页面。以免返回404的页面。</p>
+<h2><a name="为何客户更新了源服务器的页面但CDN节点没有更新到" id="为何客户更新了源服务器的页面但CDN节点没有更新到"></a>为何客户更新了源服务器的页面，但CDN节点没有更新到</h2>
+<p>检查客户的缓存时间设置是否太长，导致在更新页面的时候，需要等待一段时间。<br>
+  检查客户源服务器网络是否正常<br>
+  手动在cdn.efly.cc清除缓存的页面，清除旧页面。输入旧的URL,按清除（PS：请不要操作太频繁了）</p>
+<h2><a name="什么是连接命中率内容命中率" id="什么是连接命中率内容命中率"></a>什么是连接命中率，内容命中率</h2>
+<p>连接命中率就是针对某个页面的连接，有多少在CDN节点完成连接，占全部连接的百分比。<br>
+  内容命中率就是一个页面有多少字节内容，CDN节点为该页面提供的多少字节，占页面大小的百分比。</p>
+<h2><a name="CDN服务使用流程有哪些" id="CDN服务使用流程有哪些"></a>CDN服务使用流程有哪些</h2>
+<ol>
+  <li>确定好需要做CDN的域名,提供1台或者以上的源服务器，单双线均可（最好是双线，解决南北互动互通问题）</li>
+  <li>静态，动态内容要分离。简单来说就是需要做CDN的放到一个域名下，不需要做CDN的放到另外一个域名下。</li>
+  <li>把需要做CDN的域名提交给我们。（我们有一个word文档给您填写）</li>
+  <li>客户需要知道贵司域名提供商的域名记录生效时间。</li>
+  <li>当睿江CDN部署完成，我们会第一时间通知贵司。（这里大概需要等待15-20分钟）</li>
+  <li>客户在自己的域名管理界面：一.取消原来域名的A记录；二.域名cname到我们提供给你的域名。</li>
+  <li>测试。清除一下本地DNS缓存。然后ping测试一下自己的域名，或者是使用浏览打开自己域名。成功完成CDN设置。</li>
+  <li>设置成功后，客户使用我们提供的<a href="http://cdn.efly.cc/">http://cdn.efly.cc</a>账号密码登录，可以查看到贵司使用CDN的情况。</li>
+  <li>如果你对我们CDN认识或者疑难可以拨打我们的400电话，也可以联系QQ：2523801584(睿江CDN)。</li>
+</ol>
+<h1><a name="常见webserver缓存控制配置参考" id="常见webserver缓存控制配置参考"></a>常见web server缓存控制配置参考</h1>
+<p class="STYLE1">仅供参考，客户请根据自身需要而定 </p>
+<h2><a name="Apache" id="Apache"></a>Apache</h2>
+<p align="left">&lt;IfModule&nbsp;mod_expires.c&gt;<br>
+  ExpiresActive&nbsp;on&nbsp;#开启则下面和类型相关的才会好用<br>
+  
+#ExpiresDefault&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#
+所有文档的缓存时间<br>
+  #ExpiresByType&nbsp;text/xml&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;text/css&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;image/gif&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;image/jpeg&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;image/jpg&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;image/png&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  EXpiresByType&nbsp;application/x-shockwave-flash&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  EXpiresByType&nbsp;application/x-javascript&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;video/x-flv&nbsp;"access&nbsp;plus&nbsp;30&nbsp;days"<br>
+  ExpiresByType&nbsp;application/x-flash-swf&nbsp;"access&nbsp;plus&nbsp;20&nbsp;&nbsp;minutes"<br>
+  &lt;/IfModule&gt;</p>
+<h2><a name="IIS" id="IIS"></a>IIS</h2>
+<p>打开 IIS 配置管理工具（Internet 信息服务(IIS)管理器）。<br>
+  选中一个目录（或者网站，如果您想为所有站点配置，请选择点中“网站”那个图标），点“属性”按钮，会弹出一个配置窗口，选择“HTTP 头” 
+TAB 标签，然后您会看到：“自定义 HTTP 头”一栏。点旁边的“添加(D)...”按钮，来添加上那条命令。在弹出的窗口中：“自定义 HTTP
+ 头名(C)”中输入：“Cache-Control”，在“自定义 HTTP 头值(U)”中输入：“Must-revalidate”。</p>
+<p>Cache-Control头的参数：Public 响应会被缓存，并且在多用户间共享。Private 
+响应只能够作为私有的缓存，不能再用户间共享。No-cache 响应不会被缓存No-store 
+响应不会被缓存，并且不会被写入到客户端的磁盘里，这也是基于安全考虑的某些敏感的响应才会使用这个。Max-age=#seconds 
+响应将会某个指定的秒数内缓存，一旦时间过了，就不会被缓存。Must-revalidate 
+响应会被重用来满足接下来的请求，但是它必须到服务器端去验证它是不是仍然是最新的。</p>
+<h2><a name="Nginx" id="Nginx"></a>Nginx</h2>
+<p>//图片，flash缓存10分钟<br>
+  location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$<br>
+  {<br>
+  expires&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10m;<br>
+  }</p>
+<p>&nbsp;</p>
+
+
+</body></html>

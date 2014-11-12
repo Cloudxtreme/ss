@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+
+	<mx:VBox x="0" y="0" width="100%" height="100%">
+
+	<mx:HBox width="100%" >
+		<mx:Label text="密钥:"/>
+		<mx:TextInput id="mykey_textinput" displayAsPassword="true" text="" />
+	</mx:HBox>
+	
+	<mx:Label text="客户信息-------------------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+	<mx:HBox width="100%" >
+		<mx:Label text="客户名称:"/>
+		<mx:TextInput id="client_name" width="140" text="test" />
+		<mx:Label text="SQUID名称:"/>
+		<mx:TextInput id="squid_name" width="140" text="test" />
+		<mx:Label text="SQUID端口:"/>
+		<mx:TextInput id="client_port" width="80" text="3210" />
+		<mx:Label text="主域名:"/>
+		<mx:TextInput id="client_domain" width="180" text="test.com" />
+		<mx:Label text="参考 test.com test.com.cn" color="#FF0000" fontSize="13"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >	
+		<mx:Label text="CDN域名:"/>
+		<mx:TextInput id="client_cdn_domain" width="180" text="cdn.test.com" />		
+		<mx:Label text="CNAME域名:"/>
+		<mx:TextInput id="client_cname_domain" width="300" text="cdn.test.com.cache.rightgo.net" />		
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="电信IP列表:"/>
+		<mx:TextInput id="ct_ip_data" width="40%" text="1.1.1.1;2.2.2.2"/>
+		<mx:Label text="网通IP列表:"/>
+		<mx:TextInput id="cnc_ip_data" width="40%" text="3.3.3.3;4.4.4.4"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="描述:"/>
+		<mx:TextInput id="client_desc" width="90%" />
+	</mx:HBox>
+	
+	<mx:Label text="新增客户-------------------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="1.客户管理平台设置"/>
+		<mx:Button label="A.新建客户" click="AddClient()"/>
+	</mx:HBox>		
+		
+	<mx:HBox width="100%" >	
+		<mx:Label text="2.内部DNS设置"/>
+		<mx:Button label="A.添加记录" click="AddNodeDNS()"/>
+		<mx:Button label="B.配置BIND" click="AddBINDDNS()"/>
+		<mx:Button label="C.检查BIND" click="CheckBINDDNS()"/>
+		<mx:Button label="D.重启BIND" click="ReloadBINDDNS()"/>
+		<mx:Button label="E.测试域名" click="TestDomain()"/>
+	</mx:HBox>
+	
+	<mx:HBox width="100%" >
+		<mx:Label text="3.客户域名设置"/>
+		<mx:Button label="A.客户增加域名" click="ClientAddCDNDomain()"/>
+		<mx:Button label="B.查看节点结果" click="CheckNodeCmd()"/>
+		<mx:Button label="C.激活域名" click="ActiveClientCDNDomain()"/>
+	</mx:HBox>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="4.智能DNS设置"/>
+		<mx:Label text="登录DNS管理平台增加 CDN域名 然后 应用模板化" color="#FF0000" fontSize="13"/>
+	</mx:HBox>
+
+	<mx:Label text="系统管理-----------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+	<mx:HBox width="100%" >	
+		<mx:Button label="查看客户设置" click="CheckClientSetting()"/>
+		<mx:Label text="  |  "/>
+		<mx:Button label="查看Haproxy设置" click="CheckHaproxySetting()"/>
+		<mx:Button label="导出Haproxy配置并检查" click="ExportHaproxyConf()"/>
+		<mx:Label text="  |  "/>
+		<mx:Button label="投递更新Haproxy节点操作" click="PostNodeUpdateHaproxyCmd()"/>
+		<mx:Button label="查看节点结果" click="CheckNodeCmd()"/>
+	</mx:HBox>
+
+	<mx:Label text="输出窗口:"/>
+	<mx:TextArea id="ret_textarea" width="90%" height="300" fontFamily="宋体" fontSize="13" backgroundColor="#000000" color="#01A109" />
+	
+	<mx:Label text="-----删除客户-----" color="#2560F4" fontWeight="bold" horizontalCenter="0"/>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="1.管理平台设置"/>
+		<mx:Button label="A.删除客户" click="DelClient()"/>
+	</mx:HBox>		
+	
+	<mx:HBox width="100%" >	
+		<mx:Label text="2.内部DNS设置"/>
+		<mx:Button label="A.删除记录" click="DelNodeDNS()"/>
+		<mx:Button label="B.配置BIND" click="DelBINDDNS()"/>
+		<mx:Button label="C.检查BIND" click="CheckBINDDNS()"/>
+		<mx:Button label="D.重启BIND" click="ReloadBINDDNS()"/>
+		<mx:Button label="E.测试域名" click="TestDomain()"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="3.节点创建客户"/>
+		<mx:Button label="A.停止域名" click="DeActiveClientCDNDomain()"/>
+		<mx:Button label="B.客户删除域名" click="ClientDelCDNDomain()"/>
+		<mx:Button label="C.查看节点结果" click="CheckNodeCmd()"/>
+	</mx:HBox>		
+
+	</mx:VBox>
+	
+	<mx:HTTPService id="HttpWebCDNMgr" url="" method="POST" showBusyCursor="true" requestTimeout="200" resultFormat="text"
+	result="HttpRet(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:Script>
+	<![CDATA[	
+	import mx.events.ListEvent;
+	import mx.events.CloseEvent;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.events.ItemClickEvent;
+	import mx.controls.Alert;
+	import Md5.MD5;
+	
+	public function Init():void
+	{
+		HttpWebCDNMgr.url = "http://" + this.parentApplication.g_serverip + "/webadmin/server/web_cdn_mgr.php";
+		GetClientList();
+	}
+	
+	private function GetClientList():void
+	{
+		SendHttpWebCDNMgr('get_client_list');
+	}
+	
+	private function AddNodeDNS():void
+	{
+		SendHttpWebCDNMgr('add_node_dns');
+	}
+	
+	private function AddBINDDNS():void
+	{
+		SendHttpWebCDNMgr('add_bind_dns');
+	}
+
+	private function DelNodeDNS():void
+	{
+		SendHttpWebCDNMgr('del_node_dns');
+	}
+	
+	private function DelBINDDNS():void
+	{
+		SendHttpWebCDNMgr('del_bind_dns');
+	}
+	
+	private function CheckBINDDNS():void
+	{
+		SendHttpWebCDNMgr('check_bind_dns');
+	}
+	
+	private function ReloadBINDDNS():void
+	{
+		SendHttpWebCDNMgr('reload_bind_dns');
+	}
+	
+	private function TestDomain():void
+	{
+		SendHttpWebCDNMgr('test_bind_dns');
+	}
+	
+	private function AddHaproxyBackEnd():void
+	{
+		SendHttpWebCDNMgr('add_haproxy_backend');
+	}
+
+	private function DelHaproxyBackEnd():void
+	{
+		SendHttpWebCDNMgr('del_haproxy_backend');
+	}
+
+	private function UpdateHaproxy():void
+	{
+		SendHttpWebCDNMgr('update_haproxy');
+	}
+	
+	private function CheckHaproxy():void
+	{
+		SendHttpWebCDNMgr('check_haproxy');
+	}
+	
+	private function ReloadHaproxy():void
+	{
+		SendHttpWebCDNMgr('reload_haproxy');
+	}
+		
+	private function CreateSquid():void
+	{
+		SendHttpWebCDNMgr('create_squid');
+	}
+	
+	private function InitSquid():void
+	{
+		SendHttpWebCDNMgr('init_squid');
+	}
+	
+	private function RunSquid():void
+	{
+		SendHttpWebCDNMgr('run_squid');
+	}
+
+	private function KillSquid():void
+	{
+		SendHttpWebCDNMgr('kill_squid');
+	}
+
+	private function DelSquid():void
+	{
+		SendHttpWebCDNMgr('del_squid');
+	}
+	
+	private function PostNodeCreateClientCmd():void
+	{
+		SendHttpWebCDNMgr('post_node_create_client');
+	}
+
+	private function PostNodeDeleteClientCmd():void
+	{
+		SendHttpWebCDNMgr('post_node_delete_client');
+	}
+	
+	private function PostNodeUpdateHaproxyCmd():void
+	{
+		SendHttpWebCDNMgr('post_node_update_haproxy');
+	}
+	
+	private function CheckNodeCmd():void
+	{
+		SendHttpWebCDNMgr('check_node_cmd');	
+	}
+
+	private function AddClient():void
+	{
+		SendHttpWebCDNMgr('add_client');
+	}
+	
+	private function InitDNS():void
+	{
+		SendHttpWebCDNMgr('init_dns');
+	}
+	
+	private function DelClient():void
+	{
+		SendHttpWebCDNMgr('del_client');
+	}
+	
+	private function CheckClientSetting():void
+	{
+		SendHttpWebCDNMgr('check_client_setting');
+	}
+	
+	private function ClientAddCDNDomain():void
+	{
+		SendHttpWebCDNMgr('client_add_cdn_domain');
+	}
+	
+	private function ActiveClientCDNDomain():void
+	{
+		SendHttpWebCDNMgr('active_client_cdn_domain');
+	}
+
+	private function DeActiveClientCDNDomain():void
+	{
+		SendHttpWebCDNMgr('deactive_client_cdn_domain');
+	}
+		
+	private function ClientDelCDNDomain():void
+	{
+		SendHttpWebCDNMgr('client_del_cdn_domain');
+	}
+	
+	private function CheckHaproxySetting():void
+	{
+		SendHttpWebCDNMgr('check_haproxy_setting');
+	}
+	
+	private function ExportHaproxyConf():void
+	{
+		SendHttpWebCDNMgr('export_haproxy_conf');
+	}
+	
+	private function myConfirm(event:CloseEvent, opcode:String):void
+	{  
+		if(event.detail==Alert.OK)
+		{   
+			_SendHttpWebCDNMgr(opcode);
+			return;
+		}
+		else if(event.detail==Alert.CANCEL)
+		{
+			return;
+		} 
+	}
+	
+	private function SendHttpWebCDNMgr(opcode:String):void
+	{
+		switch(opcode)
+		{
+			case 'get_client_list': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_node_cmd': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_client_setting': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_haproxy_setting': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_bind_dns': _SendHttpWebCDNMgr(opcode); return;
+			case 'test_bind_dns': _SendHttpWebCDNMgr(opcode); return;
+		}
+		
+		Alert.show("您确定执行操作?", "温馨提示:", Alert.OK|Alert.CANCEL, this, 
+					function(e:CloseEvent):void{myConfirm(e, opcode)}, 
+					null, Alert.CANCEL);
+	}
+	
+	private function _SendHttpWebCDNMgr(opcode:String):void
+	{
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:opcode,
+					skey:mykey_textinput.text,
+					client_name:client_name.text,
+					squid_name:squid_name.text,
+					client_port:client_port.text,
+					client_domain:client_domain.text,
+					client_cdn_domain:client_cdn_domain.text,
+					client_cname_domain:client_cname_domain.text,
+					ct_ip_data:ct_ip_data.text,
+					cnc_ip_data:cnc_ip_data.text,
+					client_desc:client_desc.text
+					};
+					
+		//check valid
+		if( squid_name.text.indexOf("_") >= 0 ) 
+		{
+			Alert.show(squid_name.text + " 请不要包含下划线_ !");
+			return;
+		}
+		
+		var domains:Array = client_domain.text.split(".");
+		if( domains.length >= 3 )
+		{
+			if( client_domain.text.indexOf(".com.cn") <= 0 )
+			{
+				Alert.show(client_domain.text + " 请填写客户主域名 !");
+				return;
+			}
+		}
+		
+		var squidport:int = int(client_port.text);
+		if( squidport < 3000 || squidport > 4000 )
+		{
+			Alert.show(" 端口范围 3000 ~ 4000 !");
+			return;
+		}
+		
+		if( client_cname_domain.text.indexOf("cache.rightgo.net") <= 0 )
+		{
+			Alert.show(client_cname_domain.text + " 必须以 cache.rightgo.net 结尾 !");
+			return;
+		} 
+					
+		HttpWebCDNMgr.send(sendInfo);
+	}
+	
+	private function HttpRet(event:ResultEvent):void
+	{
+		ret_textarea.text = event.message.body.toString();
+	}
+
+	private function faultHandler(event:FaultEvent):void
+	{
+		Alert.show(event.fault.message,"无法连接服务器");
+	}
+	
+	]]>
+    </mx:Script>
+    	
+</mx:Canvas>

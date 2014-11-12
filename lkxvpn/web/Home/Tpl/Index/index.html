@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<title>VDL管理后台——睿江科技有限公司</title>
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<!--link rel="stylesheet" href="__ROOT__/Public/css/retina.css" type="text/css" media="only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)"-->
+<style type="text/css">
+a { behavior:url(__ROOT__/Public/img/blur.htc);} /* 批量去除链接焦点 */
+#weixin_img {position: absolute;margin-top: 318px;margin-left: 455px; display:none; cursor:pointer;}
+</style>
+</head>
+<body id="home">
+
+<!--div class="" style="display: none; position: absolute;">
+	<div class="aui_outer">
+		<table class="aui_border">
+			<tbody><tr><td class="aui_nw"></td><td class="aui_n"></td><td class="aui_ne"></td></tr><tr><td class="aui_w"></td><td class="aui_c"><div class="aui_inner"><table class="aui_dialog"><tbody><tr><td colspan="2" class="aui_header"><div class="aui_titleBar"><div class="aui_title" style="cursor: move; display: block;"></div><a class="aui_close" href="javascript:/*artDialog*/;">×</a></div></td></tr><tr><td class="aui_icon" style="display: none;"><div class="aui_iconBg" style="background-image: none; background-position: initial initial; background-repeat: initial initial;"></div></td><td class="aui_main" style="width: auto; height: auto;"><div class="aui_content" style="padding: 20px 25px;"></div></td></tr><tr><td colspan="2" class="aui_footer"><div class="aui_buttons" style="display: none;"></div></td></tr></tbody></table></div></td><td class="aui_e"></td></tr><tr><td class="aui_sw"></td><td class="aui_s"></td><td class="aui_se" style="cursor: se-resize;"></td></tr>
+			</tbody>
+		</table>
+	</div>
+</div-->
+
+<div id="header">
+	<div class="wrap">
+		<p class="top_menu">
+		    <span class="spotbar" style="line-height:20px;height:20px;"><a href="#">QQ交流群：281356500</a></span>
+			<a href="javascript:void(0);" id="system_right"><span class="icon"></span>申请授权</a>
+			<span class="pipe">|</span>
+			<a href="javascript:void(0);" id="system_config" title="密码为 admin,不安全,请修改">修改密码
+				<img src="__ROOT__/Public/img/alert-icon.png" height="15" border="0">
+			</a>
+			<span class="pipe">|</span><a href="javascript:void(0);" onclick="Logout();">退出</a>
+		</p>
+		<h1><a href="http://www.efly.cc/" id="logo" target="_blank">睿江eflyVDL</a></h1>
+	</div>
+</div>
+
+<div id="content">
+	<div class="wrap">
+		<div id="side">
+			<ul id="nav">
+				<li><a href="javascript:void(0);" id="sysInfo"><span>系统信息</span></a></li>
+				<li><a href="javascript:void(0);" id="state"><span>系统状态</span><i class="alert-icon" title="" id="system-alert" style="display:none;"></i></a></li>
+				<li style="background:none;"><a href="javascript:void(0);" id="options"><span>其他设置</span></a></li>
+			</ul>
+		</div>
+		<div id="main">
+			<a href="javascript:void(0);" id="internet"><span class="txt">外网网管</span><span class="icon"></span></a>
+			<a href="javascript:void(0);" id="webinner"><span class="txt">内网网管</span><span class="icon"></span></a>
+
+			
+			<div id="services" class="guide_s">
+				<a href="javascript:void(0);" id="plug-in"><span class="icon"></span><span class="txt">链路管理</span></a>
+			</div>
+			
+			<div id="map">
+				<a href="javascript:void(0);" title="网口没有连接网线" id="console_1"><span class="icon con_c"></span></a>
+				<a href="javascript:void(0);" title="网口没有连接网线" id="console_2"><span class="icon con_c"></span></a>
+				<a href="javascript:void(0);" title="网口没有连接网线" id="console_3"><span class="icon con_c"></span></a>
+			</div>
+
+            
+            <div class="text_static">
+            	<span id="tx1">丢包率</span>
+                <span id="tx2">延时</span>
+               <!--<span id="tx3">系统配置</span>>
+                <span id="tx4"><a href="javascript:void(0);" id="vlan_conn">直连VPN内网</a></span>
+                <span id="tx5"><a href="javascript:void(0);" id="vlan_mgr">内网网管</a></span-->
+            </div>
+            
+			<div id="lans_list"><span id="lan1" class="offline"></span><span id="lan2" class="offline"></span></div>
+			<p id="devices">
+			<a href="javascript:void(0);"><!--span>►</span-->现有<em id="link_info">0</em>条VDL链路正在运行</a>
+			</p>
+			<a href="javascript:void(0);" id="reorg"><span>恢复出厂状态</span></a>
+			<a href="javascript:void(0);" id="reboot"><span>重启关机</span></a>
+			<div id="weixin_img"><img src="__ROOT__/Public/img/weixin.jpg"></div>
+		</div>
+	</div>
+</div>
+
+<div id="footer">
+	<div class="wrap">
+		<p class="system_info" sytle="font-size:13px;">联系地址 : 禅城区岭南大道北121号东江国际A区写字楼7、8层 <span class="pipe"></span>服务热线 : <span id="iphonenum">400-066-2212</span></p>
+		<p class="bottom_menu">
+			copyright © 2013 广东睿江科技有限公司
+			<span class="pipe">|</span><a href="http://www.efly.cc/" target="_blank">官方网站</a>
+			<span class="pipe">|</span><a href="http://t.qq.com/ruijiangke7393" target="_blank">官方微博</a>
+		</p>
+	</div>
+</div>
+
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<link rel="stylesheet" href="__ROOT__/Public/js/artDialog/skins/blueskin.css?1.1.7" />
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/jquery.artDialog.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.cookie.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/interface.js"></script>
+<script src="__ROOT__/Public/js/artDialog/plugins/iframeTools.source.js"></script>
+<script src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript">
+
+	var notice_choose = true, isStart = true, link_statu = [];
+	var init_num = 0, init_gate ="", init_vlan = "", init_source = "", init_dest = "";
+	function status_check(){
+		$.ajax({
+			url: '__APP__/Vpn/link_stat',
+			dataType: 'json',
+			type: "POST",
+			success: function (data) {
+				if (data && data != null) {
+					if(data.link){
+						init_num = 0; 
+						for (var item=0;item<data.link.length;item++) {
+							if(notice_choose){ //是否弹出通知消息
+								/*if(parseFloat(data.link[item].delay) > 100){
+									show('尊敬的用户朋友，您的链路：“'+data.link[item].source+'” 出现比较高的延时！');
+								}
+								if(parseFloat(data.link[item].lost) > 80){
+									show('尊敬的用户朋友，您的链路：“'+data.link[item].source+'” 出现比较高的丢包率！');
+								}*/
+								if(!isStart && link_statu.length>0 && link_statu[item]){ //非初次加载, BUG防止数组越界
+									if(link_statu[item].conn != data.link[item].conn && data.link[item].conn == "red" && data.link[item].stat == "enable"){
+										show('尊敬的用户朋友，您的启用链路存在不可用的链路了，请检查网络配置！');
+									}
+									if(link_statu[item].conn != data.link[item].conn && data.link[item].conn == "yellow" && data.link[item].stat == "enable"){
+										show('尊敬的用户朋友，您的启用链路存在跟对端配置不对称，请检查网络配置！');
+									}
+								}
+							}
+							if(data.link[item].stat == "enable"){
+								if(init_num == 0){ //第一条开启的链路
+									init_gate = data.link[item].gate;
+									init_vlan = data.link[item].vlan;
+									init_source = data.link[item].source;
+									init_dest = data.link[item].dest;
+								}
+								init_num += 1; //计算总共多少条开启的链路
+							}
+						}
+						isStart = false;
+						link_statu = data.link;
+						//console.log("link_num: ", init_num); //ie下不能有，会报错
+						$("#link_info").html(init_num);
+						//$("#link_info").empty();
+						//$("#link_info").append('现有<em>'+init_num+'</em>条VPN链路正在运行');
+					}
+					if(data.dev){
+						if(data.dev.outbound){
+							 $("#console_1").html("<span title=\"网口已连接网线\" class=\"icon con_b\"></span>");
+						}else{
+							 $("#console_1").html("<span title=\"网口没有连接网线\" class=\"icon con_c\"></span>");
+						}
+						if(data.dev.backend){
+							 $("#console_2").html("<span title=\"网口已连接网线\" class=\"icon con_b\"></span>");
+						}else{
+							 $("#console_2").html("<span title=\"网口没有连接网线\" class=\"icon con_c\"></span>");
+						}
+						if(data.dev.manager){
+							 $("#console_3").html("<span title=\"网口已连接网线\" class=\"icon con_b\"></span>");
+						}else{
+							 $("#console_3").html("<span title=\"网口没有连接网线\" class=\"icon con_c\"></span>");
+						}
+					}
+				}
+			},
+			error: function (data) {
+				art.dialog({content: '错误提示：网络连接错误，返回代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+			}
+		});
+	}
+	window.setInterval(status_check, 3000);
+	function show(cnt){
+		art.dialog.notice({
+			title: '状态提醒',
+			width: 220,
+			content: '<br/>' + cnt,
+			icon: 'warning',
+			time: 3
+		});
+	}
+
+	function open_windows(act,url){
+		if(art.dialog.list['func_box']){
+			art.dialog.list['func_box'].close();
+		}
+		if (act=="plug-in"){
+			art.dialog.open(url, {id:"func_box", title: '链路管理',width:868, height:600, lock:true, drag: false});
+		} else  if (act=="system_config") {
+			art.dialog.open(url, {id:"func_box", title: '修改密码',width:560, height:220, lock:true, drag: false});
+		} else  if (act=="state_monitor") {
+			art.dialog.open(url, {id:"func_box", title: '系统状态',width:860, height:600, lock:true, drag: false});
+		} else if (act=="super_opt") {
+			art.dialog.open(url, {id:"func_box", title: '高级设置',width:720, height:500, lock:true, drag: false});
+		} else  if (act=="sys-right") {
+			art.dialog.open(url, {id:"func_box", title: '申请授权',width:600, height:250, lock:true, drag: false});
+		} else if (act=="internet_mgr") {
+			art.dialog.open(url, {id:"func_box", title: '外网网管',width:560, height:260, lock:true, drag: false});
+		} else if (act=="vnet_mgr") {
+			art.dialog.open(url, {id:"func_box", title: '内网网管',width:560, height:360, lock:true, drag: false});
+		} else if (act=="vpn_mgr") {
+			art.dialog.open(url, {id:"func_box", title: 'vpn直连',width:560, height:220, lock:true, drag: false});
+		} else if (act=="sys-info") {
+			art.dialog.open(url, {id:"func_box", title: '系统信息',width:560, height:350, lock:true, drag: false});
+		}
+	}
+
+	$(function(){
+		//检测链路状态
+		status_check();
+		/* 	主要事件 */
+		$("#weixin,#weixin_img").hover(
+			function(){
+				$("#weixin_img").show();
+			},function(){
+				$("#weixin_img").hide();
+			}
+		);
+		//链路状态显示
+		/*$('#link-info').hover(
+			function(e){
+				//获取对象的坐标，让对话框在按钮附近弹出
+				var e = e || window.event, _x, _y;
+				if(e.pageX || e.pageY){
+					_x = e.pageX;
+					_y = e.pageY;
+				} else {
+					_x = e.clientX + document.body.clientLeft;
+					_y = e.clientY + Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+				};
+				artDialog({
+					id: 'menu_4834783',
+					content: table_str,
+					left: _x, 
+					top: _y, 
+					style: 'noTitle noBorder'
+				});
+				return false;
+			},function(e){
+				art.dialog({id: 'menu_4834783'}).close();
+			}
+		);*/
+		$("#system_right").click(function(){
+				open_windows("sys-right", "__APP__/Vpn/sys_right");
+			}
+		);
+		$("#sysInfo").click(function(){
+				open_windows("sys-info", "__APP__/Vpn/sys_info");
+			}
+		);
+		//弹出链路管理
+		$("#plug-in").click(function(){
+				open_windows("plug-in", "__APP__/Vpn/link_stat");
+			}
+		);
+		/*$("#link-info").click(function(){
+				open_windows("plug-in", "__APP__/Vpn/link_stat");
+			}
+		);*/
+		//修改密码
+		$("#system_config").click(function(){
+				open_windows("system_config", "__APP__/Vpn/change_pwd");
+			}
+		);
+		//网络诊断
+		/*$("#system_netdetect").click(function(){
+				open_windows("net_detect", "__APP__/Vpn/net_check");
+			}
+		);*/
+		//内网管配置
+		$("#webinner").click(function(){
+				open_windows("vnet_mgr", "__APP__/Vpn/vnet_mgr");
+			}
+		);
+		//直连VPN内网
+		$("#vlan_conn").click(function(){
+				open_windows("vpn_mgr", "__APP__/Vpn/vpn_mgr");
+			}
+		);
+		//状态监控
+		$("#state").click(function(){
+				//open_windows("state_monitor", "__APP__/Vpn/monitor_chart?gate="+init_gate+"&vlan="+init_vlan+"&source="+init_source+"&dest="+init_dest);
+				open_windows("state_monitor", "__APP__/Vpn/monitor_chart?gate=all&vlan=all&source=all&dest=all");
+			}
+		);
+		//高级设置
+		$("#options").click(function(){
+				open_windows("super_opt", "__APP__/Vpn/super_option");
+			}
+		);
+		//外网网管
+		$("#internet").click(function(){
+				open_windows("internet_mgr", "__APP__/Vpn/wnet_mgr");
+			}
+		);
+		
+		//恢复初始化状态
+		$("#reorg").click(function(){
+				art.dialog({
+					title:false,
+					content: "该操作会导致服务器的运行数据全部丢失，确定恢复系统初始化状态吗？",
+					icon: 'warning',
+					id:"wating_box",
+					ok: function(){
+						art.dialog({id:'ajax', content: '数据清理中，请耐心等待...', icon: 'warning'}).lock();
+						$.ajax({
+							url: '__APP__/Vpn/reset',
+							dataType: 'json',
+							type: "GET",
+							//beforeSend: art.dialog({id:'ajax', content: '数据清理中，请稍后...', icon: 'warning', lock: true})，
+							//complete: function () {},
+							success: function (result) {
+								art.dialog({id: 'ajax'}).close();
+								if(result.result == 1){
+									art.dialog({content: '操作提示：成功恢复到系统初始化状态！', icon: 'succeed', lock: true, time: 2.5});
+								}else{
+									art.dialog({content: '错误提示：恢复失败，请检查后台程序是否运行正常！', icon: 'error', lock: true, time: 2.5});
+								}
+							},
+							error: function (data) {
+								art.dialog({id: 'ajax'}).close();
+								art.dialog({content: '错误提示：网络连接错误，返回代码：'+data.statusText+'！', icon: 'error', lock: true, time: 2.5});
+							}
+						});
+						this.close();
+						return false;
+					},
+					okVal: "确定",
+					cancel: function(){
+						this.close();
+						return false;
+					}
+				}).lock();
+			}
+		);
+		//重启服务器
+		$("#reboot").click(function(){
+				art.dialog({
+					title:false,
+					content: "确定关机或重启吗？ 请选择 关机 或 重启 ！",
+					icon: 'warning',
+					id:"wating_box",
+					cancel: function(){
+						this.close();
+						return false;
+					},
+					button: [{
+						name: '关机',
+						callback: function () {
+							$.ajax({
+								url: '__APP__/Vpn/shutdown',
+								dataType: 'json',
+								type: "GET",
+								success: function (result) {
+									if(result.result == 1){
+										art.dialog({content: '操作提示：正在关闭服务器，请稍后...', icon: 'succeed', lock: true, time: 2.5});
+									}else{
+										art.dialog({content: '错误提示：关机失败，请检查后台程序是否运行正常！', icon: 'error', lock: true, time: 2.5});
+									}
+								},
+								error: function (data) {
+									art.dialog({content: '错误提示：网络连接错误，返回代码：'+data.statusText+'！', icon: 'error', lock: true, time: 2.5});
+								}
+							});
+							this.close();
+							return false;
+						}
+					},{
+						name: '重启',
+						callback: function () {
+							$.ajax({
+								url: '__APP__/Vpn/restart',
+								dataType: 'json',
+								type: "GET",
+								success: function (result) {
+									if(result.result == 1){
+										art.dialog({content: '操作提示：正在重启服务器，请稍后...', icon: 'succeed', lock: true, time: 2.5});
+									}else{
+										art.dialog({content: '错误提示：重启失败，请检查后台程序是否运行正常！', icon: 'error', lock: true, time: 2.5});
+									}
+								},
+								error: function (data) {
+									art.dialog({content: '错误提示：网络连接错误，返回代码：'+data.statusText+'！', icon: 'error', lock: true, time: 2.5});
+								}
+							});
+							this.close();
+							return false;
+						}
+					}]
+				}).lock();
+			}
+		);
+		
+	});
+	
+	//退出系统
+	function Logout(){
+		art.dialog({
+		    title:false,
+		    content: "确定安全退出管理系统吗？",
+		    icon: 'warning',
+		    id:"wating_box",
+		    ok: function(){
+				$.getJSON("./logout",function(rsp){});
+				window.location.href = "__APP__/Index/login.html";
+				this.close();
+				return false;
+		    },
+		    okVal: "确定",
+			cancel: function(){
+		    	this.close();
+		        return false;
+		    }
+		}).lock();
+	}
+	
+artDialog.notice = function (options) {
+    var opt = options || {},
+        api, aConfig, hide, wrap, top,
+        duration = 800;
+        
+    var config = {
+        //id: 'Notice',
+        left: '100%',
+        top: '100%',
+        fixed: true,
+        drag: false,
+        resize: false,
+        follow: null,
+        lock: false,
+        init: function(here){
+            api = this;
+            aConfig = api.config;
+            wrap = api.DOM.wrap;
+            top = parseInt(wrap[0].style.top);
+            hide = top + wrap[0].offsetHeight;
+            
+            wrap.css('top', hide + 'px')
+                .animate({top: top + 'px'}, duration, function () {
+                    opt.init && opt.init.call(api, here);
+                });
+        },
+        close: function(here){
+            wrap.animate({top: hide + 'px'}, duration, function () {
+                opt.close && opt.close.call(this, here);
+                aConfig.close = $.noop;
+                api.close();
+            });
+            return false;
+        },
+		ok: function(){
+			notice_choose = false;
+			this.close();
+			return false;
+		},
+		okVal: "不再提醒"
+    };	
+    
+    for (var i in opt) {
+        if (config[i] === undefined) config[i] = opt[i];
+    };
+    
+    return artDialog(config);
+};
+</script>
+<div style="display: none; position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; cursor: move; opacity: 0; background-color: rgb(255, 255, 255); background-position: initial initial; background-repeat: initial initial;"></div>
+</body>
+</html>

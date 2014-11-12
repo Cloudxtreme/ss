@@ -1,0 +1,169 @@
+﻿<?php
+//来源统计
+	require_once('./web.com.fun.php');
+	require_once('./log.fun.php');
+
+	function get_hostname_list($channels)
+	{
+		$hostname_list = "";
+		foreach($channels as $hostname)
+                {
+                        if(!strlen($hostname_list))
+                                $hostname_list = "'$hostname'";
+                        else
+                                $hostname_list .= ",'$hostname'";
+                }
+		return $hostname_list;
+	}
+	
+	function get_top_data($channels, $query_time, $zone, $isp)
+	{
+		$top_data = array();
+                $hostname_list = "";
+                $query_begin = $query_time[0];
+                $query_end = $query_time[1];
+                $sql = array();
+		$top_type = array("topref", "topsearch", "topkey");
+
+		$hostname_list = get_hostname_list($channels);
+
+		$begin_month = substr($query_begin, 0, -3);
+                $end_month = substr($query_end, 0, -3);
+
+                foreach($top_type as $type)
+                {
+                        $sql["$type"] = "select val,sum(cnt),sum(send) from `${begin_month}_ref` 
+                                where hostname in (${hostname_list}) and top_type='$type' and `date` between '$query_begin' and '$query_end'
+                                group by val";
+
+                        if($begin_month != $end_month)
+                        {
+                                $sql["$type"] = "select val,sum(cnt),sum(send) from (
+					select val,cnt,send from `${begin_month}_ref`
+					where hostname in (${hostname_list}) and top_type='$type' and `date` between '$query_begin' and '$query_end'
+					union all 
+					select val,cnt,send from `${end_month}_ref` 
+                                        where hostname in (${hostname_list}) and top_type='$type' and `date` between '$query_begin' and '$query_end'
+                                        ) as total group by val";
+
+                        }
+                        $sql["$type"] .= " order by `sum(cnt)` desc limit 0,10";
+                }
+
+                unset($mysql_class);
+                $mysql_class = new MySQL('newcdn');
+                $mysql_class -> opendb("cdn_web_log_general", "utf8");
+
+		foreach($sql as $type=>$query)
+		{
+                	$result = $mysql_class->query($query);
+					if($result)
+					{
+                	while( ($row = mysql_fetch_array($result)) )
+                	{
+                        	$top_data["$type"]["$row[0]"]["cnt"] = $row[1];
+				$top_data["$type"]["$row[0]"]["send"] = $row[2];
+                	}
+			mysql_free_result($result);
+			}
+		}
+		
+		return $top_data;
+        }
+
+        function get_para($name, $format)
+        {
+		if((!isset($_POST["$name"])) || (!strlen($_POST["$name"])))
+			$val = false;
+		else
+			$val = $_POST["$name"];
+		if(($val) && ($format == "json"))
+                        $val = json_decode($val, true);
+                return $val;
+        }
+
+        function print_init($client)
+        {
+		print_r(get_client_hostname_list($client)); print("***");
+		print_r(get_cdn_zone_list()); print("***");
+		print_r(get_cdn_isp_list());
+        }
+
+        function print_ret($top_data)
+        {
+		$ref_web = array();
+		$search = array();
+		$key = array();
+		foreach($top_data as $type=>$data)
+		{
+			foreach($data as $val=>$cnt_send)
+			{
+				$cnt = $cnt_send["cnt"];
+				$send = $cnt_send["send"] / 1024 / 1024;
+				$send = sprintf("%.2f", $send);
+				switch($type)
+				{
+					case "topref":
+						$ref_web[] = array('web' => $val, 'send' => $send, 'cnt' => $cnt);
+						break;
+					case "topsearch":
+						$search[] = array('search' => $val, 'send' => $send, 'cnt' => $cnt);
+						break;
+					case "topkey":
+						$key[] = array('key' => $val, 'send' => $send, 'cnt' => $cnt);
+						break;
+					default:;
+				}
+			}
+		}
+		if(count($ref_web) == 0)
+		{
+			$ref_web[] = array('web' => '#', 'send' => '-', 'cnt' => '-');
+		}
+		print_r(json_encode($ref_web));
+		print("***");
+		if(count($search) == 0)
+		{
+			$search[] = array('search' => '#', 'send' => '-', 'cnt' => '-');
+		}
+		print_r(json_encode($search));
+		print("***");
+		if(count($key) == 0)
+		{
+			$key[] = array('key' => '#', 'send' => '-', 'cnt' => '-');
+		}
+		print_r(json_encode($key));
+
+        }
+
+
+        if(($type = get_para("get_type", "normal")) == false)
+		exit;
+	if(($client = get_para("user", "normal")) == false)
+		exit;
+
+
+	switch($type)
+	{
+		case "_init":
+			print_init($client);
+			exit();
+			break;
+		case "_referrer":
+			$channels = get_para("channel", "json");
+			$channels = analyse_hostname_list($channels);
+			$query_time = get_para("time", "json");
+			if( count($channels) <= 0 ) { exit; }
+			if( count($query_time) != 2 ) { exit; }
+			$zone = array("中国大陆");
+			$isp = array("电信", "网通", "移动");
+			syslog_user_action($client,$_SERVER['SCRIPT_NAME'],$channels,$query_time[0],$query_time[1]);
+			$top_data = get_top_data($channels, $query_time, $zone, $isp);
+			print_ret($top_data);
+			break;
+		default:
+			exit;
+			break;
+	}
+
+?>

@@ -1,0 +1,1 @@
+*/3 * * * * /usr/bin/php /opt/cdn_file_auto_delivery/main.php > /dev/null 2>&1

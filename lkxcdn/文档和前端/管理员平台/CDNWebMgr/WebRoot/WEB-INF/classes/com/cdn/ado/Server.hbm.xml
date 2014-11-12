@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cdn.ado">
+    <class name="Server"   table="server_list">
+       <id name="id"   column="`id`" type="java.lang.Integer">
+         <generator class="identity"></generator>
+       </id>    
+       <property name="ip"  column="`ip`" type="java.lang.String"></property>
+       <property name="port"  column="`port`" type="java.lang.Integer"></property>
+       <property name="nettype"  column="`nettype`" type="java.lang.String"></property>
+       <property name="zone"  column="`zone`" type="java.lang.String"></property>
+       <property name="desc"  column="`desc`" type="java.lang.String"></property>
+        <property name="type"  column="`type`" type="java.lang.String"></property>
+ 
+    </class>
+    
+	
+</hibernate-mapping>

@@ -1,0 +1,158 @@
+
+backend likeface.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3126 cookie squid1    
+
+backend mediacdn
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3125 cookie squid1
+
+backend 56uu
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3124 cookie squid1
+
+backend da-game
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3122 cookie squid1
+
+backend 91igame
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3123 cookie squid1
+
+#86mmo.com_begin
+backend 86mmo.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3129 cookie squid1
+#86mmo.com_end
+#513top.com_begin
+backend 513top.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3130 cookie squid1
+#513top.com_end
+#053135.com_begin
+backend 053135.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3131 cookie squid1
+#053135.com_end
+#6one.com.cn_begin
+backend 6one.com.cn
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3132 cookie squid1
+#6one.com.cn_end
+#youkia.info_begin
+backend youkia.info
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3134 cookie squid1
+#youkia.info_end
+#0505u.com_begin
+backend 0505u.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3135 cookie squid1
+#0505u.com_end
+#ikusoo.net.cn_begin
+backend ikusoo.net.cn
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3136 cookie squid1
+#ikusoo.net.cn_end
+#91ophone.com_begin
+backend 91ophone.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3137 cookie squid1
+#91ophone.com_end
+#qiyou.com_begin
+backend qiyou.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3138 cookie squid1
+#qiyou.com_end
+#tzgame.com_begin
+backend tzgame.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3139 cookie squid1
+#tzgame.com_end
+#zjx20.com_begin
+backend zjx20.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3140 cookie squid1
+#zjx20.com_end
+#wz600.com_begin
+backend wz600.com
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3141 cookie squid1
+#wz600.com_end
+#c119.cn_begin
+backend c119.cn
+	balance roundrobin
+	cookie SERVERID insert nocache indirect
+	option httpchk HEAD /check.txt HTTP/1.0
+	option httpclose
+	option forwardfor
+	server squid1 127.0.0.1:3142 cookie squid1
+#c119.cn_end

@@ -1,0 +1,74 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<title></title>
+</head>
+<body>
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:16px;">
+	 <tr>
+		<td height="58px" bgcolor="#1078b5" style="padding-left:20px;"><span style="color: #FFFFFF;font-weight: bold;">内网网管配置</span></td>
+	</tr>
+	<tr>
+    <td valign="top">
+		<table width="98%" style="font-size:14px;margin:10px;">
+			<tr><td height="38px" width="190px" align="right">IP地址：</td><td><input style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" border="0" type="text" value="{$ip}" placeholder="IP地址" id="addr"/></td></tr>
+			<tr><td height="38px" align="right">子网掩码：</td><td><input style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" border="0" type="text" value="{$mask}" placeholder="子网掩码" id="mask"/></td></tr>
+			<tr><td height="38px" align="right">DHCP地址池</td><td></td></tr>
+			<tr><td height="38px" align="right">开始地址：</td><td><input style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" border="0" type="text" value="{$dhcp_begin}" placeholder="开始地址" id="dhcp_s"/></td></tr>
+			<tr><td height="38px" align="right">结束地址：</td><td><input style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" border="0" type="text" value="{$dhcp_end}" placeholder="结束地址" id="dhcp_e"/></td></tr>
+			<tr><td height="38px" colspan="2" align="center"><span id="msg"></span><input type="button" style="margin-left:20px;background:#1F75B7;color:#fff;padding:0px 15px;height:32px;line-height:32px;" onclick="DoSubmit();" value="确 定" /></td></tr>
+		</table>
+	</td>
+  </tr>
+</table>
+</body>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script language="JavaScript"> 
+function DoSubmit() { 
+	var addr = $("#addr").val(), mask = $("#mask").val();
+	var dhcp_s = $("#dhcp_s").val(), dhcp_e = $("#dhcp_e").val();
+	if(addr.length == 0 || typeof(addr) == "undefined"){
+		$("#addr").focus();
+		$("#msg").html("请输入IP地址！");
+		return false;
+	}
+	if(mask.length == 0 || typeof(mask) == "undefined"){
+		$("#mask").focus();
+		$("#msg").html("请输入掩码地址！");
+		return false;
+	}
+	if(dhcp_s.length == 0 || typeof(dhcp_s) == "undefined"){
+		$("#dhcp_s").focus();
+		$("#msg").html("请输入DHCP地址池开始地址！");
+		return false;
+	}
+	if(dhcp_e.length == 0 || typeof(dhcp_e) == "undefined"){
+		$("#dhcp_e").focus();
+		$("#msg").html("请输入DHCP地址池结束地址！");
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Vpn/set_manager',
+		dataType: 'json',
+		data: { ip: addr, mask: mask, dhcp_begin: dhcp_s, dhcp_end: dhcp_e },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				$("#msg").html("配置成功！");
+			}else{
+				$("#msg").html("配置失败："+data.reason);
+			}
+		},
+		error: function (data) {
+			$("#msg").html('网络错误，错误代码：' + data.statusText);
+		}
+	});
+}
+</script>
+</html>

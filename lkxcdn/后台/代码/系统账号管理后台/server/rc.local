@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# This script will be executed *after* all the other init scripts.
+# You can put your own initialization stuff in here if you don't
+# want to do the full Sys V style init stuff.
+
+touch /var/lock/subsys/local
+
+#web cdn
+for squidpath in /opt/cdn_client/*_squid
+do
+	squidcmd="$squidpath/squid -f $squidpath/squid.conf"
+	echo "$sedcmd"|bash
+done
+
+/opt/haproxy/sbin/haproxy -f /opt/haproxy/sbin/haproxy.cfg
+
+#file cdn
+/opt/nginx/sbin/nginx
+/opt/rsync/run_client.sh &
+/opt/cdn_file/run_file_walk.sh &
+

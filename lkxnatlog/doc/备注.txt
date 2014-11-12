@@ -1,0 +1,31 @@
+1、在只上传源包情况下，处理内存池中最后一个包是源包的情况
+
+2、已找到解决办法
+	两个hook,一个hook在postrouting的NF_IP_PRI_NAT_SRC - 1位置上传SNAT前的skb
+		 一个hook在postrouting的NF_IP_PRI_NAT_SRC + 1位置上传SNAT后的skb
+	(1)解决了前后原子性问题
+	(2)或许也能解决顺序性的问题,待验证(已验证不能解决顺序性,两个hook点之间结合还是无序的)
+
+
+3、程序启动，上传上来的第一个包必须是benat，否则丢弃之
+
+
+为什么log + syslog很消耗CPU   printk -- kernel -- syslogd -- syslog -- net/file
+
+数据传输机制,printk---->netlink    netlink原理,为什么快
+
+寻找netfilter log netlink to user的方法,不用自己写netlink,netfilter有提供api,nf_log_packet()
+
+netfilter 官方用户态程序ulog
+
+内核里ipt_LOG 和 ipt_ULOG的冲突问题
+
+C库函数的优化取替 localtime inet_ntoa sprintf , oprofile的使用
+
+镜像流量的问题与解决  网卡非混染模式不处理不属于本机的网络包
+
+数据准确性的验证(原子性和顺序性的问题与解决)   由两条iptables 规则和一个netfilter模块组合的方法不能保证原子性，无序性的问题后来需要在用户态程序作出修改
+
+
+
+数据准确性保证新手段    timestamp_usec

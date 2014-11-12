@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<package name="yi" namespace="/" extends="struts-default">
+
+ 
+<interceptors>
+<interceptor name="sessioninter" class="com.cdn.inter.SessionInter"></interceptor>
+<interceptor name="admininter" class="com.cdn.inter.AdminInter"></interceptor>
+<interceptor name="cdnuserinter" class="com.cdn.inter.CDNUserInter"></interceptor>
+<interceptor name="serverinter" class="com.cdn.inter.Serverinter"></interceptor>
+</interceptors>
+
+<global-results>     
+       <result name="login" type="redirectAction">
+    	<param name="namespace">/</param>
+    	<param name="actionName">Login</param>
+    </result>
+      <result name="qx" type="redirect">/qx.html</result>
+      <result name="err">/err.html</result>
+</global-results> 
+
+<global-exception-mappings>
+ <exception-mapping exception="java.lang.Exception" result="err"/>
+</global-exception-mappings>
+
+<action name="Login" class="com.cdn.action.LoginAction">
+    <result name="success">/WEB-INF/Content/login.jsp</result>
+    <result name="center" type="redirect">/center.html</result>
+    <result name="main" type="redirectAction">
+    	<param name="namespace">/</param>
+    	<param name="actionName">main</param>
+    </result>
+  </action>
+  
+  <action name="main" class="com.opensymphony.xwork2.ActionSupport">
+    <result name="success">/WEB-INF/Content/main.jsp</result>
+    <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="sessioninter">
+     <param name="str">true</param>
+     </interceptor-ref>
+  </action>
+  
+  <action name="Admin" class="com.cdn.action.AdminAction">
+    <result name="success">/WEB-INF/Content/admin.jsp</result>
+    <result name="addview">/WEB-INF/Content/admadd.jsp</result>
+    <result name="editview">/WEB-INF/Content/admedit.jsp</result>
+    <result name="addck" type="redirectAction">
+    	<param name="namespace">/</param>
+    	<param name="actionName">Admin</param>
+    </result>
+     <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="sessioninter"/>
+     <interceptor-ref name="admininter"/>
+  </action>
+  
+  
+    <action name="CDNUser" class="com.cdn.action.CDNUserAction">
+    <result name="success">/WEB-INF/Content/cdnuser.jsp</result>
+    <result name="editview">/WEB-INF/Content/cdnuseredit.jsp</result>
+     <result name="cg" type="redirectAction">
+    	<param name="namespace">/</param>
+    	<param name="actionName">CDNUser</param>
+    </result>
+      <result name="js" type="stream">
+    	<param name="contentType">text/html</param>
+    	<param name="inputName">result</param>
+    </result>
+     <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="sessioninter"/>
+     <interceptor-ref name="cdnuserinter">
+     <param name="includeMethods">editview,edit,cdndl</param>
+     </interceptor-ref>
+  </action>
+  
+    <action name="CDNywcx" class="com.cdn.action.CDNywcx">
+     <result name="success">/WEB-INF/Content/cdnywcx.jsp</result>
+     <result name="ini" type="stream">
+    	<param name="contentType">text/html</param>
+    	<param name="inputName">inputStream</param>
+    </result>
+     <result name="lltj">/WEB-INF/Content/cdnllcx.jsp</result>
+      <result name="lltjfl">/WEB-INF/Content/cdnllcxfl.jsp</result>
+      <interceptor-ref name="defaultStack"/>
+     <interceptor-ref name="sessioninter"/>
+    </action>
+    
+     <action name="Server" class="com.cdn.action.ServerAction">
+       <result name="success">/WEB-INF/Content/serverlist.jsp</result>
+       <result name="addview">/WEB-INF/Content/serveradd.jsp</result>
+       <result name="editview">/WEB-INF/Content/serveredit.jsp</result>
+       <result name="addck" type="chain">
+    	<param name="namespace">/</param>
+    	<param name="actionName">Server</param>
+      </result>   
+      <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+      <interceptor-ref name="serverinter"/>
+      </action>
+      
+        <action name="Top10sel" class="com.cdn.action.Top10sel">
+        <result name="success">/WEB-INF/Content/webtop10.jsp</result>
+          <result name="sumview">/WEB-INF/Content/testnew.jsp</result>
+            <result name="zhdview">/WEB-INF/Content/zhdview.jsp</result>
+        <result name="ini" type="stream">
+    	<param name="contentType">text/html</param>
+    	<param name="inputName">inputStream</param>
+    </result>
+       <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+        </action>
+        
+        <action name="Nginxseljd" class="com.cdn.action.NginxAction" method="seljd">
+        <result name="userjd">/WEB-INF/Content/userjd.jsp</result> 
+        <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+      <interceptor-ref name="serverinter"/>  
+        </action> 
+      <action name="Nginx" class="com.cdn.action.NginxAction">
+          <result name="success">/WEB-INF/Content/usernginx.jsp</result>
+          <result name="userjd">/WEB-INF/Content/userjd.jsp</result> 
+          <result name="addview">/WEB-INF/Content/jdadd.jsp</result> 
+      <result name="addck" type="chain">
+    	<param name="namespace">/</param>
+    	<param name="actionName">Nginxseljd</param>
+      </result>   
+       <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+      <interceptor-ref name="serverinter"/>  
+      </action>
+      
+      
+      <action name="Task" class="com.cdn.action.TaskAction">
+      <result name="success">/WEB-INF/Content/task.jsp</result>
+      <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+      <interceptor-ref name="serverinter"/>  
+      </action>
+      
+       <action name="ClSel" class="com.cdn.action.ClSel">
+       <result name="success">/WEB-INF/Content/cllb.jsp</result>
+      <interceptor-ref name="defaultStack"/>
+      <interceptor-ref name="sessioninter"/>
+       </action>
+</package>
+</struts>    

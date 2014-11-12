@@ -1,0 +1,46 @@
+@charset "UTF-8";
+/* CSS Document */
+
+*{ margin:0; padding:0;}
+body{ font-size:12px; font-family:Arial, Helvetica, sans-serif; background:#FBFBFB;}
+
+.header div{
+	width:1200px;                                                            /*new add*/
+	margin:0 auto;
+	position:relative;
+}
+.nav div{
+	width:1200px;                                                 /*new add*/
+	margin:0 auto;
+	position:relative;
+}
+#main{
+	width:1200px;                                                       /*new add*/
+	margin:0 auto;
+	border-radius:5px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border:1px solid #D1D1D1;
+}
+
+/*        iframe-css-begin             */
+.main_right_top{ width:960px; height:30px; background:url(../image/titlebgup.png) no-repeat; color:#ffffff; font-weight:bold; text-indent:18px; line-height:30px; text-align:left}           /*new add*/
+.main_right_top a{color:#ffffff;}
+.main_left_top_title{ width:100%; float:left}
+.main_right_top_title{width:300px; float:right;text-align:center;padding-top: 2px;}
+.main_right_top_mbx{ width:400px; font-weight:normal; float:right; text-align:right; margin-right:10px;}
+.main_right_top_mbx a,.main_right_top_mbx a:visited{color:#00627B; text-decoration:none}
+.main_right_top_mbx a:hover{ text-decoration:underline}
+.main_right_bottom{ width:960px; height:38px; background:url(../image/titlebgdown.png) no-repeat;  margin-bottom:20px;}                         /*new add*/
+.main_right_middle{ width:958px; height:auto; border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE;padding-top:10px;overflow:hidden;}                /*new add*/
+
+.content{margin:10px auto 0 auto;border:1px solid #DDD;width:950px;overflow:hidden;}        /*new add*/
+.subtitle{text-align:left;color:#373737;padding-left:10px;height:28px;line-height:28px;font-weight:bold;background:url(../image/bg28.gif) repeat-x scroll 0 0 transparent;}
+.subtitle h2{font-size: 12px;margin:0;float:left;}
+.table table{width:100%; border-collapse:collapse; border-spacing:0;text-align:left; white-space: nowrap;}
+.subtable table,.table table{width:100%; border-collapse:collapse; border-spacing:0;text-align:left; white-space: nowrap;}
+.table tr td{border:1px solid #DDD;height:29px;line-height:20px;white-space: nowrap;  }
+.table tr th{border:1px solid #DDD;height:29px;line-height:20px;white-space: nowrap;  }
+.subtable tr,.table tr{border-top:1px solid #DDD;height:29px;line-height:20px;}
+.subtable th,.table th{color:#6F6F6F;font-weight:bold;padding-left:4px;text-align:right;}
+.subtable td,.table td{padding-left:4px;text-align:right;}

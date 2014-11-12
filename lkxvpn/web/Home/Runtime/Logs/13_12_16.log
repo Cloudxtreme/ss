@@ -1,0 +1,3142 @@
+[ 2013-12-16T09:18:48+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001176s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001412s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001976s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.002061s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Undefined index: user /var/www/html/eflyvpn/Home/Lib/Action/IndexAction.class.php 第 5 行.
+
+[ 2013-12-16T09:18:48+08:00 ] 192.168.22.97 /index.php/Index/timeout.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001001s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001120s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000476s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000679s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011507s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011607s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000395s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000312s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000182s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000585s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001785s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000743s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000835s ]
+
+[ 2013-12-16T09:18:53+08:00 ] 192.168.22.97 /index.php/Index/login.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000997s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001156s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000901s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000998s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.014111s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.014217s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000337s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000323s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000294s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000409s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002000s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000775s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000857s ]
+
+[ 2013-12-16T09:18:58+08:00 ] 192.168.22.97 /index.php/Index/login
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000969s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001301s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000551s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000699s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:18:58+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000851s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000947s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000584s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000666s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011713s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011802s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001083s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000423s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000166s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000433s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002362s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000672s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000766s ]
+
+[ 2013-12-16T09:18:59+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000909s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001014s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000547s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000695s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019671s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019879s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000361s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000308s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000425s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000401s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001716s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001166s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001261s ]
+
+[ 2013-12-16T09:19:39+08:00 ] 192.168.22.97 /index.php/Vpn/link_disable
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000812s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000959s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000472s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000551s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:19:46+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001487s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001684s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000660s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000771s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019632s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019762s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000468s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000390s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000266s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000547s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001962s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000813s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001138s ]
+
+[ 2013-12-16T09:19:53+08:00 ] 192.168.22.97 /index.php/Vpn/link_disable
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000713s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000806s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000438s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000508s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:20:08+08:00 ] 192.168.22.97 /index.php/Vpn/link_disable
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001026s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001267s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000582s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000668s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Undefined index: id /var/www/html/eflyvpn/Home/Lib/Action/VpnAction.class.php 第 58 行.
+
+[ 2013-12-16T09:24:39+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001284s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001412s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000751s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000844s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.022337s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.022437s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000399s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000315s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000283s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000411s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001739s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000976s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001761s ]
+
+[ 2013-12-16T09:26:11+08:00 ] 192.168.22.97 /index.php/Vpn/link_add
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000905s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001028s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000609s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000703s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:26:14+08:00 ] 192.168.22.97 /index.php/Vpn/link_add
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001079s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001273s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000646s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000747s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:26:48+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001131s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001274s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000865s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000984s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.021509s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.021636s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000428s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000505s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000266s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000608s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002122s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001735s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001877s ]
+
+[ 2013-12-16T09:26:50+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000927s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001024s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000718s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000799s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016645s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016776s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000472s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000263s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000466s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001755s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000754s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000838s ]
+
+[ 2013-12-16T09:26:52+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000828s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000944s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000464s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000547s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007721s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007815s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000299s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000327s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000184s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000387s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001415s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000604s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000691s ]
+
+[ 2013-12-16T09:27:06+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001000s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001126s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000650s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000732s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009798s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009892s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000371s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000385s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000190s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000572s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001773s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000710s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000872s ]
+
+[ 2013-12-16T09:30:32+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000999s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000999s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000998s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000998s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009990s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009990s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000000s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.001002s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000000s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.001007s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002009s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000000s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000000s ]
+
+[ 2013-12-16T09:30:33+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000831s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000957s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000481s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000562s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008678s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008807s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000280s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000307s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000174s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000378s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001376s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000599s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000680s ]
+
+[ 2013-12-16T09:31:24+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.009075s ]
+INFO: [ route_check ] --END-- [ RunTime:0.009191s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000561s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000638s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.010615s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.010887s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000392s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000306s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000254s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000377s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001649s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000539s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000740s ]
+
+[ 2013-12-16T09:31:31+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000967s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001070s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000653s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000735s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.035802s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.035907s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000764s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000180s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000325s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000523s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001978s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.006984s ]
+INFO: [ view_end ] --END-- [ RunTime:0.007515s ]
+
+[ 2013-12-16T09:33:14+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000000s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000000s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000046s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000098s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.020873s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020979s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000394s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000393s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000190s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000574s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001772s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001584s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001584s ]
+
+[ 2013-12-16T09:33:17+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000895s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000995s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000551s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000630s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018522s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018616s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000350s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000303s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000229s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000470s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001631s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.002780s ]
+INFO: [ view_end ] --END-- [ RunTime:0.002931s ]
+
+[ 2013-12-16T09:39:28+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000816s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000992s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000563s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000642s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011568s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011657s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000412s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000314s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000471s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001814s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000545s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000734s ]
+
+[ 2013-12-16T09:39:30+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001512s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001606s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.007552s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.007630s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008963s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009056s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000277s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000489s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000168s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000461s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001648s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000683s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000767s ]
+
+[ 2013-12-16T09:39:41+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001115s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001212s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000545s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000628s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019364s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019532s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000305s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000385s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000173s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000390s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001665s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001390s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001875s ]
+
+[ 2013-12-16T09:39:43+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000914s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001008s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000616s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000693s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008956s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009047s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000262s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000403s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000189s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000553s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001745s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000658s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000736s ]
+
+[ 2013-12-16T09:39:45+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000916s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001012s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000628s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000707s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008683s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008777s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000273s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000398s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000175s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000472s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001643s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000646s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000725s ]
+
+[ 2013-12-16T09:39:46+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000708s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000802s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000463s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000540s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007637s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007723s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000384s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000302s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000168s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000374s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001441s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000512s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000587s ]
+
+[ 2013-12-16T09:40:03+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000903s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001010s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000448s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000606s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018536s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018630s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000481s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000308s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000168s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000487s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001751s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000638s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001641s ]
+
+[ 2013-12-16T09:40:05+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000907s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001103s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000867s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001031s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009231s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009326s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000475s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000260s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000486s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001758s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000753s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000834s ]
+
+[ 2013-12-16T09:40:06+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000943s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001174s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000584s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000747s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009208s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009313s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000368s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000388s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000178s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000565s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001759s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000758s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000860s ]
+
+[ 2013-12-16T09:40:08+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000694s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000788s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000440s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000518s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.020267s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020364s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000309s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000384s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000269s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000882s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002113s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001356s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001644s ]
+
+[ 2013-12-16T09:40:17+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001871s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001968s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000441s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000599s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.020025s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020230s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000376s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000302s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000333s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000442s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001760s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001287s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001826s ]
+
+[ 2013-12-16T09:40:19+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000714s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000807s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000467s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000548s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007874s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007960s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000277s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000278s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000175s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000371s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001311s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000504s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000577s ]
+
+[ 2013-12-16T09:40:22+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000892s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000998s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000535s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000703s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008947s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009036s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000338s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000295s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000283s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000467s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001649s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000750s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000831s ]
+
+[ 2013-12-16T09:41:13+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000693s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000786s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000439s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000516s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016869s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016960s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000362s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000301s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000221s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000470s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001577s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000627s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000721s ]
+
+[ 2013-12-16T09:41:19+08:00 ] 192.168.22.97 /index.php/Vpn/link_enable
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000781s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000994s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000440s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000511s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T09:41:52+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000719s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000814s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000429s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000504s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015693s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015779s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000287s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000289s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000188s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000359s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001356s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000508s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000591s ]
+
+[ 2013-12-16T09:41:55+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001043s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001147s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000637s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000714s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009088s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009180s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000341s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000372s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000182s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000564s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001743s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000678s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000762s ]
+
+[ 2013-12-16T09:42:09+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000897s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001005s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000628s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000706s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009067s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009172s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000449s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000303s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000174s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000580s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001731s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000748s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000830s ]
+
+[ 2013-12-16T09:42:12+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000711s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000806s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000511s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000734s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009745s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009848s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000371s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000369s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000192s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000560s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001718s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000675s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000839s ]
+
+[ 2013-12-16T09:48:27+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000911s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001008s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000628s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000707s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.013492s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013661s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000405s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000307s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000279s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000449s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001753s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001234s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001322s ]
+
+[ 2013-12-16T09:48:29+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000922s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001015s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000623s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000701s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008721s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008811s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000271s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000513s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000177s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000488s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001687s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000701s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000785s ]
+
+[ 2013-12-16T09:48:32+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000912s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001005s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000441s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000521s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008427s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008523s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000533s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000170s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000581s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001820s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000702s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000794s ]
+
+[ 2013-12-16T09:48:37+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000995s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001182s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000760s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000860s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.020860s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020958s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000484s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000308s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000165s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000484s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001744s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000596s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000678s ]
+
+[ 2013-12-16T09:48:38+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000708s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000815s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.002006s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.003219s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009745s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009915s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000273s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000380s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000261s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000387s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001558s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001054s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001237s ]
+
+[ 2013-12-16T09:48:40+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000910s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001006s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000631s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000710s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018347s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018511s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000311s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000401s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000248s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000391s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001572s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001094s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001782s ]
+
+[ 2013-12-16T09:48:42+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001082s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001232s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.002310s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.002410s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.010765s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.010860s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000265s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000397s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000179s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000583s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001747s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000685s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000766s ]
+
+[ 2013-12-16T09:48:45+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000708s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000802s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000433s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000541s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009441s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009528s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000344s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000295s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000273s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000776s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002025s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000628s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000703s ]
+
+[ 2013-12-16T09:48:47+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000708s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002444s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000553s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000724s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011392s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011481s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000501s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000255s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000470s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001749s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000642s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000723s ]
+
+[ 2013-12-16T09:48:49+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001330s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001430s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000545s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000624s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008418s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008614s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001753s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000419s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000191s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000559s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.003231s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000992s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001074s ]
+
+[ 2013-12-16T09:48:50+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000785s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000999s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000533s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000636s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019143s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019237s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000313s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000484s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000170s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000500s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001685s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001844s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001940s ]
+
+[ 2013-12-16T09:48:52+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000727s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000825s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000477s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000556s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016202s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016296s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000313s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000167s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000388s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001393s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000569s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000663s ]
+
+[ 2013-12-16T09:48:53+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000907s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001002s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000622s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000698s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008891s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008981s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000269s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000492s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000171s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000491s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001651s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000577s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000768s ]
+
+[ 2013-12-16T09:48:55+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000903s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001000s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000539s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000709s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T09:49:59+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000716s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000809s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000463s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000552s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007225s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007306s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000276s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000280s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000173s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000369s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001305s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000509s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000582s ]
+
+[ 2013-12-16T09:50:34+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000702s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000794s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000458s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000535s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009925s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.010099s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000267s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000411s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000245s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000457s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001710s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000658s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000740s ]
+
+[ 2013-12-16T10:10:15+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000909s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001033s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000758s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000860s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018926s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019049s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000440s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000409s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000260s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000508s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001899s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001280s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001594s ]
+
+[ 2013-12-16T10:10:17+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001013s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001160s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000735s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000896s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.020717s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020869s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000423s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000504s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000260s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000600s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002079s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001487s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001616s ]
+
+[ 2013-12-16T10:10:19+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000916s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001038s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000583s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000702s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018225s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018339s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000386s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000403s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000261s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000476s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001850s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000702s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000812s ]
+
+[ 2013-12-16T10:10:20+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001071s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001195s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000643s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000753s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009271s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009849s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000385s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000479s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000260s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000571s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001967s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000803s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000898s ]
+
+[ 2013-12-16T10:10:22+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001012s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001137s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000633s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000754s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T10:10:38+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000910s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001035s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000580s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000681s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011582s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011698s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000422s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000422s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000230s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000519s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001869s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001363s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001496s ]
+
+[ 2013-12-16T10:10:47+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000897s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001063s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000567s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000673s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008836s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008982s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000384s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000410s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000282s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000482s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001870s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000964s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001068s ]
+
+[ 2013-12-16T10:10:49+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000895s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001056s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000547s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000701s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011755s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011909s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000436s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000420s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000228s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000469s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001861s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000791s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001508s ]
+
+[ 2013-12-16T10:16:13+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000728s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000826s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000426s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000515s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.026727s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.026827s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000309s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000384s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000268s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000402s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001685s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001206s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001320s ]
+
+[ 2013-12-16T10:22:28+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000820s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000997s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000526s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000616s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009577s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009663s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000587s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000357s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000238s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000425s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001833s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000617s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000691s ]
+
+[ 2013-12-16T10:22:30+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000897s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001005s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000624s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000700s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019673s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.020370s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000377s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000380s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000180s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000573s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001764s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001613s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001708s ]
+
+[ 2013-12-16T10:30:08+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000917s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001012s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000520s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000599s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018545s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018635s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000307s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000476s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000169s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.001107s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002279s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001463s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001660s ]
+
+[ 2013-12-16T10:30:10+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000901s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001001s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000553s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000637s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008765s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008936s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000272s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000396s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000259s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000391s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001545s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000731s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000815s ]
+
+[ 2013-12-16T10:30:14+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000700s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000793s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000424s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000521s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015111s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015198s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000311s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000290s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000177s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000377s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001364s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000542s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000652s ]
+
+[ 2013-12-16T10:30:15+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000694s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000788s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000425s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000514s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.014657s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.014753s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000299s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000163s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000366s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001344s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000508s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000587s ]
+
+[ 2013-12-16T10:32:15+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000912s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001020s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000517s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000609s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008618s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008710s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000273s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000415s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000407s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001665s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000599s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000673s ]
+
+[ 2013-12-16T10:32:22+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000707s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000802s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000434s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000510s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.006638s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.006723s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001315s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000310s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000164s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000365s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002361s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000499s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000594s ]
+
+[ 2013-12-16T10:32:24+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000705s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000811s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000426s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000523s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015854s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015946s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000299s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000311s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000165s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000385s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001373s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000557s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000649s ]
+
+[ 2013-12-16T10:32:26+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000705s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000810s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000448s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000526s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016148s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016239s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000299s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000162s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000392s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001372s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000554s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000644s ]
+
+[ 2013-12-16T10:32:30+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000699s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000791s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000425s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000501s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016126s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016220s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000315s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000287s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000175s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000393s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001382s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000569s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000680s ]
+
+[ 2013-12-16T10:32:41+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000721s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000815s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000433s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000544s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015532s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015617s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000307s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000289s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000161s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000367s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001355s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000509s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000611s ]
+
+[ 2013-12-16T10:38:02+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000801s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000905s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000475s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000570s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007425s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007518s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000292s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000297s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000185s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000390s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001386s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000566s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000645s ]
+
+[ 2013-12-16T10:38:11+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000907s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001003s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000523s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000604s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008931s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009024s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000467s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000299s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000168s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000570s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001724s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000760s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000852s ]
+
+[ 2013-12-16T10:53:48+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000833s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001015s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000444s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000525s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011564s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011758s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000392s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000404s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000168s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000565s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001753s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000747s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000840s ]
+
+[ 2013-12-16T10:53:50+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000911s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001018s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000635s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000713s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011192s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011285s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000396s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000336s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000272s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000386s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001697s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000624s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000727s ]
+
+[ 2013-12-16T10:53:52+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000913s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001008s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000635s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000712s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012285s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012456s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000404s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000313s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000289s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000386s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001713s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000532s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000613s ]
+
+[ 2013-12-16T10:54:00+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000906s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001001s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000623s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000700s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.022906s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.023012s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000387s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000410s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000181s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000571s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001769s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001514s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001627s ]
+
+[ 2013-12-16T10:55:23+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000708s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002254s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000534s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000613s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018451s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018552s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000425s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000311s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000279s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000400s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001735s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000664s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001250s ]
+
+[ 2013-12-16T10:55:47+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000903s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001000s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000544s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000623s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008982s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009074s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000368s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000298s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000258s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000409s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001652s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000771s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000850s ]
+
+[ 2013-12-16T10:55:54+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000837s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001021s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000529s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000687s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009347s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009521s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000299s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000379s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000250s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000415s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001569s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000675s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000758s ]
+
+[ 2013-12-16T10:56:04+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000898s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000993s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000627s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000705s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018352s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018560s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000371s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000305s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000255s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000394s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001650s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000680s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000876s ]
+
+[ 2013-12-16T10:56:07+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000716s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000812s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000427s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000507s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.006606s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.006712s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000260s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.001334s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000167s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000353s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002343s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000528s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000603s ]
+
+[ 2013-12-16T10:56:09+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000964s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001060s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000626s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000704s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T11:33:28+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000901s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001008s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000626s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000703s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011058s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011151s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000474s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000343s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000171s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000455s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001772s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001110s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001285s ]
+
+[ 2013-12-16T11:33:30+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000899s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000994s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000623s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000699s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008983s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009075s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000651s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000302s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000251s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000487s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001970s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000758s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000840s ]
+
+[ 2013-12-16T11:33:33+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001650s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001745s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000454s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000611s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.044913s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.045043s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000305s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000313s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000191s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000361s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001383s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000521s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000601s ]
+
+[ 2013-12-16T11:33:35+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000980s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001075s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000564s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000641s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018709s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018799s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000304s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000481s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000171s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000370s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001628s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000891s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001190s ]
+
+[ 2013-12-16T11:40:50+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000859s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001134s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000447s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000617s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018641s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018764s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000398s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000307s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000255s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000453s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001655s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001178s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001262s ]
+
+[ 2013-12-16T14:05:31+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000725s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000818s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000440s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000515s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015095s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015186s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000297s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000302s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000161s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000398s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001370s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000559s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000653s ]
+
+[ 2013-12-16T16:52:50+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000824s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001102s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000448s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000617s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018427s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018535s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000401s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000375s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000171s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000570s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001750s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000788s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000883s ]
+
+[ 2013-12-16T16:58:46+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001926s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002022s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001660s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001739s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018529s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018644s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001199s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000771s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000358s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.001524s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.004129s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000679s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000800s ]
+
+[ 2013-12-16T16:58:48+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001362s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001541s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000550s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000711s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012717s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012807s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000330s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000416s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000252s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000384s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001680s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000643s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000726s ]
+
+[ 2013-12-16T17:00:06+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001037s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001182s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000661s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000793s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009667s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009830s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000392s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000465s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000284s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000578s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002075s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000840s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000971s ]
+
+[ 2013-12-16T17:00:09+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000914s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001038s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000582s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000684s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011164s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011281s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000460s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000409s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000266s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000485s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001893s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000691s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000831s ]
+
+[ 2013-12-16T17:00:17+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000874s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000994s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000567s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000651s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009848s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009941s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000279s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000411s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000180s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000490s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001754s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000752s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000911s ]
+
+[ 2013-12-16T17:00:19+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000723s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000815s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001921s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.002005s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008905s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008991s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000454s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000299s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000167s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000441s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001683s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000764s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000841s ]
+
+[ 2013-12-16T17:01:03+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001055s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001164s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000518s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000599s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.010260s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.010442s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000574s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000374s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000186s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000562s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001913s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000635s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000708s ]
+
+[ 2013-12-16T17:01:25+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001165s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001261s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000445s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000524s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008545s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008735s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000367s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000725s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000296s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000373s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002054s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000695s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000769s ]
+
+[ 2013-12-16T17:01:26+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000906s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001002s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000518s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000597s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008786s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008877s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000352s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000372s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000180s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000577s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001742s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000682s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000846s ]
+
+[ 2013-12-16T17:01:27+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000739s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000834s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000482s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000559s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T17:01:36+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000729s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000823s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000471s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000550s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016442s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016561s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000302s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000301s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000471s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001480s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000556s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000808s ]
+
+[ 2013-12-16T17:02:02+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000906s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001002s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000622s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000699s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T17:02:04+08:00 ] 192.168.22.97 /index.php/Vpn/net_check
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000703s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002223s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000561s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000645s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+ERR: 非法操作:net_check
+
+[ 2013-12-16T17:02:47+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000786s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001004s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000442s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000612s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.013326s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013461s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000318s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000385s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000252s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000388s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001591s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001694s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001788s ]
+
+[ 2013-12-16T17:02:48+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000919s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001129s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000441s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000630s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008527s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008654s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000380s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000369s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000182s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000546s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001688s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000631s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000706s ]
+
+[ 2013-12-16T17:02:51+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000895s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000989s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000442s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000602s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008582s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008689s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000381s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000287s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000166s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000697s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001835s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000689s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000766s ]
+
+[ 2013-12-16T17:02:55+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000690s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000784s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000432s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000509s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007547s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007629s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000264s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000306s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000163s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000359s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001299s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000630s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000703s ]
+
+[ 2013-12-16T17:02:56+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000710s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000807s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000434s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000511s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016028s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016120s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000340s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000298s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000161s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000394s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001409s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000666s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000764s ]
+
+[ 2013-12-16T17:03:00+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000688s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000784s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000422s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000498s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.022557s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.022592s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000000s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000926s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000000s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000000s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.000926s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000000s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000563s ]
+
+[ 2013-12-16T17:04:08+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000729s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000828s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000439s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000516s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.010970s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011058s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000516s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000299s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000500s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001766s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000663s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000753s ]
+
+[ 2013-12-16T17:04:49+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.002037s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002150s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001716s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001809s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.030229s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.030365s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001671s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000343s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.001345s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000528s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.004217s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001729s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001831s ]
+
+[ 2013-12-16T17:04:52+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000822s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001003s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000661s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000741s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012504s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012607s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000427s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000296s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000169s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000561s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001757s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001046s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001214s ]
+
+[ 2013-12-16T17:06:07+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000699s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000793s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000439s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000516s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011983s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012077s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000317s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000376s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000225s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000378s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001502s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000595s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000678s ]
+
+[ 2013-12-16T17:08:01+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000882s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001010s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000603s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000681s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.013013s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013103s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000350s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000384s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000249s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000808s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002037s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000719s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000827s ]
+
+[ 2013-12-16T17:08:08+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000697s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000789s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000437s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000516s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Undefined index: user /var/www/html/eflyvpn/Home/Lib/Action/IndexAction.class.php 第 5 行.
+
+[ 2013-12-16T17:08:08+08:00 ] 192.168.22.97 /index.php/Index/timeout.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000830s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000917s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000486s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000596s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007512s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007633s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000314s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000297s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000251s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000412s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001493s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000641s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000715s ]
+
+[ 2013-12-16T17:08:13+08:00 ] 192.168.22.97 /index.php/Index/login.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001422s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001623s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000903s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001053s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.026390s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.026573s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000585s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.001073s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000364s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000766s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.003224s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001172s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001329s ]
+
+[ 2013-12-16T17:08:16+08:00 ] 192.168.22.97 /index.php/Index/login
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000716s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000809s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001890s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001969s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T17:08:16+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000771s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000986s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000529s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000606s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011955s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012046s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000515s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000306s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000223s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000426s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001705s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000573s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000673s ]
+
+[ 2013-12-16T17:10:29+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000794s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000895s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000474s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000551s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.011203s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.011294s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000313s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000309s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000175s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000378s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001409s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000540s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000627s ]
+
+[ 2013-12-16T17:11:23+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001861s ]
+INFO: [ route_check ] --END-- [ RunTime:0.002027s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000821s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000900s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.026593s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.026700s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.001228s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000322s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.001266s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000466s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.003539s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000558s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000654s ]
+
+[ 2013-12-16T17:11:35+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000916s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001013s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000523s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000604s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012656s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012749s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000318s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000413s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000253s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000376s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001580s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000622s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000704s ]
+
+[ 2013-12-16T17:11:51+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000858s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000960s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000445s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000524s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.013391s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.013481s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000452s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000307s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000170s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000501s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001644s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000703s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000803s ]
+
+[ 2013-12-16T17:13:00+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001078s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001222s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000719s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000829s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.014230s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.014365s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000526s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000420s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000309s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000495s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002064s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001164s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001535s ]
+
+[ 2013-12-16T17:13:11+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001049s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001197s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000583s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000736s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012717s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012857s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000442s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000408s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000234s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000529s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001888s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000676s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000794s ]
+
+[ 2013-12-16T17:16:56+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000914s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001011s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000610s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000689s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012548s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012654s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000390s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000407s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000525s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001720s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001018s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001191s ]
+
+[ 2013-12-16T17:30:38+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000903s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001000s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000756s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000949s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018507s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.018676s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000314s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000403s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000392s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001690s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001670s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001765s ]
+
+[ 2013-12-16T17:30:45+08:00 ] 192.168.22.97 /index.php/Vpn/super_option
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001007s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001158s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001114s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001193s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008287s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008381s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000319s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000301s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000245s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000428s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001563s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000711s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000792s ]
+
+[ 2013-12-16T17:30:46+08:00 ] 192.168.22.97 /index.php/Vpn/monitor_chart
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000873s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000969s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001316s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001396s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012355s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012794s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000500s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.001244s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000181s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000398s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.003106s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000720s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000818s ]
+
+[ 2013-12-16T17:30:49+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000913s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001025s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000551s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000706s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019423s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019591s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000306s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000482s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000172s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000462s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001725s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000694s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000776s ]
+
+[ 2013-12-16T17:36:50+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001130s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001130s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000000s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.018187s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019105s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000319s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000488s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000170s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000486s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001701s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000000s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000000s ]
+
+[ 2013-12-16T17:37:14+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000714s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000808s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000443s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000519s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015628s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015718s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000311s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000289s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000166s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000382s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001374s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000520s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000600s ]
+
+[ 2013-12-16T17:37:15+08:00 ] 192.168.22.97 /index.php/Vpn/wnet_mgr
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000984s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001093s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000520s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000637s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.010242s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.010327s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000261s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000374s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000254s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000511s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001777s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000605s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000680s ]
+
+[ 2013-12-16T17:37:16+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000902s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000997s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000617s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000694s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019651s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019761s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000316s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000490s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000171s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000497s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001697s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000887s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000995s ]
+
+[ 2013-12-16T17:37:18+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000717s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000811s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000459s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000536s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007658s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007743s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000280s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000288s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000179s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000373s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001331s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000560s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000641s ]
+
+[ 2013-12-16T17:38:58+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000982s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001079s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000868s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000971s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.013942s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.014048s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000505s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000306s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000169s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000470s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001758s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000623s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000715s ]
+
+[ 2013-12-16T17:38:59+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000732s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000828s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000435s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000545s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007797s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007882s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000341s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000291s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000178s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000488s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001560s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000592s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000671s ]
+
+[ 2013-12-16T17:39:02+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000692s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000807s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000439s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000516s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.006757s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.006844s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000259s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000337s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000174s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000393s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001802s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000574s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000663s ]
+
+[ 2013-12-16T17:39:04+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000715s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000810s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000426s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000538s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.006889s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.006976s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000326s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000368s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000283s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000372s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001608s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000572s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000648s ]
+
+[ 2013-12-16T17:39:06+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000896s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000997s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000550s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000629s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.009424s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.009517s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000348s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000369s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000174s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000572s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001721s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000675s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000826s ]
+
+[ 2013-12-16T17:46:24+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000816s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000996s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000445s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000524s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Undefined index: user /var/www/html/eflyvpn/Home/Lib/Action/IndexAction.class.php 第 5 行.
+
+[ 2013-12-16T17:46:24+08:00 ] 192.168.22.97 /index.php/Index/timeout.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000943s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001030s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000637s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000717s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+NOTIC: [8] Constant THEME_NAME already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 223 行.
+NOTIC: [8] Constant THEME_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 174 行.
+NOTIC: [8] Constant APP_TMPL_PATH already defined /var/www/html/eflyvpn/ThinkPHP/Lib/Core/View.class.php 第 175 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007750s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.007835s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000270s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000433s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000251s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000370s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001537s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000933s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001115s ]
+
+[ 2013-12-16T17:46:27+08:00 ] 192.168.22.97 /index.php/Index/login.html
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000716s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000813s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000426s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000536s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.007985s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008079s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000269s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000302s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000188s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000371s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001338s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000571s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000652s ]
+
+[ 2013-12-16T17:46:29+08:00 ] 192.168.22.97 /index.php/Index/login
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.001048s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001223s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000624s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000704s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+
+[ 2013-12-16T17:46:29+08:00 ] 192.168.22.97 /index.php/Index/index
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000893s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000980s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000628s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000706s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.012326s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.012414s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000409s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000379s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000181s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000560s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001758s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001099s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001191s ]
+
+[ 2013-12-16T17:46:30+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000737s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000838s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000485s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000568s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.016531s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.016627s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000324s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000303s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000165s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000431s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001434s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000573s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000662s ]
+
+[ 2013-12-16T17:46:32+08:00 ] 192.168.22.97 /index.php/Vpn/change_pwd
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000781s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000998s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.001009s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001089s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.008289s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.008375s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000457s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000297s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000161s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000459s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001667s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000695s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000782s ]
+
+[ 2013-12-16T17:46:37+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000718s ]
+INFO: [ route_check ] --END-- [ RunTime:0.000810s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000433s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000510s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.015722s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.015808s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000308s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000289s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000174s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000376s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.001357s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.000515s ]
+INFO: [ view_end ] --END-- [ RunTime:0.000606s ]
+
+[ 2013-12-16T17:57:49+08:00 ] 192.168.22.97 /index.php/Vpn/link_stat
+INFO: [ route_check ] --START--
+INFO: CheckRoute Behavior ::run [ RunTime:0.000906s ]
+INFO: [ route_check ] --END-- [ RunTime:0.001002s ]
+INFO: [ app_begin ] --START--
+INFO: ReadHtmlCache Behavior ::run [ RunTime:0.000626s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000706s ]
+NOTIC: [8] A session had already been started - ignoring session_start() /var/www/html/eflyvpn/ThinkPHP/Common/functions.php 第 566 行.
+INFO: [ view_parse ] --START--
+INFO: ParseTemplate Behavior ::run [ RunTime:0.019095s ]
+INFO: [ view_parse ] --END-- [ RunTime:0.019197s ]
+INFO: [ view_filter ] --START--
+INFO: ContentReplace Behavior ::run [ RunTime:0.000770s ]
+INFO: TokenBuild Behavior ::run [ RunTime:0.000306s ]
+INFO: WriteHtmlCache Behavior ::run [ RunTime:0.000274s ]
+INFO: ShowRuntime Behavior ::run [ RunTime:0.000377s ]
+INFO: [ view_filter ] --END-- [ RunTime:0.002028s ]
+INFO: [ view_end ] --START--
+INFO: ShowPageTrace Behavior ::run [ RunTime:0.001069s ]
+INFO: [ view_end ] --END-- [ RunTime:0.001154s ]
+

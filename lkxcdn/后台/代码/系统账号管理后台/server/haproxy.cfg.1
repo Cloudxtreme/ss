@@ -1,0 +1,21 @@
+global
+	chroot /opt/haproxy
+	maxconn 102400
+	daemon
+	nbproc 2
+	pidfile /var/run/haproxy-private.pid
+
+defaults
+	#log     global
+	#log 127.0.0.1 local3
+	mode    http
+	#option  httplog
+	#option dontlognull
+	retries 3
+	contimeout 5000
+	clitimeout 30000
+	srvtimeout 30000
+
+frontend http-in
+	bind 0.0.0.0:80
+

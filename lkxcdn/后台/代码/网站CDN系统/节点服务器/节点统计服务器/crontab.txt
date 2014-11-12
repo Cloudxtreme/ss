@@ -1,0 +1,11 @@
+#squid log
+*/5 * * * * /usr/bin/wget http://cdninfo.efly.cc/cdnmgr/cdn_web/cdn_web_client_hostname_list.php -O /opt/squid_tools/hostname_list.txt
+#ct
+*/5 * * * * /opt/squid_tools/run_ct_squid_syslogd.sh > /dev/null 2>&1
+#cnc
+*/5 * * * * /opt/squid_tools/run_cnc_squid_syslogd.sh > /dev/null 2>&1
+
+
+#haproxy log
+0 1 * * * /opt/haproxy_tools/create_day_log_packet.sh
+*/5 * * * * /opt/haproxy_tools/run_haproxy_syslogd.sh > /dev/null 2>&1 &

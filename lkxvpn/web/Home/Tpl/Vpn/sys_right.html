@@ -1,0 +1,74 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<title></title>
+</head>
+<body>
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:16px;">
+	 <tr>
+		<td height="58px" bgcolor="#1078b5" style="padding-left:20px;"><span style="color: #FFFFFF;font-weight: bold;">申请授权</span></td>
+	</tr>
+	<tr>
+    <td valign="top">
+		<table width="98%" style="font-size:14px;margin:10px;">
+			<tr>
+			    <td height="38px" width="220px" align="right">连网自动获取：</td>
+			    <td><input type="button" style="margin-left:10px;background:#1F75B7;color:#fff;padding:0px 15px;height:32px;line-height:32px;" onclick="DoSubmit('auto');" value="确 定" /></td>
+			    <td style="width:180px;"></td>
+			</tr>
+			
+			<tr>
+			    <td height="38px" align="right">从USB设备获取：</td>
+			    <td><input type="button" disabled style="margin-left:10px;background:#D2D7DB;color:#fff;padding:0px 15px;height:32px;line-height:32px;" onclick="DoSubmit('usb');" value="确 定" /></td>
+			    <td style="width:150px;"></td>
+			</tr>
+			
+			<tr>
+			    <td height="38px" align="right">上传授权文件：</td>
+			    <td style="width:100px;"><input disabled type="button" style="margin-left:10px;background:#D2D7DB;color:#fff;padding:0px 15px;height:32px;line-height:32px;" onclick="DoSubmit('upload');" value="确 定" /></td>
+			    <td width="120px"><input disabled type="file" /></td>
+			</tr>
+			
+			<tr>
+			    <td height="38px" colspan="3" align="center"><span id="msg"></span></td>
+			</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+</body>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script language="JavaScript"> 
+function DoSubmit(type) { 
+	/*var addr = $("#addr").val(), mask = $("#mask").val(), netaddr = $("#netaddr").val();
+	if(addr.length == 0 || typeof(addr) == "undefined"){
+		$("#addr").focus();
+		$("#msg").html("请输入IP地址！");
+		return false;
+	}*/
+	$("#msg").html("获取授权中，请稍后...");
+	$.ajax({
+		url: '__APP__/Vpn/get_license',
+		dataType: 'json',
+		data: { method: type },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				$("#msg").html("获取授权成功！");
+			}else{
+				$("#msg").html("授权失败："+data.reason);
+			}
+		},
+		error: function (data) {
+			$("#msg").html('网络错误，错误代码：' + data.statusText);
+		}
+	});
+}
+</script>
+</html>

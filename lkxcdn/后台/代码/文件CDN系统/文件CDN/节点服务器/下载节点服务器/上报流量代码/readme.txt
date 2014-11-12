@@ -1,0 +1,1 @@
+*/5 * * * * /opt/cachemgr/portrate_ex.py filestats.cdn.efly.cc /opt/cachemgr/portinfo_ex32 bond0 183.60.46.168 8000 9000 > /dev/null 2>&1

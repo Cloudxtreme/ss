@@ -1,0 +1,427 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<title></title>
+<style type="text/css">
+.header { height:68px; background:#1078b5; padding-top:20px;}
+.main{ height:460px; overflow:hidden;overflow-y:auto;}
+.footer{ height:50px; }
+.top td{
+	padding-left:1px; border-right: solid 1px #6daed6; border-left:solid 1px #e7f4fc; padding-top:2px; padding-bottom:2px;
+}
+.mytb td{
+	border-bottom:solid 1px #c3d7e3;
+}
+</style>
+</head>
+<body> <!--style="overflow-y:hidden;"-->
+<div class="header">
+	<span style="color: #FFFFFF;font-weight:bold;font-size:16px;padding-left:20px;">现有链路列表</span>
+	<table width="100%" class="top" border="0" align="center" style="margin-top:20px;" cellpadding="0" cellspacing="0">
+				<tr height="28px"  style="background:url(__ROOT__/Public/img/bg.gif);border-bottom:solid 1px #8db6cf; padding-top:0px; padding-bottom:0px;">
+				<td width="4%"><div align="center"><span>序号</span></div></td>
+				<td width="5%"><div align="center"><span>状态</span></div></td>
+				<td width="14%"><div align="center"><span>下一跳</span></div></td>
+				<td width="5%"><div align="center"><span>vlan值</span></div></td>
+				<td width="14%"><div align="center"><span>本地地址</span></div></td>
+				<td width="14%"><div align="center"><span>目标地址</span></div></td>
+				<td width="7%"><div align="center"><span>延时(ms)</span></div></td>
+				<td width="12%"><div align="center"><span>发包数</span></div></td>
+				<td width="12%"><div align="center"><span>流量</span></div></td>
+				<td width="6%"><div align="center"><span>丢包率</span></div></td>
+				<td width="11%" height="22"><div align="center"><span>操作</span></div></td>
+				</tr>
+	</table>
+</div>
+<div class="main">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:16px;">
+	<tr>
+	<td valign="top">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		  <tr>
+			<td align="left">
+				<table id="list" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+				<tr>
+				<td> <!-- style="height:280px;overflow:scroll;" -->
+					<table id="chain_list" class="mytb" width="99%" border="0" align="center" cellpadding="6" cellspacing="6">
+						<volist name="link" id="item">
+							<tr id="{$item.id}">
+								<td width="4%" align="center">{$key + 1}</td>
+								<if condition="$item.conn eq 'green'">
+								<td width="5%"><div align="center"><img src="__ROOT__/Public/img/lightbulb_green.png" width="22px" title="当前链路对称" alt="当前链路对称" /></div></td>
+								</if>
+								<if condition="$item.conn eq 'yellow'">
+								<td width="5%"><div align="center"><img src="__ROOT__/Public/img/lightbulb_yellow.png" width="22px" title="当前链路非对称" alt="当前链路非对称" /></div></td>
+								</if>
+								<if condition="$item.conn eq 'red'">
+								<td width="5%"><div align="center"><img src="__ROOT__/Public/img/lightbulb_red.png" width="22px" title="当前链路不通" alt="当前链路不通" /></div></td>
+								</if>
+								<if condition="$item.conn eq 'gray'">
+								<td width="5%"><div align="center"><img src="__ROOT__/Public/img/lightbulb_gray.png" width="22px" title="当前链路停用" alt="当前链路停用" /></div></td>
+								</if>
+								<td width="14%"><div align="center">{$item.gate}<br>
+									<span style="display:inline;"><input style="width:101px;border-style:none;text-align:center;height:20px;margin-bottom:-6px;font-size:12px;" border="0" type="text" value="{$item.mac}" tabindex="1"/> <!-- onfocus="showMacEdit(this);" onblur="leaveMacEdit(this);"<a href="javascript:void(0);" style="display:none;" onclick="saveMac(this,{$item.id});"> 修改</a>--></span></div></td>
+								<if condition="$item.vlan eq '-1'">
+									<td width="5%"><div align="center">-</div></td>
+									<else/><td width="5%"><div align="center">{$item.vlan}</div></td>
+								</if>
+								<td width="14%"><div align="center">{$item.source}</div></td>
+								<td width="14%"><div align="center">{$item.dest}</div></td>
+								<td width="7%"><div align="center">{$item.delay}</div></td>
+								<td width="13%"><div align="center">{$item.pkg}</div></td>
+								<td width="13%"><div align="center">{$item.flow}</div></td>
+								<td width="6%"><div align="center">{$item.lost}</div></td>
+								<if condition="$item.stat eq 'enable'">
+									<td width="5%" height="22px"><div align="center"><!--a href="javascript:void(0);" onclick="DelChain($(this));">删除</a><br/--><a href="javascript:void(0);" onclick="stopChain($(this));">停用</a></div></td>
+									<else/><td width="5%" height="22px" style="border-bottom:solid 1px #c3d7e3;"><div align="center"><a href="javascript:void(0);" onclick="DelChain($(this));">删除</a><br/><a href="javascript:void(0);" onclick="startChain($(this));">启用</a></div></td>
+								</if>
+							</tr>
+						</volist>
+						<tr></tr>
+					</table>
+				</td>
+				</tr>
+			</table>
+			</td>
+		  </tr>
+		</table>
+	</td>
+  </tr>
+</table>
+
+</div>
+<div class="footer">
+					<table class="mytb" width="99%" border="0" align="center" cellpadding="6" cellspacing="6">
+						<tr>
+							<td width="4%" border="0" style="border-style:none;"></td>
+							<td width="4%" border="0" style="border-style:none;"></td>
+							<td width="14%"><input style="width:100%;border-style:none;text-align:center;height:22px;margin-bottom:-6px;" border="0" type="text" placeholder="下一跳" id="gate"/></td>
+							<td width="5%"><input style="width:100%;border-style:none;text-align:center;height:22px;margin-bottom:-6px;" border="0" type="text" placeholder="vlan" id="vlan"/></td>
+							<td width="14%"><input style="width:100%;border-style:none;text-align:center;height:22px;margin-bottom:-6px;" border="0" type="text" placeholder="本地地址" id="source"/></td>
+							<td width="14%"><input style="width:100%;border-style:none;text-align:center;height:22px;margin-bottom:-6px;" border="0" type="text" placeholder="目标地址" id="dest"/></td>
+							<td width="7%" border="0" style="border-style:none;"><div align="center"></div></td>
+							<td width="12%" border="0" style="border-style:none;"><div align="center"></div></td>
+							<td width="12%" border="0" style="border-style:none;"><div align="center"></div></td>
+							<td width="6%" border="0" style="border-style:none;"><div align="center"></div></td>
+							<td width="7%" height="22px"><div align="center"><a href="javascript:void(0);" onclick="addChain();">添加</a></div></td>
+						</tr>
+					</table>
+</div>
+</body>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<link rel="stylesheet" href="__ROOT__/Public/js/artDialog/skins/blueskin.css?4.1.7" />
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/jquery.artDialog.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/plugins/iframeTools.source.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/placeholder.js"></script>
+<script language="JavaScript"> 
+//刷新状态
+function myrefresh() { 
+	$.ajax({
+		url: '__APP__/Vpn/link_stat',
+		dataType: 'json',
+		type: "POST",
+		success: function (data) {
+			if (data && data != null) {
+				for (var item in data.link) {
+					$("#chain_list").find("tr").each(function(i){
+						var id = $(this).attr("id");
+						if(id && data.link[item].id == id){
+							//if($(this).find("a:first").is(":hidden")){  //如果没有处于修改状态
+							//var td_0 = $(this).find("td").get(2);
+							//$(td_0).children("input[type=text]").val(data.link[item].mac); //赋值mac
+							$(this).find("td").get(2).innerHTML = '<div align="center">'+data.link[item].gate+'<br>'+
+									'<span style="display:inline;"><input style="width:101px;border-style:none;text-align:center;height:20px;margin-bottom:-6px;font-size:12px;" border="0" type="text" value="'+data.link[item].mac+'" /></span></div>';
+							//}
+							if(data.link[item].conn == "red"){
+									$(this).find("td").get(1).innerHTML = '<div align="center"><img src="__ROOT__/Public/img/lightbulb_'+data.link[item].conn+'.png" width="22px" title="当前链路不通" alt="当前链路不通"/></div>';
+							}
+							if(data.link[item].conn == "green"){
+									$(this).find("td").get(1).innerHTML = '<div align="center"><img src="__ROOT__/Public/img/lightbulb_'+data.link[item].conn+'.png" width="22px" title="当前链路对称" alt="当前链路状态良好"/></div>';
+							}
+							if(data.link[item].conn == "yellow"){
+									$(this).find("td").get(1).innerHTML = '<div align="center"><img src="__ROOT__/Public/img/lightbulb_'+data.link[item].conn+'.png" width="22px" title="当前链路非对称" alt="当前链路非对称"/></div>';
+							}
+							if(data.link[item].conn == "gray"){
+								$(this).find("td").get(1).innerHTML = '<div align="center"><img src="__ROOT__/Public/img/lightbulb_gray.png" width="22px" title="当前链路停用" alt="当前链路停用"/></div>';
+							}
+							$(this).find("td").get(6).innerHTML = '<div align="center">' + data.link[item].delay + '</div>';
+							$(this).find("td").get(7).innerHTML = '<div align="center">' + data.link[item].pkg + '</div>';
+							$(this).find("td").get(8).innerHTML = '<div align="center">' + data.link[item].flow + '</div>';
+							$(this).find("td").get(9).innerHTML = '<div align="center">' + data.link[item].lost + '</div>';
+							if(data.link[item].stat == 'enable'){
+								$(this).find("td").get(10).innerHTML = '<div align="center"><a href="#" onclick="stopChain($(this))">停用</a></div>';
+							}else{
+								$(this).find("td").get(10).innerHTML = '<div align="center"><a href="#" onclick="DelChain($(this))">删除</a><br/><a href="#" onclick="startChain($(this))">启用</a></div>';
+							}
+						}
+					});
+				}
+			}
+		},
+		error: function (data) {
+			art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+		}
+	});
+    //window.location.reload(); 
+} 
+window.setInterval(myrefresh, 3000);
+</script>
+<script type="text/javascript">
+function DelChain(evt){
+	//var id = parseInt(evt.parent().parent().parent().children("td").get(0).innerHTML) - 1;
+	var id = parseInt(evt.parent().parent().parent().attr("id"));
+	//return false;
+	art.dialog({
+		title: false,
+		content: "操作提示：确定删除该链路吗？",
+		icon: 'question',
+		id:"wating_box",
+		left: '300',
+        top: '160',
+		ok: function(){
+			$.ajax({
+				url: '__APP__/Vpn/link_del',
+				dataType: 'json',
+				data: { id: id },
+				type: "POST",
+				success: function (data) {
+					if (data.result == 1) {
+						//alert('操作提示：成功删除该链路！');
+						art.dialog({
+							content: '操作提示：成功删除该链路！',
+							icon: 'succeed',
+							ok: function(){
+								$("#chain_list").find("tr").each(function(i){
+									var tr = $(this).attr("id");
+									if(tr == id){
+										$(this).remove();
+									}
+									if(tr > id){
+										$(this).find("td").get(0).innerHTML = tr;
+										$(this).attr("id", tr - 1);
+									}
+								});
+								this.close();
+								return false;
+							}
+						});
+					}
+					else{
+						art.dialog({content: '操作提示：' + data.reason,icon: 'error',lock: false,time: 2.5});
+					}
+				},
+				error: function (data) {
+					art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+					//alert(data.statusText);
+				}
+			});
+			this.close();
+			return false;
+		},
+		okVal: "确定",
+		cancel: function(){
+			this.close();
+			return false;
+		}
+	}).lock();
+}
+function stopChain(evt){
+	var id = parseInt(evt.parent().parent().parent().attr("id"));
+	art.dialog({
+		title: false,
+		content: "操作提示：确定停用该链路吗？",
+		icon: 'question',
+		id:"wating_box",
+		left: '300',
+        top: '160',
+		ok: function(){
+			$.ajax({
+				url: '__APP__/Vpn/link_disable',
+				dataType: 'json',
+				data: { id: id },
+				type: "POST",
+				success: function (data) {
+					if (data.result == 1) {
+						art.dialog({content: '操作提示：成功停用该链路，正在刷新链路状态！', icon: 'succeed', lock: true, time: 3});
+						myrefresh();
+					}
+					else{
+						art.dialog({content: '错误提示：' + data.reason, icon: 'error', lock: true, time: 2.5});
+					}
+				},
+				error: function (data) {
+					art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+					//alert(data.statusText);
+				}
+			});
+			this.close();
+			return false;
+		},
+		okVal: "确定",
+		cancel: function(){
+			this.close();
+			return false;
+		}
+	}).lock();
+}
+function startChain(evt){
+	var id = parseInt(evt.parent().parent().parent().attr("id"));
+	art.dialog({
+		title: false,
+		content: "操作提示：确定启用该链路吗？",
+		icon: 'question',
+		id:"wating_box",
+		left: '300',
+        top: '160',
+		ok: function(){
+			$.ajax({
+				url: '__APP__/Vpn/link_enable',
+				dataType: 'json',
+				data: { id: id },
+				type: "POST",
+				success: function (data) {
+					if (data.result == 1) {
+						art.dialog({content: '操作提示：成功启用该链路，正在刷新链路状态！', icon: 'succeed', lock: true, time: 3});
+						myrefresh();
+					}
+					else{
+						art.dialog({content: '错误提示：' + data.reason,icon: 'error',lock: true,time: 2.5});
+					}
+				},
+				error: function (data) {
+					art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+				}
+			});
+			this.close();
+			return false;
+		},
+		okVal: "确定",
+		cancel: function(){
+			this.close();
+			return false;
+		}
+	}).lock();
+}
+function addChain(){
+	var gate = $("#gate").val(), vlan = $("#vlan").val(), 
+		source = $("#source").val(), dest = $("#dest").val(), vlan_str = "-";
+	//检测gate
+	if(gate.length == 0 || typeof(gate) == "undefined"){
+		$("#gate").focus();
+		return false;
+	}
+	if(!CheckIp(gate)){
+		alert("请输入正确的IP地址！");
+		$("#gate").focus();
+		return false;
+	}
+	//检测vlan
+	if(vlan.length == 0 || typeof(vlan) == "undefined" || vlan == "vlan"){
+		vlan = -1;
+	}
+	if(Number(vlan) >= 4096 || Number(vlan) < -1 || !isNumeric(vlan)){ //parseInt(vlan) < 0 || !isNumeric(vlan) || 
+		alert("如果不使用vlan，则可以不填。如果使用，请输入正确的vlan值，数值范围：0~4095！");
+		$("#vlan").focus();
+		return false;
+	}
+	if(Number(vlan) < 4096 && Number(vlan) >= 0){
+		vlan_str = vlan;
+	}
+	//检测source
+	if(source.length == 0 || typeof(source) == "undefined"){
+		$("#source").focus();
+		return false;
+	}
+	if(!CheckIp(source)){
+		alert("请输入正确的IP地址！");
+		$("#source").focus();
+		return false;
+	}
+	//检测dest
+	if(dest.length == 0 || typeof(dest) == "undefined"){
+		$("#dest").focus();
+		return false;
+	}
+	if(!CheckIp(dest)){
+		alert("请输入正确的IP地址！");
+		$("#dest").focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Vpn/link_add',
+		dataType: 'json',
+		data: { gate: gate, vlan: vlan, source: source, dest: dest },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				art.dialog({content: '操作提示：添加成功，mac地址需要等待几秒钟左右才能获取！', icon: 'succeed', lock: true, time: 1.5});
+				$("#vlan").val("");
+				$("#source").val("");
+				$("#dest").val("");
+				$("#gate").val("");
+				setPlaceholder();
+				var max = 0;
+				$("#chain_list").find("tr").each(function(i){
+					var tr = $(this).attr("id");
+					if($(this).attr("id")){ 
+						max = parseInt($(this).attr("id")) + 1;
+					} else{
+						var xl = max + 1;
+						$(this).before("<tr id=\""+max+"\"><td align=\"center\">"+xl+"</td>"+
+							"<td width=\"5%\"><div align=\"center\"><img src=\"__ROOT__/Public/img/lightbulb_gray.png\" width=\"22px\" title=\"当前链路停用\" alt=\"当前链路停用\" /></div></td>"+
+							"<td width=\"14%\"><div align=\"center\">"+gate+"<br><span style=\"display:inline;\"><input style=\"width:101px;border-style:none;text-align:center;height:20px;margin-bottom:-6px;font-size:12px;\" border=\"0\" type=\"text\" value=\"00:00:00:00:00:00\"/></span></div></td>"+
+							"<td width=\"5%\"><div align=\"center\">"+vlan_str+"</div></td>"+
+							"<td width=\"14%\"><div align=\"center\">"+source+"</div></td>"+
+							"<td width=\"14%\"><div align=\"center\">"+dest+"</div></td>"+
+							"<td width=\"7%\"><div align=\"center\">0</div></td>"+
+							"<td width=\"12%\"><div align=\"center\">0</div></td>"+
+							"<td width=\"12%\"><div align=\"center\">0.00 B</div></td>"+
+							"<td width=\"6%\"><div align=\"center\">0 %</div></td>"+
+							"<td width=\"7%\" height=\"22\" style=\"border-bottom:solid 1px #c3d7e3;\"><div align=\"center\"><a href=\"javascript:void(0);\" onclick=\"DelChain($(this));\">删除</a><br/><a href=\"javascript:void(0);\" onclick=\"startChain($(this));\">启用</a></div></td>"+
+							"</tr>");
+					}
+				});
+				//alert('操作提示：添加成功，mac地址需要等待30秒钟左右才能获取！');
+				//window.location.reload();
+			}
+			else{
+				art.dialog({
+					content: '错误提示：' + data.reason,
+					icon: 'error',
+					lock: false,
+					time: 60
+				});
+			}
+		},
+		error: function (data) {
+			art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+		}
+	});
+}
+
+//修改mac地址
+function saveMac(evt, id){
+	var input = $(evt).parent().children("input").get(0);
+	var mac = $(input).val();
+	alert(mac + "__" + id);
+	var btn = $(evt).parent().children("a").get(0);
+	$(btn).hide();
+}
+function showMacEdit(evt){
+	$("#list").height(228);
+	//var btn = $(evt).parent().children("a").get(0);
+	//$(btn).show();
+}
+/*function leaveMacEdit(evt){
+	var btn = $(evt).parent().children("a").get(0);
+	$(btn).hide();
+}*/
+</script>
+</html>

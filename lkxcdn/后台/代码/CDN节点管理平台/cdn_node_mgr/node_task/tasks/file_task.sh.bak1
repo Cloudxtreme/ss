@@ -1,0 +1,33 @@
+#!/bin/sh
+
+task_get_timeout=10
+task_retry=3
+
+to_day=`date +%Y%m%d`
+today_dir="/opt/node_task/log/$to_day"
+now=`date +%H:%M:%S`
+
+file_md5_task="/opt/node_task/file_md5_task.list_$now"
+/usr/bin/wget -t $task_retry -T $task_get_timeout "http://cdnmgr.efly.cc/cdn_node_mgr/node_task/tasks/file_md5.php" -O $file_md5_task
+/bin/sh < $file_md5_task
+
+file_cache_task="/opt/node_task/file_cache_task.list_$now"
+/usr/bin/wget -t $task_retry -T $task_get_timeout "http://cdnmgr.efly.cc/cdn_node_mgr/node_task/tasks/file_cache.php" -O $file_cache_task
+/bin/sh < $file_cache_task
+
+filesize=`ls -l $file_cache_task | awk '{print $5}'`
+if [ $filesize -gt 2 ]; then
+        mkdir -p $today_dir
+        mv $file_cache_task $today_dir
+else
+        rm $file_cache_task
+fi
+
+filesize=`ls -l $file_md5_task | awk '{print $5}'`
+if [ $filesize -gt 2 ]; then
+        mkdir -p $today_dir
+        mv $file_md5_task $today_dir
+else
+        rm $file_md5_task
+fi
+

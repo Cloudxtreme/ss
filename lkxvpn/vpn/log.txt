@@ -1,0 +1,140 @@
+service irqbalance 会影响性能,而且在加载了新驱动后再关掉这个服务,好像还是会有所影响,所以最好在加载驱动和绑定中断前就关掉这个服务
+
+
+单运行接收线程不会触发txsync,收发线程都运行时就会触发txsync，这时就算发送线程不执行poll操作也会进入txsync，为什么？
+发送线程写slot，会影响接收线程poll操作吗？
+
+设置可以重复打开设备，使可以设置发送或者接收方向
+
+１、linux_netmap_poll 里的 pwait有时会变为null，原因不明，看了poll的内核实现，参考一下http://blog.chinaunix.net/uid-20608849-id-3126903.html　http://hi.baidu.com/rwen2012/item/9582e452d4199b968d12ed20，netmap的poll实现当pwait为null时就POLLIN和POLLOUT事件同时监听
+
+２、netmap提供NETMAP_NO_TX_POLL标志设置，如果不设置，默认每次poll都会刷新txsync的
+
+以上两个原因造成发送线程计数错误的原因
+
+初步解决方案，
+１、提供重复打开设备功能，提供设置数据方向，当只想接收时要设置netmap的NETMAP_NO_TX_POLL标志
+
+２、netmap.c  函数netmap_poll里的if (priv->np_txpoll || want_tx) 改成if (priv->np_txpoll && want_tx) ，这样改的区别是：
+原来：
+	１、如果没有设置NETMAP_NO_TX_POLL，不管poll有没监听POLLOUT事件，都会执行txsync
+	２、如果设置了NETMAP_NO_TX_POLL，当poll监听POLLOUT事件时，也会执行txsync
+改后：
+	１、如果没有设置NETMAP_NO_TX_POLL，当poll指定监听POLLOUT事件时，才会执行txsync
+	２、如果设置了NETMAP_NO_TX_POLL，即使poll指定监听POLLOUT事件，也不会执行txsync
+
+poll->sys_poll->do_sys_poll->do_poll->do_pollfd    poll里锁定的应该是fd而不是线程id，所以多线程poll同一个fd，暂时不知会发生什么事情
+
+
+已验证计数出错，就是以上说的原因
+
+
+性能测试记录：
+	单一ip发包：
+		只收：1488 wpps
+		只发：1488 wpps
+		收发(同一线程)：1000 wpps 1000 wpps
+		收发(独立线程)：1100 wpps 1488 wpps
+
+	分散ip发包：
+		只收：1488 wpps
+		只发：1488 wpps
+		收发(同一线程)：1300 wpps 600 wpps
+		收发(独立线程)：1300 wpps 1488 wpps
+
+	
+
+
+
+要做的事情：
+	１、试试双网口的，收发独立网口
+	２、pkt-gen -i eth7 -f tx -l 60能发包正常1488 wpps，但io_gen eth7 0 1却不正常，只有偶而发送的几千pps，为什么？进netmap.c查看一下np_txpoll和want_tx的值
+
+		已经找出原因,就是因为没有执行这个导致的
+			/* Wait for PHY reset. */
+			D("Wait %d secs for phy reset", wait_link);
+			sleep(wait_link);
+			D("Ready...");
+		要看看是具体什么原因
+		另外分散式ip分包下的桥很不稳定,很多时收不到包,为什么?把sleep设成4秒看看
+		还有当"ksirq.../0"出现时,性能会比较好,其他情况稍差点,为什么?什么决定的?
+
+		程序(io_gen)原来跑在cpu0，为什么有时会跳到别的cpu，而这时往往会出现性能影响，什么原因？
+	３、不稳定 	open时加大sleep秒数解决，现在为5，查看其原理，netmap设计缺陷？
+	４、性能		不绑定中断性能却更好，为什么？
+			测绑与不绑中断		绑定发送中断会影响性能？
+			测单一ip与分散ip
+
+			测试得出的结论是：单一ip不绑定中断性能更好，而分散ip似乎绑定更好
+			单一：最好1440+ wpps
+			分散：最好1390+ wpps
+
+			测试环境关闭了如下服务
+			service irqbalance stop
+			service cpuspeed stop
+
+
+	plugins.c plugins.h     ---->   plugins　各插件与efio接合的适配层
+	efio
+		ingate outgate
+		分开数据方向执行插件？
+		pbuf plen
+		为了对数据进行统一的内部操作，使用pbuf 和 plen对数据进行操作
+	arp
+		#define ARP	0x0608    (原来0x0806)
+			这样可以不需要使用ntohs或者htons
+
+	arp 包有可能会包含vlan信息吗?
+
+
+
+	O2:此选项有很大优化，要加上，看看原理，优化什么
+		O2 可能导致的乱序问题:http://blog.csdn.net/intimater/article/details/7882252
+
+
+	测试arp_build_req	arp_build_reply
+
+	添加ipp_pool接口
+
+	测试所有接口的效率
+
+	arp, ipp_pool 资源回收?
+
+	路由问题：这是app考虑的，解决方案比如：
+		１、app获得gw1, gw2, gw3的mac地址
+		２、app要发送数据至8.8.8.8，可填目标ip:8.8.8.8  mac:gw1_mac
+		３、app要发送数据至4.4.4.4，可填目标ip:4.4.4.4  mac:gw2_mac
+	这个逻辑是app决定的
+
+	efio & efnet:
+		可以一开始就arp_addipmac　手动加入gw1,gw2,gw3的mac
+		可以在运行过程中动态发送arp req询问gw1,gw2,gw3的变化，使用arp接口更新mac
+
+	likely ?
+
+	校验接口
+
+
+	因为修改 if (priv->np_txpoll && want_tx) 导致的发送缓冲区如果不填满即使调用poll也不发送数据问题,是因为其上方一段代码判断发送缓冲区如果未用完,即设want_tx = 0
+
+	if (!want_tx && kring->ring->cur == kring->nr_hwcur)
+		continue;
+	修改为
+	if (kring->ring->avail && kring->ring->cur == kring->nr_hwcur)
+		continue;
+
+	在现有netmap / pf_ring 句柄描述符基础上,添加协议栈句柄描述符,首先实现netmap下利用NETMAP_SW_RING
+
+	efio 添加时钟线程,时钟信息添加在ef_slot结构体中
+
+	arp_flush
+
+	mbdg	可变参数
+
+
+
+	测试:
+		1、修改netmap.c后的功能和性能
+		2、mbdg
+		3、arp
+		4、session

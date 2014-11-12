@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:local="*" fontSize="10" >
+
+	<mx:Panel layout="absolute" horizontalCenter="0" verticalCenter="4" title="管理员登录页面" id="login_panel">
+	<mx:VBox width="100%" >
+		<mx:HBox width="100%" >
+			<mx:Label text="用户:" />
+			<mx:TextInput id="user_textinput" text="" />
+		</mx:HBox>
+		<mx:HBox width="100%" >
+			<mx:Label text="密码:" />
+			<mx:TextInput id="pass_textinput" text="" displayAsPassword="true" />
+		</mx:HBox>
+		<mx:HBox width="100%" >
+			<mx:Label text="地址:" />
+			<mx:TextInput id="server_textinput" text="s1.efly.cc" />
+		</mx:HBox>
+		<mx:Button label=" 登录 " click="ClickLogin()"/>
+	</mx:VBox>	
+	</mx:Panel>
+
+	<mx:states>
+		<mx:State name="Manager">
+			<mx:RemoveChild target="{login_panel}"/>
+
+			<mx:AddChild position="lastChild">
+			<mx:Label text="[版本2014.07.16.1100]" color="#2560F4" fontSize="14"/>
+			</mx:AddChild>
+						
+			<mx:AddChild position="lastChild">
+				<mx:Canvas x="0" y="0" width="100%" height="50" id="top_panel" backgroundColor="#71AAF0" backgroundAlpha="0.43">
+					<!-- top menu bar -->
+					<mx:LinkBar id="linkBar" y="20" height="25" itemClick="TopMenuHander(event)">
+						<mx:dataProvider><mx:Array>
+						<!-- <mx:String>服务器管理</mx:String> -->
+						<mx:String>网站CDN管理</mx:String>
+						<mx:String>文件CDN管理[非跳转]</mx:String>
+						<mx:String>文件CDN管理新版</mx:String>
+						</mx:Array></mx:dataProvider>					
+					</mx:LinkBar>
+				</mx:Canvas>
+			</mx:AddChild>
+			
+			<mx:AddChild position="lastChild">
+				<mx:ViewStack x="0" y="70" id="BodyViewStack" width="100%" height="100%">
+					<local:ServerMgr id="ServerMgrView" />
+					<local:WebCDNMgrEx id="WebCDNMgrViewEx" />
+					<local:FileCDNMgr id="FileCDNMgrView" />
+					<local:FileCDNMgrEx id="FileCDNMgrViewEx" />
+				</mx:ViewStack>
+			</mx:AddChild>
+			
+		</mx:State>
+	</mx:states>			
+
+	<mx:HTTPService id="HttpLogin" url="" method="POST" showBusyCursor="true" 
+	result="LoginResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:Script>
+	<![CDATA[
+	
+	import mx.events.ListEvent;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.events.ItemClickEvent;
+	import mx.controls.Alert;
+	import Md5.MD5;
+	
+	public var g_struser:String;
+	public var g_strpass:String;
+	public var g_serverip:String;
+	
+	private function ClickLogin():void
+	{
+		g_serverip = server_textinput.text;
+		HttpLogin.url = "http://" + g_serverip + "/webadmin/server/usermgr.php";
+		g_struser = user_textinput.text;
+		g_strpass = MD5.encrypt(pass_textinput.text);
+		
+		var sendInfo:Object;
+		sendInfo = {
+					user:g_struser,
+					pass:g_strpass,
+					opcode:'login'
+					};
+		HttpLogin.send(sendInfo);		
+	}
+
+	private function LoginResult(event:ResultEvent):void
+	{
+		//trace(event.message.body.toString()); return;
+		var result:XML = new XML(event.message.body.toString());
+		//trace(result);
+		if(result.ret[0] == 0 ) 
+		{
+			currentState='Manager';
+			this.BodyViewStack.selectedChild = this.WebCDNMgrViewEx;
+			this.WebCDNMgrViewEx.Init();			
+		} 
+		else 
+		{
+			Alert.show('登录失败!');
+		}			
+	}
+	
+	private function TopMenuHander(event:ItemClickEvent):void
+	{
+		switch( event.label )
+		{
+			case '服务器管理':
+				this.BodyViewStack.selectedChild = this.ServerMgrView;
+				this.ServerMgrView.Init();
+				break;
+			case '网站CDN管理':
+				this.BodyViewStack.selectedChild = this.WebCDNMgrViewEx;
+				this.WebCDNMgrViewEx.Init();
+				break;	
+			case '文件CDN管理[非跳转]':
+				this.BodyViewStack.selectedChild = this.FileCDNMgrView;
+				this.FileCDNMgrView.Init();
+				break;				
+			case '文件CDN管理新版':
+				this.BodyViewStack.selectedChild = this.FileCDNMgrViewEx;
+				this.FileCDNMgrViewEx.Init();
+				break;				
+		}
+	}
+	
+	private function faultHandler(event:FaultEvent):void
+	{
+		Alert.show(event.fault.message,"无法连接服务器");
+	}
+	
+	]]>
+	</mx:Script>
+	
+</mx:Application>

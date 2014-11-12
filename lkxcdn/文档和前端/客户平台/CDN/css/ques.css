@@ -1,0 +1,162 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{ margin:0; padding:0;}
+body{
+	font-family:"microsoft yahei",arial,"宋体";
+	font-size:14px;
+	color:#185d88;
+}
+ul,li{ list-style:none;}
+.lightgreen{ background-color:#f0f9e4;}
+input.t_u_line{ width:200px; border:none; border-bottom:1px solid #ccc; background:none;}
+.width194{ width:194px;}
+
+.queswrap{
+	background:url(../images/myimg/quesbox.png) no-repeat;
+	width:330px;
+	height:400px;
+	position:relative;
+}
+.quesitro{
+	width:225px;
+	margin:0 auto;
+	padding-top:90px;
+	font-size:18px;
+}
+.quesitro li{
+	padding-bottom:21px;
+}
+.quesitro li.txt1{
+	color:#fff;
+	font-weight:bold;
+}
+.quesitro li.txt2{
+	letter-spacing:1px;
+}
+.quesitro li.txt3{
+	text-align:right;
+	font-size:12px;
+}
+.quesitro p{
+	text-align:center;
+}
+.quesitro p input{
+	background:url(../images/myimg/btn2.png) no-repeat 0 0;
+	width:124px;
+	height:40px;
+	border:none;
+	cursor:pointer;
+	margin-bottom:5px;
+}
+.quesitro p input:hover{
+	background:url(../images/myimg/btn2.png) no-repeat 0 -40px;
+}
+.quesitro a{
+	text-decoration:none;
+	font-size:12px;
+	color:#1a71b3;
+}
+.quesitro a:hover{
+	text-decoration:underline;
+}
+.queswrap a.closed{
+	position:absolute;
+	top:25px;
+	right:25px;
+	background:url(../images/myimg/close.png) no-repeat;
+	width:21px;
+	height:21px;
+	display:block;
+	text-indent:-9999px;
+}
+
+
+.quesbox{
+	width:650px;
+	position:absolute;
+	left:50%;
+	top:15%;
+	margin-left:-325px;
+	z-index:999;
+}
+.questitle{
+	height:49px;
+}
+.questitle .q_left{
+	background:url(../images/myimg/questitle.png) no-repeat;
+	width:226px;
+	height:49px;
+	text-indent:-9999px;
+	float:left;
+}
+.questitle .q_mid{
+	background:url(../images/myimg/quesbg.png) repeat-x;
+	height:49px;
+	float:left;
+	width:404px;
+}
+.questitle .q_right{
+	background:url(../images/myimg/quesright.png) no-repeat;
+	width:20px;
+	height:49px;
+	float:left;
+}
+
+.quescontent{
+	background-color:#fff;
+	border-left:1px solid #dedede;
+	border-right:1px solid #dedede;
+}
+.contentbox{
+	padding:0 20px 0;
+}
+.contentbox h3{
+	font-size:14px;
+	padding:10px 0 10px;
+}
+.contentbox table{
+	border-collapse:collapse;
+	width:100%;
+}
+.contentbox td{
+	border:1px solid #dedede;
+	line-height:32px;
+	height:32px;
+	text-indent:10px;
+}
+.contentbox label{
+	padding-right:15px;
+}
+
+.quesmbit{
+	text-align:center;
+	padding:20px 0 2px;
+}
+.quesmbit input.subbt{
+	background:url(../images/myimg/submit.png) no-repeat 0 0;
+	width:100px;
+	height:30px;
+	border:none;
+	cursor:pointer;
+}
+.quesmbit input.subbt:hover{
+	background:url(../images/myimg/submit.png) no-repeat 0 -30px;
+}
+
+.quesmbit input.subcan{
+	background:url(../images/myimg/cancel.png) no-repeat 0 0;
+	width:100px;
+	height:30px;
+	border:none;
+	cursor:pointer;
+}
+.quesmbit input.subcan:hover{
+	background:url(../images/myimg/cancel.png) no-repeat 0 -30px;
+}
+
+.quesbtm{
+	background:url(../images/myimg/quesbtm.png) no-repeat;
+	width:650px;
+	height:23px;
+}

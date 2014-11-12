@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+
+	<mx:VBox x="0" y="0" width="100%" height="100%">
+	
+	<mx:HBox width="100%" >
+	<mx:Label text="密钥:"/>
+	<mx:TextInput id="mykey_textinput" displayAsPassword="true" text="" />
+	<mx:Label text="服务器类型:"/>
+	<mx:ComboBox id="server_type_combobox" change="ServerTypeChange(event)" rowCount="5" />
+	</mx:HBox>
+	
+	<mx:HBox width="100%" >
+	<mx:Label text="服务器IP:"/>
+	<mx:TextInput id="add_serverip_textinput" width="140"/>
+	<mx:Label text="类型:"/>
+	<mx:TextInput id="add_servertype_textinput" width="90"/>
+	<mx:Label text="网络类型:"/>
+	<mx:TextInput id="add_servernettype_textinput" width="90"/>
+	<mx:Label text="端口:"/>
+	<mx:TextInput id="add_serverport_textinput" width="50"/>
+	<mx:Label text="接口:"/>
+	<mx:TextInput id="add_serverifdesc_textinput" width="50"/>
+	<mx:Label text="用户名:"/>
+	<mx:TextInput id="add_serveruser_textinput" width="90"/>
+	<mx:Label text="密码:"/>
+	<mx:TextInput id="add_serverpass_textinput" displayAsPassword="true" width="140"/>
+	<mx:Label text="描述:"/>
+	<mx:TextInput id="add_serverdesc_textinput" />	
+	<mx:Button label=" 添加 " click="ClickAddServer()"/>
+	<mx:Button label=" 全选 " click="SelectAllServer()"/>
+	</mx:HBox>
+	
+	<mx:DataGrid id="ServerDG" editable="true" allowMultipleSelection="true" width="95%">
+	<mx:columns>
+		<mx:DataGridColumn headerText="编号" dataField="id" editable="false" width="40"/>
+		<mx:DataGridColumn headerText="IP" dataField="ip" />
+		<mx:DataGridColumn headerText="端口" dataField="port" width="60"/>
+		<mx:DataGridColumn headerText="用户" dataField="user" width="60"/>
+		<mx:DataGridColumn headerText="密码" dataField="pass" />
+		<mx:DataGridColumn headerText="类型" dataField="type" width="80"/>
+		<mx:DataGridColumn headerText="网络类型" dataField="nettype" width="80"/>
+		<mx:DataGridColumn headerText="接口" dataField="ifdesc" width="60"/>
+		<mx:DataGridColumn headerText="状态" dataField="status" width="60"/>
+		<mx:DataGridColumn headerText="描述" dataField="desc" />
+		
+		<mx:DataGridColumn headerText="操作" editorDataField="value" editable="false">
+        <mx:itemRenderer><mx:Component>
+			<mx:LinkBar itemClick="outerDocument.ServerOpt(event, data)">
+				<mx:dataProvider><mx:Array>
+					<mx:String>删除</mx:String>
+					<mx:String>修改信息</mx:String>
+					<mx:String>修改密码</mx:String>
+				</mx:Array></mx:dataProvider>
+			</mx:LinkBar>
+		</mx:Component></mx:itemRenderer>
+		</mx:DataGridColumn>
+		
+	</mx:columns>	
+	</mx:DataGrid>
+
+	<mx:Label text="命令临时记录:"/>
+	<mx:TextArea width="90%" height="50" backgroundColor="#000000" color="#01A109" fontWeight="bold"/>
+	
+	<mx:HBox width="100%" >
+	<mx:Label text="命令窗口:"/>
+	<mx:Button label=" 运行 " click="ClickRunCmd()"/>
+	</mx:HBox>
+	<mx:TextInput id="cmd_textarea" width="90%" backgroundColor="#000000" color="#01A109" fontWeight="bold"/>
+
+	<mx:Label text="输出窗口:"/>
+	<mx:TextArea id="ret_textarea" width="90%" height="300" backgroundColor="#000000" color="#01A109" fontWeight="bold"/>
+	
+	</mx:VBox>
+	
+	<mx:HTTPService id="HttpGetServerType" url="" method="POST" showBusyCursor="true" 
+	result="GetServerTypeResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+	
+	<mx:HTTPService id="HttpAddServer" url="" method="POST" showBusyCursor="true" 
+	result="AddServerResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:HTTPService id="HttpGetServerList" url="" method="POST" showBusyCursor="true" 
+	result="GetServerListResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:HTTPService id="HttpDelServer" url="" method="POST" showBusyCursor="true" 
+	result="DelServerResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:HTTPService id="HttpModServer" url="" method="POST" showBusyCursor="true" 
+	result="ModServerResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:HTTPService id="HttpServerRunCmd" url="" method="POST" showBusyCursor="true" requestTimeout="200" resultFormat="text" 
+	result="ServerRunCmdResult(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+	
+	<mx:Script>
+	<![CDATA[	
+	import mx.events.ListEvent;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.events.ItemClickEvent;
+	import mx.controls.Alert;
+	import Md5.MD5;
+	
+	public function Init():void
+	{
+		HttpGetServerType.url = "http://" + this.parentApplication.g_serverip + "/webadmin/server/server_mgr.php";
+		HttpAddServer.url = HttpGetServerType.url;
+		HttpGetServerList.url = HttpGetServerType.url; 
+		HttpDelServer.url = HttpModServer.url = HttpGetServerType.url;
+		HttpServerRunCmd.url = HttpGetServerType.url;
+		
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'get_server_type_list'
+					};
+		HttpGetServerType.send(sendInfo);		
+	}
+	
+	private function GetServerTypeResult(event:ResultEvent):void
+	{
+		trace(event.message.body.toString()); //return;
+		var result:XML = new XML(event.message.body.toString());
+		if( ! result.ret ) {
+			return;
+		}
+		server_type_combobox.dataProvider = result.typelist.children();
+		server_type_combobox.selectedIndex = 0;
+		GetServerList(server_type_combobox.selectedLabel);
+	}
+	
+	public function ServerTypeChange(event:Event):void
+	{
+		GetServerList(server_type_combobox.selectedLabel);
+	}
+	
+	private function SelectAllServer():void
+	{
+		var selectedRows:Array = new Array();
+		if( ! this.ServerDG.selectedIndices.length )
+		{
+			//全选
+			ServerDG.selectedIndex =  100;
+			var totalrecords:int = this.ServerDG.selectedIndex + 1;
+			
+			for( var rows:int = 0; rows < totalrecords; rows++){
+				selectedRows[rows] = rows;
+			}
+		}
+		this.ServerDG.selectedIndices = selectedRows;
+	}
+	
+	private function ClickAddServer():void
+	{
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'add_server_item',
+					ip:add_serverip_textinput.text,
+					type:add_servertype_textinput.text,
+					nettype:add_servernettype_textinput.text,
+					ifdesc:add_serverifdesc_textinput.text,
+					port:add_serverport_textinput.text,
+					suser:add_serveruser_textinput.text,
+					spass:add_serverpass_textinput.text,
+					skey:mykey_textinput.text,
+					desc:add_serverdesc_textinput.text
+					};
+		if( mykey_textinput.text == '' )
+		{
+			Alert.show(" 请填写密钥 !");
+			return;
+		}
+									
+		HttpAddServer.send(sendInfo);
+	}
+	
+	private function AddServerResult(event:ResultEvent):void
+	{
+		trace(event.message.body.toString());
+		GetServerList(server_type_combobox.selectedLabel);
+	}
+	
+	public function GetServerList(type:String):void
+	{
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'get_server_list',
+					type:type
+					};
+		HttpGetServerList.send(sendInfo);		
+	}
+	
+	private function GetServerListResult(event:ResultEvent):void
+	{
+		trace(event.message.body.toString()); //return;
+		var result:XML = new XML(event.message.body.toString());
+		if( ! result.ret ) {
+			return;
+		}
+		ServerDG.dataProvider = result.serverlist.children();
+		//ServerDG.selectedIndex =  100;
+		//this.ServerDG.rowCount = this.ServerDG.selectedIndex + 1;
+	}
+	
+	public function ServerOpt(event:ItemClickEvent, line:Object):void
+	{
+		switch( event.label )
+		{
+			case '删除':
+				DelServerItem(line);
+				break;
+				
+			case '修改信息':
+				ModServerItem(line, false);
+				break;	
+			
+			case '修改密码':
+				ModServerItem(line, true);
+				break;
+		}		
+	}
+	
+	private function DelServerItem(line:Object):void
+	{
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'del_server_item',
+					id:line.id
+					};
+		HttpDelServer.send(sendInfo);		
+	}
+	
+	private function DelServerResult(event:ResultEvent):void
+	{
+		GetServerList(server_type_combobox.selectedLabel);
+	}
+	
+	private function ModServerItem(line:Object, modpass:Boolean):void
+	{
+		var sendInfo:Object;
+		var pass:String = '';
+		if( modpass ) {
+			pass = line.pass;
+		}
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'mod_server_item',
+					id:line.id,
+					ip:line.ip,
+					type:line.type,
+					nettype:line.nettype,
+					port:line.port,
+					suser:line.user,
+					spass:pass,
+					skey:mykey_textinput.text,
+					status:line.status,
+					desc:line.desc
+					};
+		HttpModServer.send(sendInfo);		
+	}
+	
+	private function ModServerResult(event:ResultEvent):void
+	{
+		//trace(event.message.body.toString()); return;
+		GetServerList(server_type_combobox.selectedLabel);
+	}
+	
+	private function ClickRunCmd():void
+	{
+		var items:Array = ServerDG.selectedItems;
+		var ids:String = '';
+		for( var i:int = 0; i < items.length; i++ )
+		{
+			//trace(items[i].id.toString());
+			ids += items[i].id.toString() + ';';
+		}
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:'server_run_cmd',
+					ids:ids,
+					skey:mykey_textinput.text,
+					cmd:cmd_textarea.text
+					};
+		HttpServerRunCmd.send(sendInfo);
+	}
+
+	private function ServerRunCmdResult(event:ResultEvent):void
+	{
+		ret_textarea.text = event.message.body.toString();
+	}
+	
+	private function faultHandler(event:FaultEvent):void
+	{
+		Alert.show(event.fault.message,"无法连接服务器");
+	}
+
+	]]>
+    </mx:Script>
+	
+</mx:Canvas>

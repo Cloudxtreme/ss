@@ -1,0 +1,508 @@
+﻿body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #373737;
+	margin:0px;
+	background:#FBFBFB;
+}
+a:link,a:visited{ color:#034bb9;}
+a{}
+ul,ul li{ list-style:none; padding:0px; margin:0px;}
+
+#top{ width:100%; height:85px; background:url(../images/top_bg1.jpg) no-repeat center top; margin:0 auto;}
+.top_z{ width:955px; height:78px; margin:0 auto; padding-top:7px;}
+.top_logo{ float:left}
+.top_txt{ width:335px; height:38px; float:left; padding-left:469px; margin-top:34px;}
+.top_txt_left{ width:4px; height:38px; background:url(../images/skier1.png) no-repeat -270px -116px;}
+.top_txt_right{ width:4px; height:38px; background:url(../images/skier1.png) no-repeat -278px -116px;}
+.top_txt_center{ background:url(../images/welcome_line.jpg) repeat-x}
+.top_txt_t1{ color:#013fa2;}
+.top_txt_btn{ width:53px; height:23px; margin-top:8px; text-align:center}
+.top_txt_btn a,.top_txt_btn a:visited{ color:#024db2; line-height:23px; text-decoration:none}
+.top_txt_btn a:hover{ color:#006279; line-height:23px; text-decoration:none; }
+.top_txt_wz{text-align:left; color:#017991;}
+.top_txt_se{ width:110px; height:30px; line-height:38px; float:left; padding-top:8px;}
+.top_txt_selecte{ width:110px; color:#006279}
+
+#menu{ width:100%; height:36px; background:url(../images/menu_bg1.jpg) repeat-x;}
+.menu_z{ width:955px; height:31px; margin:0 auto}
+.menu_back{ width:97px; height:36px; float:left;}
+.menu_back_bg{ width:97px; height:36px; background:url(../images/skier1.png) no-repeat -67px -337px; line-height:40px;}
+.menu_back a,.menu_back a:visited{color:#ffffff; text-decoration:none; display:block;}
+.menu_back a:hover{ color:#034bb9; background:url(../images/skier1.png) no-repeat -166px -337px;}
+
+.menu_txt{ width:38px; height:31px; line-height:31px; text-align:left; color:#D4FEFD; padding-left:13px; float:left; margin-top:5px;}
+.menu_qk{ width:126px; height:31px; line-height:31px; text-align:left; float:left; margin-top:5px;}
+.menu_qk .mb1{ float:left; margin-top:5px; margin-right:4px; text-indent:-9999px;}
+.menu_qk .mb1 a{ display:block; width:19px; height:19px; line-height:19px; background:url(../images/skier1.png) no-repeat -608px -118px;}
+.menu_qk .mb1 a:hover{background:url(../images/skier1.png) no-repeat -608px -137px;}
+
+.menu_qk .mb2{ float:left; margin-top:5px; margin-right:4px; text-indent:-9999px;}
+.menu_qk .mb2 a{ display:block; width:19px; height:19px; line-height:19px; background:url(../images/skier1.png) no-repeat -629px -118px;}
+.menu_qk .mb2 a:hover{background:url(../images/skier1.png) no-repeat -629px -137px;}
+
+.menu_qk .mb3{ float:left; margin-top:5px; margin-right:4px; text-indent:-9999px;}
+.menu_qk .mb3 a{ display:block; width:19px; height:19px; line-height:19px; background:url(../images/skier1.png) no-repeat -651px -118px;}
+.menu_qk .mb3 a:hover{background:url(../images/skier1.png) no-repeat -651px -137px;}
+
+.menu_qk .mb4{ float:left; margin-top:5px; margin-right:4px; text-indent:-9999px;}
+.menu_qk .mb4 a{ display:block; width:19px; height:19px; line-height:19px; background:url(../images/skier1.png) no-repeat -672px -118px;}
+.menu_qk .mb4 a:hover{background:url(../images/skier1.png) no-repeat -672px -137px;}
+
+.menu_qk .mb5{ float:left; margin-top:5px; margin-right:4px; text-indent:-9999px;}
+.menu_qk .mb5 a{ display:block; width:19px; height:19px; line-height:19px; background:url(../images/skier1.png) no-repeat -693px -118px;}
+.menu_qk .mb5 a:hover{background:url(../images/skier1.png) no-repeat -693px -137px;}
+
+.menu_help{ width:63px; height:36px; float:left; line-height:40px; text-align:center; background:url(../images/skier1.png) no-repeat left -63px; }
+.menu_help a,.menu_help a:visited{color:#ffffff; text-decoration:none; display:block}
+.menu_help a:hover{color:#034bb9; background:url(../images/skier1.png) no-repeat left -337px;}
+
+#main{ width:955px; margin:0 auto; margin-top:10px;border:solid 1px #D1D1D1;border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;}
+.main_top{ width:955px; height:5px; font-size:4px; background:url(../images/skier1.png) no-repeat;}
+.main_bottom{ width:955px; font-size:4px; height:5px; background:url(../images/skier1.png) no-repeat left -6px;}
+.main_middle{ width:953px; height:auto; border-left:solid 1px #D1D1D1; border-right:solid 1px #D1D1D1;}
+
+.main_left{ width:190px; float:left; padding:0px 15px 0px 12px;}
+.main_left_top{ width:172px; height:30px; background:url(../images/skier1.png) no-repeat left -14px; color:#ffffff; font-weight:bold; padding-left:18px; line-height:30px; text-align:left}
+.main_left_middle{ width:188px; border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE;}
+.main_left_bottom{ width:190px; height:8px; background:url(../images/skier1.png) no-repeat left -46px;}
+
+.main_right{ width:723px; float:left; padding-top:3px;}
+.main_right_top{ width:723px; height:30px; background:url(../images/skier1.png) no-repeat -70px -63px; color:#ffffff; font-weight:bold; text-indent:18px; line-height:30px; text-align:left}
+.main_right_top a{color:#ffffff;}
+.main_left_top_title{ width:200px; float:left}
+.main_right_top_title{width:60px; float:right;text-align:center;padding-top: 2px;}
+.main_right_top_mbx{ width:400px; font-weight:normal; float:right; text-align:right; margin-right:10px;}
+.main_right_top_mbx a,.main_right_top_mbx a:visited{color:#00627B; text-decoration:none}
+.main_right_top_mbx a:hover{ text-decoration:underline}
+.main_right_bottom{ width:723px; height:38px; background:url(../images/skier1.png) no-repeat left -204px;  margin-bottom:20px;}
+.main_right_middle{ width:721px; height:auto; border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE;padding-top:10px;overflow:hidden;}
+
+.search{margin:0 10px 10px 10px; width:690px; overflow:hidden;background:#F0F0F0;}
+.search .search_left{width:560px;overflow:hidden; float:left;padding:0 0 10px 10px;}
+.search .search_right{width:60px;float:right; padding:23px; margin-left:auto;margin-right:auto;text-align:center;}
+.search .search_right_one{width:60px;float:right; margin-left:auto;margin-right:auto;text-align:center;padding:9px;}
+.search .search_right_three{width:60px;float:right; padding:44px 23px 30px 23px; margin-left:auto;margin-right:auto;text-align:center;}
+.search table{width:100%; border-collapse:collapse; border-spacing:0;text-align:left;}
+.search td{padding-top:10px;height:24px;}
+.search .inp{ width:86px; height:18px; border:solid 1px #79a5e9; color:#373737;text-align:center;}
+.search .lable {width:68px;align:left;}
+.search .channel {width:250px; padding-right:10px;align:left;}
+.search .region{width:170px;}
+/****
+.search .button{cursor: pointer; width:61px; height:23px; border:0px; line-height:23px; vertical-align:middle; text-align:center;background:url(../images/skier1.png) no-repeat -142px -116px;color:#fff}
+****/
+.search .button{
+	background:url(../images/myimg/btn.png) no-repeat;
+	width:70px;
+	height:23px;
+	color:#fff;
+	cursor:pointer;
+	background-position:0 0;
+	border:none;
+}
+
+.search .noinput{border:solid 1px #dcdcdc;display:none;}
+.search .gray{color:#dcdcdc}
+.search .select_title {text-align:left;padding:10px}
+
+.tab{width:695px;height:22px;margin:0 10px 10px 10px;padding-left:5px; background:url(../images/tab_bg_line.jpg) repeat-x top;}
+.tab ul{height:23px; overflow:hidden; padding:0px; margin:0px;}
+
+.tab li{width:86px; height:22px; overflow:hidden; background:url(../images/skier1.png) no-repeat -337px -116px; float:left; cursor:pointer; line-height:22px; color:#373737; font-weight:normal; text-align:center; margin-right:2px;}
+.tab  li.YKTabsOn{background:url(../images/skier1.png) no-repeat -337px -145px; color:#034bb9; height:23px;}
+.tab a{text-decoration:none;}
+.tab li.YKTabsOn a{color:#034bb9;}
+.YKTabCon{clear:both;}
+
+.select_search_bar{background:#DBFAFF;margin:0 10px 10px 10px; width:680px; overflow:hidden; text-align:left;padding:10px 0 10px 10px;font-weight:bold;}
+
+.content{margin:10px auto 0 auto;border:1px solid #DDD;width:700px;overflow:hidden;}
+.morecontent{margin:10px auto 0 auto;border:1px solid #DDD;width:800px;overflow:hidden;}
+.scrollcontent{margin:10px auto 0 auto;border:1px solid #DDD;overflow-y:hidden;overFlow-x:auto;}
+.scrollcontent .table {width: 100%; overflow-x:auto;}
+.fullcontent{margin:10px auto 0 auto;border:1px solid #DDD;}
+.fullcontent .subtitle{text-align:left;color:#373737;padding-left:10px;height:28px;line-height:28px;font-weight:bold;background:url(../images/bg28.gif) repeat-x scroll 0 0 transparent;}
+.table tr td{border:1px solid #DDD;height:29px;line-height:20px;white-space: nowrap;  }
+.table tr th{border:1px solid #DDD;height:29px;line-height:20px;white-space: nowrap;  }
+.table1 tr td{border:1px solid #DDD;height:29px;line-height:20px; }
+.table1 tr th{border:1px solid #DDD;height:29px;line-height:20px; }
+.subcontent{border:1px solid #DDD;}
+.content .subtitle, .morecontent .subtitle, .scrollcontent .subtitle{text-align:left;overflow:hidden;color:#373737;padding-left:10px;height:28px;line-height:28px;font-weight:bold;background:url(../images/bg28.gif) repeat-x scroll 0 0 transparent;}
+.content .subtitle1{text-align:left;overflow:hidden;color:#373737;padding-left:10px;line-height:28px;font-weight:bold;}
+.subtitle h2{font-size: 12px;margin:0;float:left;}
+.subtitle .note{padding-left:4px;color:red;font-weight:normal;float:left;}
+.subtitle .more{float:right;margin-right:10px;text-align:right;font-weight:normal;}
+.content .message{width:650px; overflow:hidden;background:#F0F0F0;padding:10px;margin:0 10px 10px}
+.subtitle .tip,.message .tip{margin-right:50px;}
+.subtitle .moretip{margin-right:34px;}
+.content .subchart,.scrollcontent .subchart{width:348px;float:left;padding-left:10px;}
+.content .subtable,.scrollcontent .subtable{width:339px;float:right;}
+.content .chart,.scrollcontent .chart{width:100%;}
+.table1 table{width:100%; border-collapse:collapse; border-spacing:0;text-align:left;}
+.subtable table,.table table{width:100%; border-collapse:collapse; border-spacing:0;text-align:left; white-space: nowrap;}
+.subtable tr,.table tr{border-top:1px solid #DDD;height:29px;line-height:20px;}
+.subtable th,.table th{color:#6F6F6F;font-weight:bold;padding-left:4px;text-align:right;}
+.subtable td,.table td{padding-left:4px;text-align:right;}
+.table .index{text-align:left;padding-left:30px;}
+table .last,.table .last{text-align:right;padding-right:15px;}
+table .center,.table .center{text-align:center;}
+table .cutLength,.table .cutLength{float:left;text-align:left;-moz-binding: url("ellipsis.xml#ellipsis"); -o-text-overflow: ellipsis;-ms-text-overflow: ellipsis;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; }
+.table .detail{text-align:center; display:none;}
+.detail .load{padding:10px auto;text-align:center;}
+.detail td{padding:10px 20px;text-align:right;}
+.detail table{padding:10px;}
+.detail table td{padding:1px 1px 1px 4px;}
+.table td .box{width:10px;height:10px;border:solid 1px;float:left;}
+.content .bar{text-align:left;overflow:hidden;padding:10px;}
+.bar .bar_left{width:366px; text-align:left; float:left; border-left:solid 1px #80C9D5; padding-left:9px;}
+.bar .bar_right{width:44px; text-align:left; float:right; border-left:solid 1px #80C9D5; padding-left:9px;}
+.line{text-align:left; padding:10px 14px;}
+.content .table_service{width:100%;  border-spacing:0;text-align:left; white-space: normal; table-layout: fixed;}
+.table_service .td_service{padding-left:4px;text-align:left;border-right:1px solid #DDD;border-top:1px solid #DDD;height: 30px;vertical-align: middle;}
+.table_service .td_service_left{padding-left:4px;text-align:left;border-right:1px solid #DDD;}
+.table_service .th_service{color:#6F6F6F;font-weight:bold;padding-left:4px;text-align:left;border-right:1px solid #DDD;}
+.table_service .td_last{padding-left:4px;text-align:left;border-top:1px solid #DDD;}
+.table_service .th_last{color:#6F6F6F;font-weight:bold;padding-left:4px;text-align:left;}
+.table_service .tr_hide{display:none; background:#F7F7F7; border-bottom:solid 1px #ECECEC; text-align:center;}
+.tr_hide .pic{width:650px;padding:10px;}
+/*-----------------------------账号信息----------------------------*/
+.user_content {width:690px;text-align:center;height:360px;}
+.user_content .user_title{ font-size:14px; color:#575656; font-weight:bold;padding:50px 30px 0 30px;}
+.user_content .user_fgbg{background:url(../images/skier1.png) no-repeat left -286px; margin: 30px 30px 20px 50px;}
+.user_content ul{padding:10px;text-align:center;width:300px;border:0px;margin: 0 200px;height: 20px;}
+.user_content .lable{float:left;width: 60px;list-style-type: none;text-align: center;}
+.user_content .user_input{ width:200px; height:18px; line-height:18px; border:solid 1px #79a5e9; color:#555;}
+.user_content .user_red{ color:#FF0000}
+/**********
+.button{cursor: pointer; width:61px; height:23px; border:0px; line-height:23px; vertical-align:middle; text-align:center;background:url(../images/skier1.png) no-repeat -142px -116px;color:#fff}
+********/
+.button{
+	background:url(../images/myimg/btn.png) no-repeat;
+	width:70px;
+	height:23px;
+	color:#fff;
+	cursor:pointer;
+	background-position:0 0;
+	border:none;
+}
+.button:hover{
+	background:url(../images/myimg/btn.png) no-repeat;
+	width:70px;
+	height:23px;
+	color:#2a5c8b;
+	cursor:pointer;
+	background-position:0 -23px;
+	border:none;
+}
+.button_middle{cursor: pointer; width:72px; height:23px; border:0px; line-height:23px; vertical-align:middle; text-align:center;background:url(../images/skier1.png) no-repeat -142px -146px;color:#fff}
+.button_large{cursor: pointer; width:86px; height:23px; border:0px; line-height:23px; vertical-align:middle; text-align:center;background:url(../images/skier1.png) no-repeat -465px -147px;color:#fff}
+
+.error{margin:80px 40px;border:solid 1px #D1D1D1;border-radius: 5px 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;padding:10px;overflow:hidden;}
+.error .errimage{float:left;margin-left:25px;}
+.error h2{text-align:left;font-size:14px;padding:20px 0 10px; margin:0 35px 10px 190px;}
+.error h3{text-align:left;font-size:12px;margin:0 35px 10px 190px;}
+
+.nr_1{ width:700px; margin:0 auto; height:39px; padding-top:13px; padding-bottom:26px;}
+.nr_1_left{ width:7px; height:39px; background:url(../images/skier1.png) no-repeat -799px -63px; float:left}
+.nr_1_right{ width:7px; height:39px; background:url(../images/skier1.png) no-repeat -808px -63px; float:left}
+.nr_1_center{ width:686px; height:39px; background:#E5E5E5; float:left; text-align:left;}
+.nr_1_selete{ width:300px;}
+.nr_1_btn{
+	background:url(../images/myimg/btn.png) no-repeat;
+	width:70px;
+	height:23px;
+	color:#fff;
+	cursor:pointer;
+	background-position:0 0;
+	border:none;
+}
+.nr_1_btn:hover{
+	background:url(../images/myimg/btn.png) no-repeat;
+	width:70px;
+	height:23px;
+	color:#2a5c8b;
+	cursor:pointer;
+	background-position:0 -23px;
+	border:none;
+}
+/****
+.nr_1_btn{ cursor: pointer; width:61px; height:23px; border:0px; line-height:23px; text-align:center; color:#fff; background:url(../images/skier1.png) no-repeat -142px -116px;}
+.nr_1_none{height:10px;}
+***/
+.nr_2_bor{ background:url(../images/tab_bg_line.gif) repeat-x top;}
+.nr_2_dq{ width:78px; height:21px; background:url(../images/skier1.png) no-repeat -817px -63px; text-align:center; color:#034bb9; line-height:21px;}
+.nr_2_btn1{ width:78px; height:21px; background:url(../images/skier1.png) no-repeat -817px -86px; text-align:center;  line-height:21px; margin-left:2px; float:left;}
+.nr_2_btn2{ width:92px; height:21px; background:url(../images/skier1.png) no-repeat -817px -111px; text-align:center; line-height:21px; margin-left:2px; float:left;}
+.nr_2_bor a,.nr_2_bor a:visited{color:#4E4E4E;text-decoration:none}
+.nr_2_bor a:hover{color:#034bb9;}
+.nr_2_selete1{ width:194px;}
+.nr_2_selete2{ width:126px;}
+.nr2_lan a,.nr2_lan a:visited{ color:#00627B;}
+.nr2_lan a:hover{ color:#00627B; text-decoration:underline}
+
+.nr_3{width:700px; margin:0 auto; height:79px;}
+.nr_3_left{ width:6px; height:79px; float:left; background:url(../images/skier1.png) no-repeat left -116px;}
+.nr_3_center{ width:585px; height:79px; background:#F0F0F0; float:left;}
+.nr_3_right{ width:107px; height:79px; float:left; background:url(../images/skier1.png) no-repeat -19px -116px;}
+.nr_3_right_btn{ cursor: pointer; width:71px; height:23px; border:0px; text-align:center; color:#fff; margin-top:27px; margin-left:20px; background:url(../images/skier1.png) no-repeat -143px -146px;}
+.nr_3_input{ width:81px; height:18px; border:solid 1px #79a5e9; color:#373737}
+.nr_3_selete{ width:251px;}
+
+.bgline{ background:url(../images/xuline.gif) repeat-x}
+
+.nr_4{ width:700px; height:37px; margin:0 auto;}
+.nr_4_left{ width:6px; height:37px; float:left; background:url(../images/skier1.png) no-repeat -221px -116px;}
+.nr_4_right{ width:6px; height:37px; float:left; background:url(../images/skier1.png) no-repeat -231px -116px;}
+.nr_4_center{ width:688px; height:37px; float:left; background:#F0F0F0;}
+
+.nr_5{ width:700px; height:30px; margin:0 auto}
+.nr_5_left{ width:5px; height:30px; float:left; background:url(../images/skier1.png) no-repeat -240px -116px;}
+.nr_5_right{ width:5px; height:30px; float:left; background:url(../images/skier1.png) no-repeat -247px -116px;}
+.nr_5_center{ width:682px; height:30px; background:#DAFAFC; float:left; color:#00627B; font-size:14px; padding-left:8px; font-weight:bold; line-height:30px; text-align:left;}
+
+.nr_6_1{ width:366px; text-align:left; float:left; border-left:solid 1px #80C9D5; padding-left:9px;}
+.nr_6_2{ width:250px; text-align:left; float:left; border-left:solid 1px #80C9D5; padding-left:9px;}
+.nr_6_3{ width:44px; text-align:left; float:right; border-left:solid 1px #80C9D5; padding-left:9px;}
+
+.nr_6_1_1{ width:315px; height:35px; text-align:left; float:left; border-left:solid 1px #80C9D5; padding-left:9px;}
+.nr_6_2_1{ width:303px; height:35px; text-align:left; float:left; border-left:solid 1px #80C9D5; padding-left:9px;}
+.nr_6_3_1{ width:44px; height:35px; text-align:left; float:right; border-left:solid 1px #80C9D5; padding-left:9px;}
+
+.nr_7{ width:700px; height:29px; margin:0 auto;}
+.nr_7_left{ width:5px; height:29px; float:left; background:url(../images/skier1.png) no-repeat -255px -116px;}
+.nr_7_right{ width:5px; height:29px; float:left; background:url(../images/skier1.png) no-repeat -262px -116px;}
+.nr_7_center{ width:690px; height:29px; float:left; background:#EBEBEB; color:#005B6A}
+
+/*-----------------------------左侧导航------------------------------*/
+#box{ width:188px; margin:0 auto;}
+.title{ width:185px; height:29px; border-bottom:solid 1px #D1E3E5; line-height:29px; color:#000000; background:#ffffff url(../images/skier1.png) no-repeat -912px -132px; font-size:12px; font-weight:normal; cursor:pointer; margin:0px; padding:0px; text-align:left; text-indent:60px; margin:0 auto}
+
+.title2{ width:185px; height:29px; border-bottom:solid 1px #D1E3E5; line-height:29px; color:#000000; background:#ffffff url(../images/skier1.png) no-repeat -912px -430px; font-size:12px; font-weight:normal; cursor:pointer; margin:0px; padding:0px; text-align:left; text-indent:60px; margin:0 auto}
+
+.zidh{ border-bottom:solid 1px #D1E3E7}
+.zidh ul{ margin:0px; padding:0px;}
+.zidh ul li{ margin:0px; padding:0px; background:#fff}
+.zidh ul li a{ width:188px; height:29px; display:block; color:#034bb9; background:url(../images/skier1.png) no-repeat -901px -253px; line-height:29px; text-indent:60px; text-decoration:none; text-align:left}
+.zidh a:hover{ background:url(../images/skier1.png) no-repeat -730px -204px; color:#ffffff}
+.zidh a.over{ background:url(../images/skier1.png) no-repeat -730px -204px; color:#ffffff; font-weight:bold}
+
+.clear{ clear:both}
+
+
+/*-------------------------------基本信息-------------------------------*/
+.xx_1_btn{ width:71px; height:23px; border:0px; line-height:23px; text-align:center; color:#fff; background:url(../images/skier1.png) no-repeat -143px -172px;}
+
+.xx_ti_left{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -287px -116px;}
+.xx_ti_right{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -294px -116px;}
+.xx_ti_center{ height:32px; background:url(../images/xx_pd_line.gif) repeat-x;}
+.xx_ti_center a:link, .xx_ti_center a:visited{color:#00627B; text-decoration:none}
+.xx_ti_center a:hover{color:#00627B; text-decoration:underline}
+.xx_ti_title{ font-weight:bold; font-size:12px; color:#00627B; line-height:32px;}
+.lan_txt{ color:#00627B}
+.xx_add{ background:url(../images/skier1.png) no-repeat -948px -279px; padding-left:13px; text-align:left; line-height:18px;}
+.xx_modi{ background:url(../images/skier1.png) no-repeat -948px -320px; padding-left:13px; text-align:left; line-height:18px;}
+.xx_pz{ background:url(../images/skier1.png) no-repeat -948px -395px; padding-left:13px; text-align:left; line-height:18px; float:right;}
+.xx_del{ background:url(../images/skier1.png) no-repeat -948px -299px; padding-left:13px; text-align:left; line-height:18px; float:right; margin-right:3px;}
+
+.xx_table_left{ width:4px; height:30px; background:url(../images/skier1.png) no-repeat -303px -116px;}
+.xx_table_right{ width:4px; height:30px; background:url(../images/skier1.png) no-repeat -310px -116px;}
+.xx_table_center{ height:30px; background:url(../images/xx_line2.gif) repeat-x;}
+.xx_table_k{ border-left:solid 1px #DDDDDD; border-right:solid 1px #DDDDDD;}
+.xx_table_k a,.xx_table_k a:visited{ color:#034bb9; text-decoration:none}
+.xx_table_k a:hover{ color:#034bb9; text-decoration:underline}
+.xx_table_bottom{ height:4px; background:url(../images/skier1.png) no-repeat 0px -245px;}
+
+.xx_table_bordi{ border-bottom:solid 1px #ECECEC;}
+.xx_table_borri{ border-right:solid 1px #ECECEC;}
+.xx_table_pa1{ padding-left:30px;} 
+.xx_table_pa2{ padding-left:84px;} 
+
+.xx_sp_left{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -319px -116px;}
+.xx_sp_right{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -325px -116px;}
+.xx_sp_center{ height:32px; background:url(../images/xx_line3.gif) repeat-x;}
+.xx_sp_line{ color:#C8C8C8}
+.xx_sp_bordi{ border-bottom:dashed 1px #CACACA; color:#5B5B5B}
+
+.hc_txt_top{width:697px; height:5px; background:url(../images/skier1.png) no-repeat left -262px;}
+.hc_txt_bottom1{width:697px; height:5px; background:url(../images/skier1.png) no-repeat left -272px;}
+.hc_txt_zw{ line-height:22px;}
+.hc_txt_zwhui{ line-height:22px; color:#6F6F6F}
+.hc_txt_zwcu{ line-height:22px; color:#6F6F6F; font-weight:bold}
+.hc_txt_bottom{ height:5px; background:url(../images/skier1.png) no-repeat 0px -252px;}
+
+.hc_txt_bortop{ border-top:solid 1px #E4E4E4;}
+.hc_txt_borri{ border-right:solid 1px #E4E4E4;}
+.hc_txt_nr{ color:#6F6F6F}
+.hc_txt_lan{ color:#4E828B;}
+.hc_txt_lancu{ color:#008DB1; font-weight:bold}
+
+.rz_input_lh{ color:#89A0A3}
+.rz_input{ width:262px;}
+.rz_red_x{ color:#FF0000}
+
+.prev{ cursor:pointer}
+.next{ cursor:pointer}
+
+.Tab{height:23px; overflow:hidden; padding:0px; margin:0px;}
+.Tab li{width:86px; height:22px; overflow:hidden; background:url(../images/skier1.png) no-repeat -337px -116px; float:left; cursor:pointer; line-height:22px; color:#373737; font-weight:normal; text-align:center; margin-right:2px;}
+.Tab li.YKTabsOn{background:url(../images/skier1.png) no-repeat -337px -145px; color:#034bb9; height:23px;}
+.Tab li.YKTabsOn a{color:#034bb9}
+.YKTabCon{clear:both;}
+
+/*------------------------我的配置----------------------------*/
+.ckpz_back{width:721px; height:30px; background:url(../images/peizhi_line.gif) repeat-x; border-bottom:solid 1px #EDEDED;}
+.ckpz_back_a{ height:30px; line-height:30px; background:url(../images/skier1.png) no-repeat -944px -338px; float:right}
+.ckpz_back_a a,.ckpz_back_a a:visited{color:#00627B; text-decoration:none}
+.ckpz_back_a a:hover{ text-decoration:underline}
+
+.ckpz_input{ height:18px; width:150px; background:#F3F3F3; border:solid 1px #E6E6E6; color:#6F6F6F; line-height:18px;}
+.ckpz_input_serch{ width:120px; height:18px; background:#fff; border:solid 1px #79a5e9; line-height:18px; color:#A9A9A9}
+
+/*---------------------------新增配置------------------------------*/
+.pz_add{ width:599px; height:424px; margin:0 auto;}
+.pz_add_top{ width:599px; height:32px;}
+.pz_add_top_l1{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -431px -116px; float:left;}
+.pz_add_top_l2{ width:591px; height:32px; float:left; background:url(../images/tc_line.gif) repeat-x;}
+.pz_add_top_l3{ width:4px; height:32px; background:url(../images/skier1.png) no-repeat -439px -116px; float:left;}
+
+.pz_add_center_add{ width:597px; height:343px; border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE; overflow-y:auto; overflow-x:hidden}
+
+.pz_add_center{ width:597px; height:343px; border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE;}
+.pz_add_center_title{ width:200px; height:32px; line-height:32px; color:#00627B; font-weight:bold; float:left; padding-left:10px; text-align:left}
+.pz_add_center_close{ width:12px; height:12px; float:right; margin-top:10px; margin-right:8px; background:url(../images/skier1.png) no-repeat -304px -166px;}
+.pz_add_center_close a{ text-indent:-9999px; display:block; width:12px; height:12px;}
+
+.pz_add_bottom{ width:599px; height:48px;}
+.pz_add_bottom_l1{ width:4px; height:48px; background:url(../images/skier1.png) no-repeat -447px -116px; float:left;}
+.pz_add_bottom_l2{ width:591px; height:48px; float:left; background:url(../images/tc_line.gif) repeat-x left -32px;}
+.pz_add_bottom_l3{ width:4px; height:48px; background:url(../images/skier1.png) no-repeat -455px -116px; float:left;}
+
+.pz_add_input{ width:190px; height:18px; border:solid 1px #79a5e9; line-height:18px; color:#999;}
+.txt20{ color:#6F6F6F; line-height:20px;}
+.txt20l36{ color:#6F6F6F; line-height:30px;}
+
+/*---------------------------------客户列表----------------------*/
+.kh_btn{ width:61px; height:23px; line-height:23px; border:0px; background:url(../images/skier1.png) no-repeat -465px -116px; color:#00627B; text-align:center}
+.kh_title{ width:82px; height:32px; line-height:32px; text-align:left; background:url(../images/title_ico.gif) no-repeat right center; display:block; color:#00627B; font-weight:bold; padding-left:8px;}
+
+.kh_list_bg{ background:url(../images/kh_list_bg.gif) repeat-x;}
+.kh_list_line{ background:url(../images/skier1.png) no-repeat right -366px;}
+.fy_bg{ background:url(../images/tc_fy_bg.gif) repeat-x; border-top:solid 1px #A6C8CE;}
+.fy_bg a,.fy_bg a:visited{ color:#373737}
+.fy_bg a:hover{ color:#034bb9}
+
+/*-----------------------------账号信息----------------------------*/
+.user_title{ font-size:14px; color:#575656; font-weight:bold}
+.user_fgbg{ background:url(../images/skier1.png) no-repeat left -286px;}
+.user_input{ width:200px; height:18px; line-height:18px; border:solid 1px #79a5e9; color:#555;}
+.user_text{ width:200px; line-height:18px; border:solid 1px #79a5e9; color:#555;}
+.user_red{ color:#FF0000}
+.xing img{ margin-right:8px;}
+
+/*------------------------------服务自定义----------------------------------*/
+.ser_input_serch{ width:130px; height:18px; background:#fff; border:solid 1px #79a5e9; line-height:18px; color:#A9A9A9}
+.ser_fg_line{ background:url(../images/skier1.png) no-repeat -225px -163px;}
+
+.ser_fgbg{ background:url(../images/skier1.png) no-repeat left -310px;}
+.ser_hui{ color:#555555;}
+.ser_input_hui{ height:18px; width:108px; border:solid 1px #929292}
+
+/*-------------------------------未处理配置----------------------------------*/
+.wcl_btn{ width:86px; height:23px; border:0px; background:url(../images/skier1.png) no-repeat -465px -147px; color:#fff; line-height:23px;}
+.wcl_btn2{ width:61px; height:23px; border:0px; background:url(../images/skier1.png) no-repeat -533px -116px; color:#034bb9; line-height:23px;}
+.wcl_text{ width:695px; line-height:18px; border:solid 1px #79a5e9; color:#555;}
+
+.wcl_khd_bor{ border:solid 1px #DDD;}
+.wcl_khd_titlebg{ background:url(../images/bg28.gif) repeat-x; height:28px; padding-left:10px; border-bottom:solid 1px #DDD; text-align:left; color:#373737; line-height:28px;}
+.wcl_bordi{ border-bottom:solid 1px #ECECEC}
+.wcl_grn{ color:#0EAA0E}
+
+/*--------------------------------角色信息---------------------------------*/
+.role_k_top{ height:4px; background:url(../images/skier1.png) no-repeat left -246px;}
+.role_k_center{ border-left:solid 1px #DFDFDF; border-right:solid 1px #DFDFDF;}
+.role_k_bottom{ height:5px; background:url(../images/skier1.png) no-repeat left -252px;}
+
+.linh36{ line-height:36px;}
+
+
+/*--------------------------------URL分析---------------------------------*/
+.URL_sele1{ width:315px; color:#545454;}
+.URL_sele2{ width:126px; color:#545454;}
+
+.URL_gj a,.URL_gj a:visited{color:#00627B;}
+.URL_gj a:hover{ text-decoration:underline}
+
+.URL_txt12{ font-size:12px;}
+.URL_table_bor{ border-right:solid 1px #ECECEC; border-bottom:solid 1px #ECECEC; padding-left:4px;}
+.URL_table_pad{ padding-left:14px;}
+
+
+
+/*--------------------------------计费信息---------------------------------*/
+.jfxx_table_bor{ border-right:solid 1px #ECECEC; border-bottom:solid 1px #ECECEC; padding-left:10px;}
+.jfxx_table_bor img{ margin-right:5px;}
+.jfxx_table_bor_ri{ border-right:solid 1px #ECECEC; padding-left:10px;}
+.jfxx_tb{ height:33px; display:block;}
+
+#td_clik{CURSOR: hand;}
+#td_clik_over{ background:url(../images/td_over_bg.gif) repeat-x; CURSOR: hand;}
+.td_zk_zong{ width:100%; padding-left:17px; padding-right:10px;}
+.td_zk{DISPLAY: none; background:#F7F7F7; border-bottom:solid 1px #ECECEC; text-align:center}
+.td_clik_img{CURSOR: hand; margin-right:20px;}
+.td_bor_di{ border-bottom:solid 1px #CACACA}
+
+/*---------------------------新闻--------------------------------*/
+.news_bor_di{ border-bottom:dashed 1px #CACACA}
+.news_title a,.news_title a:visited{ color:#6D6D6D; font-weight:bold}
+.news_title a:hover{ color:#034bb9}
+.news_right_top_mbx{ width:400px; font-weight:normal; float:right; text-indent:0px; line-height:30px;}
+.news_right_top_mbx a,.news_right_top_mbx a:visited{color:#00627B; text-decoration:none; line-height:30px;}
+.news_right_top_mbx a:hover{ text-decoration:underline}
+
+
+/*---------------------------首页--------------------------------*/
+.main_fk{ float:left; padding-left:12px;}
+.main_k_left{ width:3px; height:30px; background:url(../images/skier1.png) no-repeat -239px -162px;}
+.main_k_center{ height:30px; text-align:left; line-height:30px; background:url(../images/main_bgline.gif) repeat-x; padding-left:10px; color:#00627B; font-weight:bold}
+.main_k_right{ width:3px; height:30px; background:url(../images/skier1.png) no-repeat -244px -162px;}
+.mian_k_bor{ border-left:solid 1px #A6C8CE; border-right:solid 1px #A6C8CE}
+
+.main_k_di_left{ width:3px; height:35px; background:url(../images/skie1r.png) no-repeat -259px -162px;}
+.main_k_di_center{ height:35px; background:url(../images/main_bgdi1.gif) repeat-x;}
+.main_k_di_right{ width:3px; height:35px; background:url(../images/skier1.png) no-repeat -264px -162px;}
+
+.main_k_dis_left{ width:3px; height:12px; background:url(../images/skier1.png) no-repeat -249px -162px;}
+.main_k_dis_center{ height:12px; background:url(../images/main_bgdi2.gif) repeat-x;}
+.main_k_dis_right{ width:3px; height:12px; background:url(../images/skier1.png) no-repeat -254px -162px;}
+
+.main_menu{width:690px; float:left; height:36px; text-align:left}
+.main_menu ul{ float:left}
+.main_menu ul li{ float:left; padding-left:15px; padding-right:15px; color:#D3FEFF; height:31px; margin-top:5px; line-height:31px;}
+.main_menu ul li span{ line-height:31px; height:31px;}
+.main_menu ul li a,.main_menu ul li a:visited{ color:#D3FEFF; float:left}
+.main_menu ul li a:hover{ text-decoration:underline}
+.main_menu ul li.over{ color:#00627B; font-weight:bold; background:url(../images/skier1.png) no-repeat -266px -337px; padding:0px;}
+.main_menu ul li.over a,.main_menu ul li.over a:visited{ color:#00627B; float:left; font-weight:bold; height:31px;}
+.main_menu ul li.over span{ background:url(../images/main_menu_tabri.gif) no-repeat right; height:31px; float:left; line-height:31px; padding-left:10px;padding-right:10px;}
+.main_menu ul li.over span img{ float:left; margin-left:5px; border:0px; margin-top:9px;}
+
+.main_menu_add{ width:69px; height:25px; float:left; margin-left:10px; margin-top:7px; background:url(../images/skier1.png) no-repeat -726px -116px; text-align:center}
+.main_menu_add a,.main_menu_add a:visited{ color:#005067; line-height:25px;}
+
+
+/*---------------------------字体变色--------------------------------*/
+.font_disable{color:#dcdcdc}
+
+
+/*-----------------------------浏览统计-------------------------------*/
+.lltj_bor{border-right:solid 1px #ECECEC; border-bottom:solid 1px #ECECEC; padding-left:10px; font-weight:normal; text-align:left}
+.lltj_bor2{ border-bottom:solid 1px #ECECEC; padding-left:10px; font-weight:normal; text-align:left}
+
+/*-----------------------------表格奇偶行不同色-------------------------------*/
+.evenrow{background-color:#F9F9F9}
+.oddrow{background-color:white}
+
+/*-----------------------------显示方格-------------------------------*/
+.searchIconButton {background-image: url("../images/search2.gif"); height: 16px; width: 16px;padding:8px;background-repeat:no-repeat;background-position: center;}

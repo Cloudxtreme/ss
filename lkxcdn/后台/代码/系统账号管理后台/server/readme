@@ -1,0 +1,9 @@
+#!/bin/sh
+
+scp ./haproxy.cfg root@119.145.254.42:/var/www/html/cdndist/64/haproxy.cfg
+scp ./web_port_rate_config_ct root@119.145.254.42:/var/www/html/cdndist/64/web_port_rate_config_ct
+scp ./web_port_rate_config_cnc root@119.145.254.42:/var/www/html/cdndist/64/web_port_rate_config_cnc
+
+scp ./nginx_tools_config root@119.145.254.42:/var/www/html/cdndist/64/nginx_tools_config
+scp ./file_port_rate_config_cnc root@119.145.254.42:/var/www/html/cdndist/64/file_port_rate_config_cnc
+scp ./file_port_rate_config_ct root@119.145.254.42:/var/www/html/cdndist/64/file_port_rate_config_ct

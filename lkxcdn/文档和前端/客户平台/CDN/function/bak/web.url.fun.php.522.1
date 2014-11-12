@@ -1,0 +1,293 @@
+﻿<?php
+
+date_default_timezone_set('Asia/Shanghai');
+require_once('./web.com.fun.php');
+ini_set('display_errors', E_ALL);  
+error_reporting(E_ALL^E_NOTICE);
+$GLOBALS['THRIFT_ROOT'] = './php/src';  
+
+require_once( $GLOBALS['THRIFT_ROOT'] . '/Thrift.php' );  
+require_once( $GLOBALS['THRIFT_ROOT'] . '/transport/TSocket.php' );  
+require_once( $GLOBALS['THRIFT_ROOT'] . '/transport/TBufferedTransport.php' );  
+require_once( $GLOBALS['THRIFT_ROOT'] . '/protocol/TBinaryProtocol.php' );  
+require_once( $GLOBALS['THRIFT_ROOT'] . '/packages/Hbase/Hbase.php' );  
+require_once('./web.com.fun.php');
+
+$socket = new TSocket('119.120.92.132', '7777');  
+  
+$socket->setSendTimeout(10000); // Ten seconds (too long for production, but this is just a demo ;)   
+$socket->setRecvTimeout(20000); // Twenty seconds   
+$transport = new TBufferedTransport($socket);  
+$protocol = new TBinaryProtocol($transport);  
+$hbase = new HbaseClient($protocol);  
+  
+$transport->open();  
+ 
+$tableName = "cdn_web_url_date";  
+$columns = array();
+$columns[] = "cnt:";
+
+//$scanner = $client -> scannerOpenWithStop($tableName,$beginRow,$endRow,$columns);
+
+$ret_cnt = array();
+$ret_sent = array();
+$bak = array();
+$print_cnt = array();
+$print_flow = array();
+$sort_cnt = array();
+$sort_flow = array();
+
+
+switch( $_POST['get_type'] ) {
+	
+	case "_init":
+		if( isset($_POST['user']) && strlen($_POST['user']) > 0 ) { 
+			$client = $_POST['user']; 
+		}
+		//print_r($client);
+		print_r(get_client_hostname_list($client));print('***');		
+		print_r(get_cdn_zone_list());print('***');
+		print_r(get_web_url_type_list());
+		exit;
+		break;
+		
+	case "_url":
+		//print_r($_POST);
+		if( isset($_POST['user']) && strlen($_POST['user']) > 0 ) { 
+			$client = $_POST['user']; 
+		}
+		break;    
+		
+	default :  
+		exit; 
+		break;
+}
+if( $client == '' ) { exit; }
+
+$begin_day = $end_day = '';
+$zones = array('中国大陆');
+$channels = array();
+
+$post_time = json_decode($_POST['time'], true);
+$post_channel = json_decode($_POST['channel'], true);
+if( count($post_time) != 2 ) { exit; }
+$begin_day = $post_time[0];
+$end_day = $post_time[1];
+if( count($post_channel) <= 0 ) { exit; }
+$channels = $post_channel;
+//print_r($post_time); print_r($post_channel); print($client);
+
+//先根据要查询的开始结束日期获取以天为单位的天列表
+$days = array(); //天列表
+for( $bday = @strtotime($begin_day); $bday <= @strtotime($end_day); ) {
+	$day = @date("Y-m-d", $bday);
+	$bday += 86400;
+	$days[] = $day;
+	//顺便把$days_ip_ret都初始化好,24小时
+	for( $i = 0; $i < 24; $i++ ) { $days_ip_ret[$day][$i] = 0; }
+}
+$months = days_2_months($days);
+//print_r($months); print_r($days);
+
+$end_time = @strtotime($end_day);
+$end_time += 86400;
+$end_day = @date("Y-m-d", $end_time);
+
+/*
+$begin_day = '2013-05-10';
+$end_day = '2013-05-16';
+
+$chan = array();
+$chan[] = '*.wjyx.com';
+*/
+
+//print("$hostname\n");
+//$beginRow = "$hostname_2013-05-05";
+//$endRow = "$hostname_2013-05-16";
+$beginRow = sprintf("%s_%s",$client,$begin_day);
+$endRow = sprintf("%s_%s",$client,$end_day);
+//print("$beginRow - $endRow\n");
+	
+$scanner = $hbase -> scannerOpenWithStop($tableName,$beginRow,$endRow,$columns);
+
+while(1)
+{
+	$rows = $hbase->scannerGet( $scanner );
+	if(!$rows)
+	{
+		break;
+	}
+	else
+	{
+			//print_r($rows);
+			
+		//$size = count($rows[0]->columns);
+			//echo "{$rows[0]->row}:{$size}\n";
+			//print_r($rows[0]->columns);
+		
+		foreach($rows[0]->columns as $key => $values)
+		{
+			$name = substr($key,4);
+			//print("name:$name");
+			$name = explode("\t",$name);
+				
+			$channel = $name[0];
+			$url = $name[1];
+			if (!in_array($channel, $channels)){continue;}
+			$value = explode("\t",$values->value);
+			$cnt = $value[0];
+			$sent = $value[1];
+			$httpurl = "http://$channel$url";
+			$ret_cnt[$httpurl]['cnt'] += $cnt;
+			$ret_cnt[$httpurl]['sent'] += $sent;
+			$sort_cnt[$httpurl] += $cnt;
+			//$sort_flow[$url] += $sent;
+				
+		}
+		
+	}
+}
+$hbase->scannerClose( $scanner );
+
+unset($columns);
+$columns = array();
+$columns[] = "send:";
+//print_r($columns);
+$scanner = $hbase -> scannerOpenWithStop($tableName,$beginRow,$endRow,$columns);
+
+while(1)
+{
+	$rows = $hbase->scannerGet( $scanner );
+	if(!$rows)
+	{
+		break;
+	}
+	else
+	{
+			//print_r($rows);
+			
+		//$size = count($rows[0]->columns);
+			//echo "{$rows[0]->row}:{$size}\n";
+			//print_r($rows[0]->columns);
+		
+		foreach($rows[0]->columns as $key => $values)
+		{
+			$name = substr($key,5);
+			//print("name:$name");
+			$name = explode("\t",$name);
+				
+			$channel = $name[0];
+			$url = $name[1];
+			if (!in_array($channel, $channels)){continue;}
+			$value = explode("\t",$values->value);
+			$cnt = $value[0];
+			$sent = $value[1];
+			$httpurl = "http://$channel$url";
+			$ret_sent[$httpurl]['cnt'] += $cnt;
+			$ret_sent[$httpurl]['sent'] += $sent;
+			//$sort_cnt[$url] += $cnt;
+			$sort_flow[$httpurl] += $sent;
+				
+		}
+	}
+}
+
+//print(date("h:i:s",time())."<p>");
+
+	array_multisort($sort_flow, SORT_DESC, $ret_sent);
+	
+	//print(date("h:i:s",time())."<p>");
+	
+	$i = 0;
+	foreach($ret_sent as $name => $data)
+	{
+	//for($i = 0; $i < 10;$i++)
+	//
+		//print("$name:");
+		//print_r($ret[$name]);
+		$print_flow[] = array('url' => $name, 'flow'=>round($data['sent']/1024/1024,2), 'cnt' => $data['cnt']);
+		//print($host);
+		//exit;
+		if (++$i >= 10)
+		{break;}
+	}
+	print_r(json_encode($print_flow));
+	print('***');
+	
+	//print(date("h:i:s",time())."<p>");
+	
+	array_multisort($sort_cnt, SORT_DESC, $ret_cnt);
+	
+	//print(date("h:i:s",time())."<p>");
+	
+	$i = 0;
+	foreach($ret_cnt as $name => $data)
+	{
+	//for($i = 0; $i < 10;$i++)
+	//
+		//print("$name:");
+		//print_r($ret[$name]);
+		$print_cnt[] = array('url' => $name, 'flow'=>round($data['sent']/1024/1024,2), 'cnt' => $data['cnt']);
+		//print($host);
+		//exit;
+		if (++$i >= 10)
+		{break;}
+	}
+	print_r(json_encode($print_cnt));
+	print('***');
+
+$hbase->scannerClose( $scanner );
+$transport->close();  
+
+//function
+//////////////////////////////////////////////////////////////////
+
+function gensql_hostname_urlday_flow($table, $mdays, $channels)
+{
+	$query = "select hostname,url,sum(cnt),sum(send) from `$table".'_url`'." where `hostname` in (";
+	foreach( $channels as $hostname ) {
+		$query .= "'$hostname',";
+	}
+	$query[strlen($query)-1] = ')';
+
+	$query .= ' and `date` in (';
+	foreach( $mdays as $day ) {
+		$query .= "'$day',";
+	}
+	$query[strlen($query)-1] = ')';
+	
+	$query .= " and `top_type` = 'topsend' group by hostname,url order by `sum(send)` desc LIMIT 10 OFFSET 0;";
+	return $query;
+}
+
+function gensql_hostname_urlday_cnt($table, $mdays, $channels)
+{
+	$query = "select hostname,url,sum(cnt),sum(send) from `$table".'_url`'." where `hostname` in (";
+	foreach( $channels as $hostname ) {
+		$query .= "'$hostname',";
+	}
+	$query[strlen($query)-1] = ')';
+
+	$query .= ' and `date` in (';
+	foreach( $mdays as $day ) {
+		$query .= "'$day',";
+	}
+	$query[strlen($query)-1] = ')';
+	
+	$query .= " and `top_type` = 'topcnt' group by hostname,url order by `sum(cnt)` desc LIMIT 10 OFFSET 0;";
+	return $query;
+}
+
+function days_2_months($days)
+{
+	$months = array();
+	foreach( $days as $day ) {
+		$year = $month = $iday= 0;
+		sscanf($day, "%d-%d-%d", $year, $month, $iday);
+		$ym = sprintf("%d-%02d", $year, $month);
+		$months[$ym][] = $day;
+	}
+	return $months;
+}
+
+?>

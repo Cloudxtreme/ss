@@ -1,0 +1,20 @@
+
+cdn_longyou_nginx_stats /opt/nginx/logs/longyou.log
+cdn_youyixing_nginx_stats /opt/nginx/logs/youyixing.log
+cdn_catv_nginx_stats /opt/nginx/logs/catv.log
+cdn_yile_nginx_stats /opt/nginx/logs/yile.log
+cdn_langqi_nginx_stats /opt/nginx/logs/langqi.log
+cdn_shengtl_nginx_stats /opt/nginx/logs/shengtl.log
+cdn_fengzhishen_nginx_stats /opt/nginx/logs/fengzhishen.log
+cdn_kfkx_nginx_stats /opt/nginx/logs/kfkx.log
+cdn_adjsq_nginx_stats /opt/nginx/logs/adjsq.log
+cdn_xinfeiyang_nginx_stats /opt/nginx/logs/xinfeiyang.log
+cdn_shengyou_nginx_stats /opt/nginx/logs/shengyou.log
+
+
+cdn_zongyc_nginx_stats /opt/nginx/logs/zongyc.log
+cdn_jjplay_nginx_stats /opt/nginx/logs/jjplay.log
+cdn_sztaole_nginx_stats /opt/nginx/logs/sztaole.log
+cdn_xwjizhite_nginx_stats /opt/nginx/logs/xwjizhite.log
+cdn_test001_nginx_stats /opt/nginx_cache/nginx/logs/test001.log
+cdn_test002_nginx_stats /opt/nginx_cache/nginx/logs/test002.log

@@ -1,0 +1,49 @@
+worker_processes  2;
+
+error_log /dev/null;
+
+events { worker_connections  10240; }
+
+http {
+
+include       mime.types;
+default_type  application/octet-stream;
+
+log_format  mylog  '$remote_addr|$request|'
+                   '$status|$body_bytes_sent|$http_referer|'
+                   '$http_user_agent';
+    
+sendfile        on;
+keepalive_timeout  65;
+
+#nginxlog_begin
+server {
+	listen 7654;
+	server_name localhost;
+	location / {root /opt/nginx_log;}
+	access_log off;
+}
+#nginxlog_end
+
+
+
+
+
+
+
+#test_begin
+server {
+	listen 7020;
+	server_name localhost;
+	location / {root /opt/rsyncdata/cdn_file/test;}
+	access_log logs/test.log mylog;
+}
+#test_end
+#lygame_begin
+server {
+	listen 8024;
+	server_name localhost;
+	location / {root /opt/rsyncdata/cdn_file/lygame;}
+	access_log logs/lygame.log mylog;
+}
+#lygame_end

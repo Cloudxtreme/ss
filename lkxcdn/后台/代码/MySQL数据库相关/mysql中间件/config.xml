@@ -1,0 +1,28 @@
+<db_gen>
+	<server_info id="1">
+		<hostname>ibss.efly.cc</hostname>
+		<ip>121.9.13.254</ip>
+		<ip>127.0.0.1</ip>
+		<user>root</user>
+		<pass>rjkj@2009#8</pass>
+	</server_info>
+	<server_info id="2">
+                <ip>61.142.208.98</ip>
+		<user>root</user>
+                <pass>rjkj@rjkj</pass>
+	</server_info>
+
+	<server_opera id="1">
+		<database name="test">
+			<table name="test">
+				<sync server_id="2" db="test" />
+			</table>
+		</database>
+		<database name="IBSS2013">
+			<sync server_id="2" db="IBSS2013" />
+		</database>
+		<database name="IBSS2014">
+		        <sync server_id="2" db="IBSS2014" />
+		</database>
+	</server_opera>
+</db_gen>

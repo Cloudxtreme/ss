@@ -1,0 +1,15 @@
+
+/opt/cachemgr/portinfo 58.255.252.92 src 8020 eth0
+/opt/cachemgr/portinfo 58.255.252.92 dst 8020 eth0
+
+/opt/cachemgr/portinfo 58.255.252.92 src 8021 eth0
+/opt/cachemgr/portinfo 58.255.252.92 dst 8021 eth0
+
+/opt/cachemgr/portinfo 58.255.252.92 src 8022 eth0
+/opt/cachemgr/portinfo 58.255.252.92 dst 8022 eth0
+
+/opt/cachemgr/portinfo 58.255.252.92 src 8023 eth0
+/opt/cachemgr/portinfo 58.255.252.92 dst 8023 eth0
+
+/opt/cachemgr/portinfo 58.255.252.92 src 7020 eth0
+/opt/cachemgr/portinfo 58.255.252.92 dst 7020 eth0

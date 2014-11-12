@@ -1,0 +1,16 @@
+chmod 755 /etc/efvpn/*
+chmod u+s /sbin/ifconfig /sbin/ip /bin/touch /usr/sbin/ntpdate /usr/local/sbin/dhcpd
+/usr/sbin/server_conf --outbound 10.0.0.10,255.255.255.0,10.0.0.1
+/usr/sbin/server_conf --backend 192.168.10.1,255.255.255.0
+/usr/sbin/server_conf --dhcp 192.168.1.1,255.255.255.0,192.168.1.2,192.168.1.254
+chkconfig --add efvpnd
+chkconfig efvpnd on
+#echo "nameserver 8.8.8.8" > /etc/resolv.conf
+#echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+echo "ntpdate 0.centos.pool.ntp.org" > /etc/efvpn/update_time
+( crontab -l; echo "* */1 * * * /bin/sh /etc/efvpn/update_time > /dev/null 2>&1" ) | crontab
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to 80
+service iptables save
+service iptables restart

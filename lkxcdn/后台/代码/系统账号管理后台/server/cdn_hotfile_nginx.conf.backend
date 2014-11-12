@@ -1,0 +1,38 @@
+#test001_begin
+server {
+	listen 8500;
+	server_name localhost;
+	access_log logs/test001.log mylog;
+	location / {
+		proxy_cache cache_one;
+		proxy_cache_valid 200 7d;
+		proxy_cache_key $http_host$uri;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $remote_addr;
+		proxy_pass http://cdn_hotfile_fs_backend_server/test001/;
+	}
+	location ~ /rjkjcdn-purge(/.*) {
+		allow all;
+		proxy_cache_purge cache_one $http_host$1$is_args$args;
+	} 
+}
+#test001_end
+#test002_begin
+server {
+	listen 8501;
+	server_name localhost;
+	access_log logs/test002.log mylog;
+	location / {
+		proxy_cache cache_one;
+		proxy_cache_valid 200 7d;
+		proxy_cache_key $http_host$uri;
+		proxy_set_header Host $host;
+		proxy_set_header X-Forwarded-For $remote_addr;
+		proxy_pass http://cdn_hotfile_fs_backend_server/test002/;
+	}
+	location ~ /rjkjcdn-purge(/.*) {
+		allow all;
+		proxy_cache_purge cache_one $http_host$1$is_args$args;
+	} 
+}
+#test002_end

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cdn.ado">
+    <class name="Admin"   table="admin">
+       <id name="id"   column="id" type="java.lang.Integer">
+         <generator class="identity"></generator>
+       </id>    
+       <property name="pass"  column="pass" type="java.lang.String"></property>
+       <property name="user" column="user" type="java.lang.String"></property>
+       <property name="status" column="status" type="java.lang.String"></property>
+      <property name="role" column="role" type="java.lang.String"></property>
+    </class>
+    
+	
+</hibernate-mapping>

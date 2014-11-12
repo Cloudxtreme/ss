@@ -1,0 +1,206 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="x-ua-compatible" content="IE=9">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT">
+<link rel="stylesheet" href="__ROOT__/Public/css/style.css" type="text/css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<link rel="stylesheet" href="__ROOT__/Public/js/artDialog/skins/blueskin.css?4.1.7" />
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/jquery.artDialog.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/artDialog/plugins/iframeTools.source.js"></script>
+<title></title>
+<script type="text/javascript">
+    $(function(){
+        $("#time_addr").focus(function(){
+            $("#radio_tb_text").attr("checked",true);
+        });
+		$("#ntp_list").focus(function(){
+            $("#radio_tb_choose").attr("checked",true);
+        });
+	//获取时间
+		$.getJSON("__APP__/Vpn/get_timezone", function(data){
+				if(data.ret == 1){
+					var json = data.result;
+					var exist = false;
+					for(var i in json){
+						if(json[i] == data.current){
+						        exist = true;
+							$("#radio_tb_choose").attr("checked",true);
+							$("#ntp_list").append("<option selected>"+json[i]+"</option>");
+						}else{
+							$("#ntp_list").append("<option>"+json[i]+"</option>");
+						}
+					}
+					if(!exist){
+					       $("#radio_tb_text").attr("checked",true);
+					       $("#time_addr").val(data.current);
+					}
+				}else{
+					art.dialog({content: '错误提示：' + data.error, icon: 'error', lock: false, time: 2.5});
+				}
+
+			});
+
+		$.getJSON("__APP__/Vpn/get_logger", function(data){
+				if(data.result == 1){
+					$("#log_addr").val(data.ip);
+					$("#log_port").val(data.port);
+					$("#log_level").val(data.level);
+					if(data.enable == "true"){
+					      $("#check_on").attr("checked", true);
+					}else{
+					      $("#check_on").attr("checked", false);
+					}
+				}
+			});
+
+    });
+	//同步时间
+	function SetTime(){
+		var str = "";
+		if($("#radio_tb_text").attr("checked")){
+			str =  $("#time_addr").val();
+			if(typeof(str) == "undefined" || str.length <= 0){
+				art.dialog({content: '操作提示： 请输入同步地址！', icon: 'error', lock: true, time: 1.5});
+				$("#time_addr").focus();
+				return false;
+			}
+		} else {
+			str =  $("#ntp_list").val();
+			if(typeof(str) == "undefined" || str.length <= 0){
+				art.dialog({content: '操作提示： 请选择同步地址！', icon: 'error', lock: true, time: 1.5});
+				$("#ntp_list").focus();
+				return false;
+			}
+		}
+		$.ajax({
+			url: '__APP__/Vpn/set_timezone',
+			dataType: 'json',
+			data: { server: str },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+					art.dialog({content: '操作提示：成功同步系统时间！', icon: 'succeed', lock: true, time: 3});
+				}
+				else{
+					art.dialog({content: '错误提示：' + data.reason, icon: 'error', lock: true, time: 2.5});
+				}
+			},
+			error: function (data) {
+				art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 2.5});
+			}
+		});
+	}
+	//配置远程日志
+	function ConfLog(){
+		var level = $("#log_level").val(), addr = $("#log_addr").val(), port = $("#log_port").val(), isOn = $("#check_on").attr("checked"), enable = "";
+		if(typeof(addr) == "undefined" || addr.length <= 0){
+			art.dialog({content: '操作提示： 请输入远程IP地址！', icon: 'error', lock: true, time: 1.5});
+			$("#log_addr").focus();
+			return false;
+		}
+		if(typeof(port) == "undefined" || port.length <= 0){
+			art.dialog({content: '操作提示： 请输入端口号！', icon: 'error', lock: true, time: 1.5});
+			$("#log_port").focus();
+			return false;
+		}
+		if(isOn == "checked"){
+			enable = "true";
+		}else{
+			enable = "false";
+		}
+		$.ajax({
+			url: '__APP__/Vpn/set_logger',
+			dataType: 'json',
+			data: { level: level, ip: addr, port: port, enable: enable },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+					art.dialog({content: '操作提示：成功配置远程日志服务！', icon: 'succeed', lock: true, time: 3});
+				}
+				else{
+					art.dialog({content: '错误提示：' + data.reason, icon: 'error', lock: true, time: 2.5});
+				}
+			},
+			error: function (data) {
+				art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 2.5});
+				//alert(data.statusText);
+			}
+		});
+	}
+</script>
+</head>
+<body>
+<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" style="font-size:16px;">
+	<tr>
+		<td height="58px" bgcolor="#1078b5" style="padding-left:20px;"><span style="color: #FFFFFF;font-weight: bold;">其他设置</span></td>
+	</tr>
+	<tr>
+    <td valign="top">
+		<table width="98%" style="font-size:14px;margin:10px;">
+			<tr><td height="38px" width="220px" align="right"><h3>系统时间同步</h3></td><td></td></tr>
+			<tr>
+			  <td align="right"><input type="radio" name="radio_tb" id="radio_tb_choose" value="choose" checked> 选 择：</td>
+			  <td>
+				<select style="width:200px;border:solid 1px #c3d7e3;height:26px;" id="ntp_list"></select>
+			  </td>
+			</tr> 
+			<tr> 
+				<td align="right"><input type="radio" name="radio_tb" id="radio_tb_text" value="input"> 输 入：</td>
+				<td height="38px">
+					<input placeholder='输入同步地址…' style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" id="time_addr" type="text"/>
+					<span class="tips"></span>
+				</td>
+			</tr>
+			<tr>
+				<td height="38px" align="right"><span id="msg"></span></td>
+				<td><input type="button" style="margin-left:100px;background:#1F75B7;color:#fff;padding:0px 15px;height:34px;line-height:34px;" onclick="SetTime();" value="确 定" /></td>
+			</tr>
+			
+			<tr><td height="38px" align="right"><h3>远程日志配置</h3></td><td></td></tr>
+			<tr> 
+				<td height="38px" align="right">远程地址：</td>
+				<td>
+					<input placeholder='输入IP地址…' style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" id="log_addr" type="text"/>
+					<span class="tips"></span>
+				</td>
+			</tr>
+			<tr> 
+				<td height="38px" align="right">端 口：</td>
+				<td>
+					<input placeholder='输入端口…' style="width:200px;border:solid 1px #c3d7e3;padding:0px 6px;height:30px;" id="log_port" type="text"/>
+					<span class="tips"></span>
+				</td>
+			</tr>
+			<tr>
+				<td height="38px" align="right">日志等级：</td>
+				<td><select style="width:200px;border:solid 1px #c3d7e3;height:26px;" id="log_level">
+						<option selected value="7">7 [debug,调试信息]</option><option value="6">6 [info,有用的信息]</option>
+						<option value="5">5 [notice,普通但重要的事件]</option><option value="4">4 [warning,警告事件]</option>
+						<option value="3">3 [err,错误事件]</option><option value="2">2 [crit,关键的事件]</option>
+						<option value="1">1 [alert,必须马上采取行动的事件]</option><option value="0">0 [emerg,系统不可用]</option>
+					</select> <span class="tips">优先级(priority),数值越低等级越优先</span>
+				</td>
+			</tr>
+			<tr> 
+				<td height="38px" align="right">是否开启：</td>
+				<td>
+					<input type="checkbox" name="check_on" id="check_on">
+					<span class="tips"></span>
+				</td>
+			</tr>
+			<tr>
+				<td height="38px" align="right"><span id="msg"></span></td>
+				<td>
+					<input type="button" style="margin-left:100px;background:#1F75B7;color:#fff;padding:0px 15px;height:34px;line-height:34px;" onclick="ConfLog();" value="确 定" />
+				</td>
+			</tr>
+		</table>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

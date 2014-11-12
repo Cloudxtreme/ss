@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%">
+
+	<mx:VBox x="0" y="0" width="100%" height="100%">
+
+	<mx:HBox width="100%" >
+		<mx:Label text="密钥:"/>
+		<mx:TextInput id="mykey_textinput" displayAsPassword="true" text="" />
+	</mx:HBox>
+	
+	<mx:Label text="客户信息-------------------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+	<mx:HBox width="100%" >
+		<mx:Label text="客户名称:"/>
+		<mx:TextInput id="client_name" width="140" text="test" />
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="主域名:"/>
+		<mx:TextInput id="client_domain" width="180" text="test.com" />
+		<mx:Label text="参考 test.com 或者 test.com.cn" color="#FF0000" fontSize="13"/>
+		<mx:Label text="CDN域名:"/>
+		<mx:TextInput id="client_cdn_domain" width="180" text="cdn.test.com" />		
+		<mx:Label text="参考 www.test.com 或者 www.test.com.cn" color="#FF0000" fontSize="13"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >		
+		<mx:Label text="CNAME域名:"/>
+		<mx:TextInput id="client_cname_domain" width="300" text="cdn.test.com.cache.rightgo.net" />
+		<mx:Label text="参考 cdn.test.com.cache.rightgo.net 或者 cdn.test.com.cn.cache.rightgo.net" color="#FF0000" fontSize="13"/>		
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="电信IP列表:"/>
+		<mx:TextInput id="ct_ip_data" width="40%" text="1.1.1.1;2.2.2.2"/>
+		<mx:Label text="网通IP列表:"/>
+		<mx:TextInput id="cnc_ip_data" width="40%" text="3.3.3.3;4.4.4.4"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="多个IP请用分号‘；’分隔 如 1.1.1.1;2.2.2.2" color="#FF0000" fontSize="13"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="描述:"/>
+		<mx:TextInput id="client_desc" width="90%" />
+	</mx:HBox>
+	
+	<mx:Label text="新增客户-------------------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="1.客户管理平台设置"/>
+		<mx:Button label="A.新建客户" click="AddClient()"/>
+	</mx:HBox>		
+		
+	<mx:HBox width="100%" >	
+		<mx:Label text="2.内部DNS设置"/>
+		<mx:Button label="A.添加记录" click="AddNodeDNS()"/>
+		<mx:Button label="B.配置BIND" click="AddBINDDNS()"/>
+		<mx:Button label="C.检查BIND" click="CheckBINDDNS()"/>
+		<mx:Button label="D.重启BIND" click="ReloadBINDDNS()"/>
+		<mx:Button label="E.测试域名" click="TestDomain()"/>
+	</mx:HBox>
+	
+	<mx:HBox width="100%" >
+		<mx:Label text="3.客户域名设置"/>
+		<mx:Button label="A.客户增加域名" click="ClientAddCDNDomain()"/>
+	</mx:HBox>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="4.智能DNS设置"/>
+		<mx:Label text="登录DNS管理平台增加 CDN域名 然后 应用模板化" color="#FF0000" fontSize="13"/>
+	</mx:HBox>
+
+	<mx:Label text="系统管理-----------------------------------------------------------------------------" 
+		color="#2560F4" fontWeight="bold" horizontalCenter="0" fontSize="13"/>
+	<mx:HBox width="100%" >	
+		<mx:Button label="查看客户设置" click="CheckClientSetting()"/>
+	</mx:HBox>
+
+	<mx:Label text="输出窗口:"/>
+	<mx:TextArea id="ret_textarea" width="90%" height="250" fontFamily="宋体" fontSize="13" backgroundColor="#000000" color="#01A109" />
+	
+	<mx:Label text="-----删除客户-----" color="#2560F4" fontWeight="bold" horizontalCenter="0"/>
+
+	<mx:HBox width="100%" >	
+		<mx:Label text="1.管理平台设置"/>
+		<mx:Button label="A.删除客户" click="DelClient()"/>
+	</mx:HBox>		
+	
+	<mx:HBox width="100%" >	
+		<mx:Label text="2.内部DNS设置"/>
+		<mx:Button label="A.删除记录" click="DelNodeDNS()"/>
+		<mx:Button label="B.配置BIND" click="DelBINDDNS()"/>
+		<mx:Button label="C.检查BIND" click="CheckBINDDNS()"/>
+		<mx:Button label="D.重启BIND" click="ReloadBINDDNS()"/>
+		<mx:Button label="E.测试域名" click="TestDomain()"/>
+	</mx:HBox>
+	<mx:HBox width="100%" >
+		<mx:Label text="3.节点创建客户"/>
+		<mx:Button label="A.客户删除域名" click="ClientDelCDNDomain()"/>
+	</mx:HBox>		
+
+	</mx:VBox>
+	
+	<mx:HTTPService id="HttpWebCDNMgr" url="" method="POST" showBusyCursor="true" requestTimeout="200" resultFormat="text"
+	result="HttpRet(event)"
+	fault="faultHandler(event)">  
+	</mx:HTTPService>
+
+	<mx:Script>
+	<![CDATA[	
+	import mx.events.ListEvent;
+	import mx.events.CloseEvent;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
+	import mx.events.ItemClickEvent;
+	import mx.controls.Alert;
+	import Md5.MD5;
+	
+	public function Init():void
+	{
+		HttpWebCDNMgr.url = "http://" + this.parentApplication.g_serverip + "/webadmin/server/web_cdn_mgr_ex.php";
+		GetClientList();
+	}
+	
+	private function GetClientList():void
+	{
+		SendHttpWebCDNMgr('get_client_list');
+	}
+	
+	private function AddNodeDNS():void
+	{
+		SendHttpWebCDNMgr('add_node_dns');
+	}
+	
+	private function AddBINDDNS():void
+	{
+		SendHttpWebCDNMgr('add_bind_dns');
+	}
+
+	private function DelNodeDNS():void
+	{
+		SendHttpWebCDNMgr('del_node_dns');
+	}
+	
+	private function DelBINDDNS():void
+	{
+		SendHttpWebCDNMgr('del_bind_dns');
+	}
+	
+	private function CheckBINDDNS():void
+	{
+		SendHttpWebCDNMgr('check_bind_dns');
+	}
+	
+	private function ReloadBINDDNS():void
+	{
+		SendHttpWebCDNMgr('reload_bind_dns');
+	}
+	
+	private function TestDomain():void
+	{
+		SendHttpWebCDNMgr('test_bind_dns');
+	}
+	
+	private function AddClient():void
+	{
+		SendHttpWebCDNMgr('add_client');
+	}
+	
+	private function DelClient():void
+	{
+		SendHttpWebCDNMgr('del_client');
+	}
+	
+	private function CheckClientSetting():void
+	{
+		SendHttpWebCDNMgr('check_client_setting');
+	}
+	
+	private function ClientAddCDNDomain():void
+	{
+		SendHttpWebCDNMgr('client_add_cdn_domain');
+	}
+	
+	private function ClientDelCDNDomain():void
+	{
+		SendHttpWebCDNMgr('client_del_cdn_domain');
+	}
+	
+	private function myConfirm(event:CloseEvent, opcode:String):void
+	{  
+		if(event.detail==Alert.OK)
+		{   
+			_SendHttpWebCDNMgr(opcode);
+			return;
+		}
+		else if(event.detail==Alert.CANCEL)
+		{
+			return;
+		} 
+	}
+	
+	private function SendHttpWebCDNMgr(opcode:String):void
+	{
+		switch(opcode)
+		{
+			case 'get_client_list': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_client_setting': _SendHttpWebCDNMgr(opcode); return;
+			case 'check_bind_dns': _SendHttpWebCDNMgr(opcode); return;
+			case 'test_bind_dns': _SendHttpWebCDNMgr(opcode); return;
+		}
+		
+		Alert.show("您确定执行操作?", "温馨提示:", Alert.OK|Alert.CANCEL, this, 
+					function(e:CloseEvent):void{myConfirm(e, opcode)}, 
+					null, Alert.CANCEL);
+	}
+	
+	private function _SendHttpWebCDNMgr(opcode:String):void
+	{
+		var sendInfo:Object;
+		sendInfo = {
+					user:this.parentApplication.g_struser,
+					pass:this.parentApplication.g_strpass,
+					opcode:opcode,
+					skey:mykey_textinput.text,
+					client_name:client_name.text,
+					client_domain:client_domain.text.toLowerCase(),
+					client_cdn_domain:client_cdn_domain.text.toLowerCase(),
+					client_cname_domain:client_cname_domain.text.toLowerCase(),
+					ct_ip_data:ct_ip_data.text,
+					cnc_ip_data:cnc_ip_data.text,
+					client_desc:client_desc.text
+					};
+					
+		//check valid
+		if( opcode != 'get_client_list' )
+		{
+			if( mykey_textinput.text == '' )
+			{
+				Alert.show("请填写密钥 !");
+				return;
+			}
+		}
+		
+		//主域名检查部分
+		if( client_domain.text.indexOf(".") <= 0 )
+		{
+			Alert.show(client_domain.text + " 请填写客户主域名 !");
+			return;
+		}
+		
+		var domains:Array = client_domain.text.split(".");
+		if( domains.length >= 3 )
+		{
+			if( client_domain.text.indexOf(".com.cn") <= 0 &&
+				client_domain.text.indexOf(".net.cn") <= 0 )
+			{
+				Alert.show(client_domain.text + " 请填写客户主域名 !");
+				return;
+			}
+		}
+		if( client_domain.text.indexOf(" ") >= 0 )
+		{
+			Alert.show(client_domain.text + " 不要包含空格 !");
+			return;
+		}
+		
+		//cdn域名检查部分
+		if( client_cdn_domain.text.indexOf(client_domain.text) <= 0 )
+		{
+			Alert.show(client_cdn_domain.text + " 必须是 " + client_domain.text + " 的子域名 !");
+			return;
+		}
+		if( client_cdn_domain.text.indexOf(" ") >= 0 )
+		{
+			Alert.show(client_cdn_domain.text + " 不要包含空格 !");
+			return;
+		}
+		
+		//cname域名检查部分
+		if( client_cname_domain.text.indexOf(".cache.rightgo.net") <= 0 )
+		{
+			Alert.show(client_cname_domain.text + " 必须以 .cache.rightgo.net 结尾 !");
+			return;
+		} 
+		if( client_cname_domain.text.indexOf(client_domain.text) <= 0 )
+		{
+			Alert.show(client_cname_domain.text + " 请参考CNAME的格式 !");
+			return;
+		}		
+		if( client_cname_domain.text.indexOf(" ") >= 0 )
+		{
+			Alert.show(client_cname_domain.text + " 不要包含空格 !");
+			return;
+		}
+					
+		HttpWebCDNMgr.send(sendInfo);
+	}
+	
+	private function HttpRet(event:ResultEvent):void
+	{
+		ret_textarea.text = event.message.body.toString();
+	}
+
+	private function faultHandler(event:FaultEvent):void
+	{
+		Alert.show(event.fault.message,"无法连接服务器");
+	}
+	
+	]]>
+    </mx:Script>
+    	
+</mx:Canvas>

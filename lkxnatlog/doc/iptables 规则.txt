@@ -1,0 +1,36 @@
+文章  16:57:50
+iptables -t mangle -A FORWARD -m state --state NEW -j TOS --set-tos 0x10/0xff 
+iptables -A FORWARD -m state --state NEW -j LOG --log-level 7  
+文章  16:59:23
+syslog.conf或rsyslog.conf中增加
+kernel.debug			@xxx.xxx.xxx.xxx
+即可将日志发送到IP为xxx.xxx.xxx.xxx的服务器 
+文章  17:04:20
+iptables -t nat -A POSTROUTING -o em2 -j SNAT --to-source 192.168.23.10-192.168.23.19 --persistent  
+eth0为出口网卡，202.104.231.152-202.104.231.159为地址池 
+这两个根据需要进行调整 
+
+
+
+
+Jan  5 01:01:28 localhost kernel: IN=em1 OUT=em2 SRC=192.168.22.251 DST=192.168.23.20 LEN=60 TOS=0x10 PREC=0x00 TTL=127 ID=11699 PROTO=ICMP TYPE=8 CODE=0 ID=1 SEQ=52 
+Jan  5 01:01:28 localhost kernel: RJKJ:PROTO=1 NatIP=192.168.23.17 DST=192.168.23.20 
+Jan  5 01:01:33 localhost kernel: IN=em1 OUT=em2 SRC=192.168.22.251 DST=192.168.23.20 LEN=60 TOS=0x10 PREC=0x00 TTL=127 ID=11713 PROTO=ICMP TYPE=8 CODE=0 ID=1 SEQ=53 
+Jan  5 01:01:33 localhost kernel: RJKJ:PROTO=1 NatIP=192.168.23.17 DST=192.168.23.20
+
+
+<7>Jan 15 01:55:09 localhost kernel: eflyNAT:PROTOCOL=ICMP SrcIP=192.168.22.251 DstIP=192.168.23.30 SrcPORT=0 DstPORT=0 NatIP=192.168.23.17 NatPORT=0
+
+<7>Jan 15 01:55:10 localhost kernel: eflyNAT:PROTOCOL=ICMP SrcIP=192.168.22.251 DstIP=192.168.23.30 SrcPORT=0 DstPORT=0 NatIP=192.168.23.17 NatPORT=0
+
+
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+
+
+
+nf_log_packet(NFPROTO_IPV4, hooknum, skb, in, out, NULL,
+			      "efly_test:%s: recv packet", "efly_nat");
+
+终于找到办法....哭....  不看内核源码,自己调netlink,不知调到啥时候...
