@@ -1,0 +1,6 @@
+0x4c0ae7b0	cnic_register_driver	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/cnic	(unknown)
+0xa43f148f	bnx2_cnic_probe2	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/bnx2	(unknown)
+0x942748a7	cnic_dump_kcq	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/cnic	(unknown)
+0xdd472e53	cnic_register_driver2	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/cnic	(unknown)
+0x636af174	cnic_unregister_driver	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/cnic	(unknown)
+0x89bb6feb	cnic_unregister_driver2	/usr/work/efdetector/efio/iobase/capture/pf_ring/drivers/PF_RING_aware/broadcom/netxtreme2-7.0.36/bnx2/src/cnic	(unknown)

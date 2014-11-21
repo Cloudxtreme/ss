@@ -1,0 +1,48 @@
+#!/bin/bash
+# chkconfig: - 85 15
+# description: Efly Network Program: EflyVPN
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+STOP_TIMEOUT=${STOP_TIMEOUT-3}
+
+start() {
+        echo -n $"Starting efvpnd: "
+        /bin/sh /etc/efvpn/run
+        RETVAL=0
+        echo
+        [ $RETVAL = 0 ]
+}
+
+stop() {
+	echo -n $"Stopping efvpnd: "
+	killproc -p /var/run/efvpnd.pid -d ${STOP_TIMEOUT} /usr/sbin/efvpnd
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ]
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+        status -p /var/run/efvpnd.pid /usr/sbin/efvpnd
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  *)
+	echo $"Usage: $prog {start|stop|restart}"
+	RETVAL=2
+esac
+
+exit $RETVAL
