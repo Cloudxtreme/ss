@@ -1,0 +1,31 @@
+1、yum安装必要的编译包gcc、php等
+
+2、编译安装freeradius
+
+3、安装mysql插件
+	yum -y install mysql-devel
+	cd freeradius-server-2.1.10/src/modules/rlm_sql/drivers/rlm_sql_mysql
+	./configure --with-mysql-dir=/usr/share/mysql/ --with-mysql-lib-dir=/usr/lib/mysql/
+	make
+	make install
+	
+4、scp复制raddb文件夹
+
+5、安装php的json插件
+
+6、导入数据库radius.sql
+
+7、开iptables中radius相关端口
+
+8、修改pppoe-server的radius配置
+	/etc/ppp/radius/servers
+	/etc/ppp/radius/radiusclient.conf
+	
+	
+出现错误：
+1、rlm_eap_tls: Error reading private key file /etc/raddb/certs/server.pem
+	解决：把/etc/raddb/certs/server.pem文件删掉就可以
+	
+	
+2、用户不能自动上传数据（心跳）
+	解决：添加用户时没有把用户放入testgroup，而testgroup有个Acct-Interim-Interval的reply，是表示是否开启心跳的

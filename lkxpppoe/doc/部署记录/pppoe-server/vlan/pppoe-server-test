@@ -1,0 +1,11 @@
+#!/bin/bash
+pppoe-server -I eth0 -N 62 -L 10.0.0.1 -R 10.0.0.2 -S pppoe-115
+pppoe-server -I eth0.1000 -N 62 -L 10.0.1.1 -R 10.0.1.2 -S pppoe-115
+pppoe-server -I eth0.2000 -N 62 -L 10.0.2.1 -R 10.0.2.2 -S pppoe-115
+pppoe-server -I eth0.1000.100 -N 62 -L 10.0.3.1 -R 10.0.3.2 -S pppoe-115
+pppoe-server -I eth0.1000.200 -N 62 -L 10.0.3.64 -R 10.0.3.65 -S pppoe-115
+pppoe-server -I eth0.2000.100 -N 62 -L 10.0.4.1 -R 10.0.4.2 -S pppoe-115
+pppoe-server -I eth0.2000.200 -N 62 -L 10.0.4.64 -R 10.0.4.65 -S pppoe-115
+pppoe-server -I eth0.100 -N 62 -L 10.0.5.1 -R 10.0.5.2 -S pppoe-115
+pppoe-server -I eth0.100.1000 -N 62 -L 10.0.6.1 -R 10.0.6.2 -S pppoe-115
+pppoe-server -I eth0 -N 62 -L 10.0.0.1 -R 10.0.0.2 -S pppoe

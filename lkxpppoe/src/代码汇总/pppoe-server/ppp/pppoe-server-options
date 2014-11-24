@@ -1,0 +1,22 @@
+# PPP options for the PPPoE server
+# LIC: GPL
+auth
+require-pap
+require-chap
+refuse-mschap
+require-mschap-v2
+default-mru
+default-asyncmap
+lcp-echo-interval 60
+lcp-echo-failure 5
+noipdefault
+noipx
+nodefaultroute
+proxyarp
+noktune
+logfile /var/log/pppd.log
+#plugin /usr/lib/pppd/2.4.4/radius.so
+plugin /usr/lib/pppd/2.4.5/radius.so
+radius-config-file /etc/ppp/radius/radiusclient.conf
+ms-dns 202.96.128.166
+ms-dns 202.96.134.133

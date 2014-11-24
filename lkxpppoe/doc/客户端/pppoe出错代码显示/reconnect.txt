@@ -1,0 +1,1 @@
+const char * sSQL1 = "create table seting(reconnect_num integer, reconnect_time integer,loginsucceed_nodisplay varchar(10));";

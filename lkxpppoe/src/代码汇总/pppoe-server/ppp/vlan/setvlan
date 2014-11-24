@@ -1,0 +1,11 @@
+#!/bin/bash
+count=2152
+end=2192
+eth=em2
+while [ $count -lt $end ] 
+do
+	vconfig add ${eth} ${count}
+	vconfig set_flag ${eth}.${count} 1 1
+	ifconfig ${eth}.${count} up
+	count=`expr $count + 1`	
+done

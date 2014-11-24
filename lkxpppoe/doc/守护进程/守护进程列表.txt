@@ -1,0 +1,13 @@
+pppoe:	/etc/ppp/user-control/killuser.php
+
+radius:	
+				/etc/raddb/syn-user-on-radius/synuser.php
+
+ÖÐ¼ä¼þ:
+				/root/pppoe-middleware/adduser.php
+				/root/pppoe-middleware/changepassword.php
+				/root/pppoe-middleware/dateuser.php
+				/root/pppoe-middleware/deleteuser.php
+				/root/pppoe-middleware/limituser.php
+				/root/pppoe-middleware/killuser.php
+				/root/pppoe-middleware/manage-sql/mysqlserver.php

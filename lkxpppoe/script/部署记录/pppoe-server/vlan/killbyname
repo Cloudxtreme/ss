@@ -1,0 +1,21 @@
+#!/bin/bash
+begin=30000
+end=40000
+command="pppoe-server"
+
+while [ $begin -lt $end ]
+do
+	if [ -f /proc/${begin}/cmdline ]
+	then
+		cmd=`cat /proc/${begin}/cmdline`
+		echo "$cmd" |grep -q "$command"
+		if [ $? -eq 0 ]
+		then
+			echo $cmd
+			kill -9 $begin
+		fi
+	fi
+	begin=`expr $begin + 1`
+done
+
+

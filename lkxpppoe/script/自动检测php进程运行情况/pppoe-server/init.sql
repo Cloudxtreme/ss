@@ -1,0 +1,3 @@
+insert into programn(name,pid,command,status) values("deadcheck","0","nohup php /etc/ppp/login-logout/deadcheck.php > /var/log/pppoe_project/deadcheck.log  &","off");
+insert into programn(name,pid,command,status) values("killuser","0","nohup php /etc/ppp/user-control/killuser.php > /var/log/pppoe_project/kill.log  &","off");
+insert into programn(name,pid,command,status) values("synuser","0","nohup php /etc/ppp/syn-user-on-pppoe/synuser.php > /var/log/pppoe_project/synuser.log &","off");

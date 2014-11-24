@@ -1,0 +1,12 @@
+#!/bin/bash
+# This file should not be modified -- make local changes to
+# /etc/ppp/ip-up.local instead
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+export PATH
+
+php /etc/ppp/speed-limit/unspeedLimit.php $1
+php /etc/ppp/login-logout/logout.php $2 >> /var/log/logout.log
+php /etc/ppp/pppoe-recordupdate/userdown.php $2
+
+php /etc/ppp/login-logout/unregister.php $1

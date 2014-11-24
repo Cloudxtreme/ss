@@ -1,0 +1,2 @@
+* * * * * php /etc/raddb/syn-user-on-radius/killlogin.php > /var/log/killlogin.log
+#0 1 * * * php /etc/raddb/limit/checklimit.php

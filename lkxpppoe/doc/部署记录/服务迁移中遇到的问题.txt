@@ -1,0 +1,25 @@
+1、pppoe-server向radiusd的1812端口发送数据，用的竟然是192.168.22.113
+	原来是SNAT搞的鬼
+	
+2、vlan的建立，先建了2010,再建2020，结果，2010可以通，但2020不通
+	原来是
+	ifconfig em2.2010 192.168.20.10 netmask 255.255.255.0 up 
+	ifconfig em2.2010 192.168.20.20 netmask 255.255.255.0 up 
+	
+	结果两个netmask相同，均为192.168.20.0/0，数据出去的时候,总是跑到2010去了
+	所以接口起动时，不应该设地址。
+	
+3、ssh和mysql慢
+	原因：反向域名解释
+	解决：
+	vim /etc/mysql/my.cnf
+	[mysqld]
+	skip-name-resolve
+	
+	vim /etc/ssh/sshd_config
+	UseDNS no
+
+关键配置
+1、radiusd的配置：数据库nat表、pppoe-server的servers和radiusclient.conf文件、重新启动radiusd
+
+2、

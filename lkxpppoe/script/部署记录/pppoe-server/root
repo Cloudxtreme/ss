@@ -1,0 +1,2 @@
+0 * * * * php /etc/ppp/syn-user-on-pppoe/synuser.php
+#*/5 * * * * php /etc/ppp/login-logout/alivecheck.php

@@ -1,0 +1,60 @@
+一、基本数据结构
+class User
+{
+    public $username;
+    public $password;
+    public $radiusid;       //radius server ip
+    public $mealid;
+}
+
+二、添加用户
+1、队列表：pppoe_mgr_user_add
+2、有意义的字段：username、password、radiusid、mealid
+
+三、修改用户密码
+1、队列表：pppoe_mgr_user_pwd
+2、有意义的字段：username、password、radiusid
+
+四、删除用户
+1、队列表：pppoe_mgr_user_del
+2、有意义的字段：username、radiusid
+
+五、修改用户套餐
+1、队列表：pppoe_mgr_user_lim
+2、有意义的字段：username、radiusid、mealid
+
+六、修改用户可用日期
+1、队列表：pppoe_mgr_user_dat
+2、有意义的字段：username、radiusid
+
+七、即时断开用户连接
+1、队列表：pppoe_mgr_user_kil
+2、有意义的字段：username、radiusid
+
+八、恢复用户
+1、队列表：pppoe_mgr_user_rec
+2、有意义的字段：username、radiusid
+
+注：没有意义的字段可以随便设置，就设为空字串吧。
+
+用户操作完后，会将结果存入client,结果可能值如下：
+true_add
+false_add
+
+true_pwd
+false_pwd
+
+true_del
+false_del
+
+true_lim
+false_lim
+
+true_dat
+false_dat
+
+true_discon
+false_discon
+
+其中，值为false_xxx时，会记录message字段
+

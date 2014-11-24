@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# This script will be executed *after* all the other init scripts.
+# You can put your own initialization stuff in here if you don't
+# want to do the full Sys V style init stuff.
+
+touch /var/lock/subsys/local
+#httpsqs -d -p 12001 -x /opt/httpsqs
+nohup php /etc/raddb/syn-user-on-radius/synuser.php > /var/log/syn.log &

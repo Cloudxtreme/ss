@@ -1,0 +1,10 @@
+#!/bin/bash
+nohup php /root/pppoe-middleware/adduser.php > /var/log/mid-add.log &
+nohup php /root/pppoe-middleware/changepassword.php > /var/log/mid-pwd.log &
+nohup php /root/pppoe-middleware/dateuser.php > /var/log/mid-date.log &
+nohup php /root/pppoe-middleware/deleteuser.php > /var/log/mid-del.log &
+nohup php /root/pppoe-middleware/recoveruser.php > /var/log/mid-rec.log &
+nohup php /root/pppoe-middleware/limituser.php > /var/log/mid-lim.log &
+nohup php /root/pppoe-middleware/killuser.php > /var/log/mid-kill.log &
+nohup php /root/pppoe-middleware/simul.php > /var/log/mid-sim.log &
+nohup php /root/pppoe-middleware/manage-sql/mysqlserver.php > /var/log/mid-sql.log &

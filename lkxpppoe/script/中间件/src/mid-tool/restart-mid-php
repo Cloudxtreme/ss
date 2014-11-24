@@ -1,0 +1,3 @@
+#!/bin/bash
+sh kill-mid-php
+sh start-mid-php

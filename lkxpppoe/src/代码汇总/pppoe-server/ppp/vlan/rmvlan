@@ -1,0 +1,9 @@
+#!/bin/bash
+count=2060
+end=2080
+eth=em2
+while [ $count -lt $end ] 
+do
+	vconfig rem ${eth}.${count}
+        count=`expr $count + 1`
+done

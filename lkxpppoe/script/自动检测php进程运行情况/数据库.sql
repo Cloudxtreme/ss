@@ -1,0 +1,1 @@
+create table programn(id integer primary key autoincrement,name varchar(100),pid varchar(10),command varchar(500),status varchar(10));

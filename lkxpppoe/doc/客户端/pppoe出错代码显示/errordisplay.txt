@@ -1,0 +1,1 @@
+const char * sSQL1 = "create table errordisplay(errno varchar(5) PRIMARY KEY, reason varchar(100), description varchar(400));";

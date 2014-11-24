@@ -1,0 +1,1 @@
+PHP Fatal error:  date(): Timezone database is corrupt - this should *never* happen! in /etc/ppp/config/share/now.php on line 5
