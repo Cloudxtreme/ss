@@ -52,6 +52,16 @@ typedef struct _http_info
 	unsigned char url[HTTP_URL_LEN];
 }http_info;
 
+typedef struct _attack_event
+{
+    unsigned int ip, attack_type;
+    unsigned long attack_begin, attack_over;
+    unsigned long attack_max_pps, attack_max_bps;
+    unsigned char attack_name[32];
+}attack_event;
+
+
+#define MAX_ATTACK_EVENT            1000
 
 #define MAX_DATABASE                8
 #define MAX_READER                  16
@@ -119,9 +129,11 @@ typedef struct _database
     ip_count_t *ict;
     session_pool *pool;
     detect_opera *opera;
+    attack_event *attack;
     http_info *ti, **pti, **ri, **ri_timeout;
+    unsigned int attack_count;
     unsigned int rii, rij, rti, rtj, pti_cur, pti_rec, sli, slj, ili, ilj;
-    unsigned long ip_total;
+    unsigned long ip_total, session_total, pkg, flow, l_pkg, l_flow, pps, bps;
     unsigned char lock;
     log_content *ip_log;
     log_content *session_log;
@@ -137,6 +149,7 @@ typedef struct _reader
     int flag;//    inbound outbound or in&out
     ef_slot slot[READER_MAX_SLOT];
     unsigned int cur, fin;
+    unsigned long pkg, flow;
     database *db;
     unsigned char dev[64];
     pthread_t thread;

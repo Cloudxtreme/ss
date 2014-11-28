@@ -25,16 +25,29 @@
 #define LIMIT_BPS_IN        2
 #define LIMIT_BPS_OUT       3
 
+#define MAX_NORMAL_VALUE        2
+#define NORMAL_VALUE_FLOW       0
+#define NORMAL_VALUE_SESSION    1
+
+typedef struct _normal_value
+{
+    unsigned long total;
+    unsigned long value;
+    unsigned long time, ab_time;
+}normal_value;
+
 
 typedef struct _ip_info
 {
     unsigned int ip;
+    unsigned long attack, attack_max_pps, attack_max_bps;
     unsigned long recv, send, inflow, outflow, pps_in, pps_out, bps_in, bps_out;
     unsigned long tcp_flow, udp_flow, icmp_flow, http_flow;
     unsigned long session_total, session_close, session_timeout, http_session;
     unsigned long last_recv, last_send, last_inflow, last_outflow, last_time;
-    unsigned long last_session_total, last_http_session, last_icmp_flow, last_http_flow;
-    unsigned long new_session, new_http_session, icmp_bps, http_bps;
+    unsigned long last_session_total, last_http_session, last_tcp_flow, last_udp_flow, last_icmp_flow, last_http_flow;
+    unsigned long new_session, new_http_session, tcp_bps, udp_bps, icmp_bps, http_bps;
+    normal_value normal[MAX_NORMAL_VALUE];
     struct _ip_info *prev, *next, *prev_use, *next_use, *next_alive;
 }ip_info;
 
@@ -56,6 +69,7 @@ struct _ip_count_t
     unsigned char lock, add_lock, del_lock, top_lock;
     unsigned char *table_lock;
     unsigned long time;
+    void *attack_cbk;
     pthread_t counter;
     pthread_t timer;
 };
@@ -142,9 +156,12 @@ static void top_repeat(top_info *top)
 #if 1
 static void count_thread(void *arg)
 {
+    int i;
     ip_count_t *ict = (ip_count_t *)arg;
     ip_info *use = NULL, *head = NULL, *tail = NULL;
-    unsigned long recv, send, inflow, outflow, session_total, http_session, icmp_flow, http_flow;
+    unsigned long recv, send, inflow, outflow, session_total, http_session, tcp_flow, udp_flow, icmp_flow, http_flow;
+    normal_value *normal;
+    int attack_type;
 
     while(ict->stats)
     {
@@ -165,30 +182,38 @@ static void count_thread(void *arg)
             outflow = use->outflow;
             session_total = use->session_total;
             http_session = use->http_session;
+            tcp_flow = use->tcp_flow;
+            udp_flow = use->udp_flow;
             icmp_flow = use->icmp_flow;
             http_flow = use->http_flow;
             if(ict->time - use->last_time > 1000000)
             {
-                if(ict->time - use->last_time < 2000000)    //take attention!     take what attention?
+                unsigned long seconds = 0;
+                if(!use->last_time || (ict->time - use->last_time < 2000000))    //take attention!     take what attention?
                 {
+                    seconds = 1;
                     use->pps_in = recv - use->last_recv;
                     use->pps_out = send - use->last_send;
                     use->bps_in = inflow - use->last_inflow;
                     use->bps_out = outflow - use->last_outflow;
                     use->new_session = session_total - use->last_session_total;
                     use->new_http_session = http_session - use->last_http_session;
+                    use->tcp_bps = tcp_flow - use->last_tcp_flow;
+                    use->udp_bps = udp_flow - use->last_udp_flow;
                     use->icmp_bps = icmp_flow - use->last_icmp_flow;
                     use->http_bps = http_flow - use->last_http_flow;
                 }
                 else
                 {
-                    unsigned long seconds = (ict->time - use->last_time) / 1000000;
+                    seconds = (ict->time - use->last_time) / 1000000;
                     use->pps_in = (recv - use->last_recv) / seconds;
                     use->pps_out = (send - use->last_send) / seconds;
                     use->bps_in = (inflow - use->last_inflow) / seconds;
                     use->bps_out = (outflow - use->last_outflow) / seconds;
                     use->new_session = (session_total - use->last_session_total) / seconds;
                     use->new_http_session = (http_session - use->last_http_session) / seconds;
+                    use->tcp_flow = (tcp_flow - use->last_tcp_flow) / seconds;
+                    use->udp_flow = (udp_flow - use->last_udp_flow) / seconds;
                     use->icmp_bps = (icmp_flow - use->last_icmp_flow) / seconds;
                     use->http_bps = (http_flow - use->last_http_flow) / seconds;
                 }
@@ -198,9 +223,103 @@ static void count_thread(void *arg)
                 use->last_outflow = outflow;
                 use->last_session_total = session_total;
                 use->last_http_session = http_session;
+                use->last_tcp_flow = tcp_flow;
+                use->last_udp_flow = udp_flow;
                 use->last_icmp_flow = icmp_flow;
                 use->last_http_flow = http_flow;
                 use->last_time = ict->time;
+
+                normal = &use->normal[NORMAL_VALUE_FLOW];
+                if((!normal->value) || (use->bps_in < 20000000) || ((normal->value << 1) > use->bps_in) || (normal->time < 600))
+                {
+                    normal->ab_time = 0;
+                    normal->total += use->bps_in;
+                    normal->time += seconds;
+                    normal->value = normal->total / normal->time;
+                    attack_type = (use->attack & IPCOUNT_ATTACK_TCP_FLOOD) | (use->attack & IPCOUNT_ATTACK_UDP_FLOOD) | (use->attack & IPCOUNT_ATTACK_ICMP_FLOOD);
+                    if(attack_type)
+                    {
+                        use->attack &= ~(attack_type);
+                        if(ict->attack_cbk)
+                        {
+                            ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                            callback(ict, use->ip, attack_type, 0, use->attack_max_pps, use->attack_max_bps);
+                        }
+                    }
+                }
+                else
+                {
+                    normal->ab_time++;
+                    if(normal->ab_time > 10)
+                    {
+                        if(use->tcp_bps > use->udp_bps)
+                        {
+                            if(use->tcp_bps > use->icmp_bps)
+                                attack_type = IPCOUNT_ATTACK_TCP_FLOOD;
+                            else
+                                attack_type = IPCOUNT_ATTACK_ICMP_FLOOD;
+                        }
+                        else
+                        {
+                            if(use->udp_bps > use->icmp_bps)
+                                attack_type = IPCOUNT_ATTACK_UDP_FLOOD;
+                            else
+                                attack_type = IPCOUNT_ATTACK_ICMP_FLOOD;
+                        }
+                        if(!(use->attack & attack_type))
+                        {
+                            use->attack |= attack_type;
+                            if(ict->attack_cbk)
+                            {
+                                ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                                callback(ict, use->ip, attack_type, 1, use->attack_max_pps, use->attack_max_bps);
+                            }
+                        }
+                    }
+                }
+
+                normal = &use->normal[NORMAL_VALUE_SESSION];
+                if((!normal->value) || (use->new_session < 2500) || ((normal->value << 1) > use->new_session) || (normal->time < 600))
+                {
+                    normal->ab_time = 0;
+                    normal->total += use->new_session;
+                    normal->time += seconds;
+                    normal->value = normal->total / normal->time;
+                    if(use->attack & IPCOUNT_ATTACK_SYN_FLOOD)
+                    {
+                        use->attack &= ~(IPCOUNT_ATTACK_SYN_FLOOD);
+                        if(ict->attack_cbk)
+                        {
+                            ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                            callback(ict, use->ip, IPCOUNT_ATTACK_SYN_FLOOD, 0, use->attack_max_pps, use->attack_max_bps);
+                        }
+                    }
+                }
+                else
+                {
+                    normal->ab_time++;
+                    if(normal->ab_time > 10)
+                    {
+                        if(!(use->attack & IPCOUNT_ATTACK_SYN_FLOOD))
+                        {
+                            use->attack |= IPCOUNT_ATTACK_SYN_FLOOD;
+                            if(ict->attack_cbk)
+                            {
+                                ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                                callback(ict, use->ip, IPCOUNT_ATTACK_SYN_FLOOD, 1, use->attack_max_pps, use->attack_max_bps);
+                            }
+                        }
+                    }
+                }
+                if(!use->attack)
+                    use->attack_max_pps = use->attack_max_bps = 0;
+                else
+                {
+                    if(use->pps_in > use->attack_max_pps)
+                        use->attack_max_pps = use->pps_in;
+                    if(use->bps_in > use->attack_max_bps)
+                        use->attack_max_bps = use->bps_in;
+                }
             }
             if(1)
             {
@@ -329,6 +448,16 @@ int ipcount_tini(ip_count_t *ict)
         if(ict->table_lock)
             free(ict->table_lock);
         free(ict);
+        return 1;
+    }
+    return 0;
+}
+
+int ipcount_set_attack_cbk(ip_count_t *ict, void *cbk)
+{
+    if(ict && ict->stats)
+    {
+        ict->attack_cbk = cbk;
         return 1;
     }
     return 0;
@@ -618,8 +747,7 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
     {
         unsigned int key = ((id->ip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
         ip_info *find = NULL;
-        lock(&(ict->add_lock));
-        //lock(&(ict->del_lock));
+        lock(&(ict->table_lock[key]));
         find = ict->table[key];
         while(find)
         {
@@ -627,8 +755,11 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
                 break;
             find = find->next;
         }
+        unlock(&(ict->table_lock[key]));
         if(find)
         {
+            id->attack_max_pps = find->attack_max_pps;
+            id->attack_max_bps = find->attack_max_bps;
             id->recv = find->recv;
             id->send = find->send;
             id->inflow = find->inflow;
@@ -643,8 +774,6 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
             id->http_session = find->http_session;
             ret = 1;
         }
-        //unlock(&(ict->del_lock));
-        unlock(&(ict->add_lock));
     }
     return ret;
 }
