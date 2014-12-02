@@ -40,24 +40,33 @@ static int control()
     int i, j;
     while(g_run)
     {
-        for(i = 0; i < g_database_num; i++)
-            g_db[i]->pkg = g_db[i]->flow = 0;
         for(i = 0; i < g_reader_num; i++)
         {
+            unsigned long tmp_pkg, tmp_flow;
             reader_t *reader = g_reader[i];
-            reader->db->pkg += reader->pkg;
-            reader->db->flow += reader->flow;
-        }
-        for(i = 0; i < g_database_num; i++)
-        {
-            g_db[i]->pps = g_db[i]->pkg - g_db[i]->l_pkg;
-            g_db[i]->bps = g_db[i]->flow - g_db[i]->l_flow;
-            g_db[i]->l_pkg = g_db[i]->pkg;
-            g_db[i]->l_flow = g_db[i]->flow;
+            database *db = reader->db;
+            tmp_pkg = reader->pkg;
+            tmp_flow = reader->flow;
+            switch(reader->flag)
+            {
+                case READER_FLAG_INBOUND:
+                    db->in_pps = tmp_pkg - reader->l_pkg;
+                    db->in_bps = tmp_flow - reader->l_flow;
+                    break;
+                case READER_FLAG_OUTBOUND:
+                    db->out_pps = tmp_pkg - reader->l_pkg;
+                    db->out_bps = tmp_flow - reader->l_flow;
+                    break;
+                case READER_FLAG_ALL:
+                    break;
+                default:;
+            }
+            reader->l_pkg = tmp_pkg;
+            reader->l_flow = tmp_flow;
         }
         fprintf(stderr, "database:");
         for(i = 0; i < g_database_num; i++)
-            fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu|", g_db[i]->pps, g_db[i]->bps * 8,
+            fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu|", g_db[i]->in_pps + g_db[i]->out_pps, (g_db[i]->in_bps + g_db[i]->out_bps) * 8,
                         g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj,
                         g_db[i]->pti_cur, g_db[i]->pti_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
         fprintf(stderr, "\n");
@@ -224,7 +233,6 @@ static http_info *get_http_detail(database *db)
         memset(detail, 0, sizeof(http_info));
         detail->db_id = db->id;
         db->pti_cur = (db->pti_cur + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_cur + 1);
-        db->session_total++;
     }
     unlock(&db->lock);
     return detail;
@@ -236,7 +244,6 @@ static int rec_http_detail(database *db, http_info *detail)
     db->pti[db->pti_rec] = detail;
     db->pti_rec = (db->pti_rec + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_rec + 1);
     detail->use = 0;
-    db->session_total--;
     unlock(&db->lock);
     return 1;
 }
@@ -320,9 +327,6 @@ static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_
             {
                 case IPCOUNT_ATTACK_SYN_FLOOD:
                     snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "syn_flood\0");
-                    break;
-                case IPCOUNT_ATTACK_TCP_FLOOD:
-                    snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "tcp_flood\0");
                     break;
                 case IPCOUNT_ATTACK_UDP_FLOOD:
                     snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "udp_flood\0");
@@ -651,7 +655,8 @@ static int db_recorder(void *arg)
         if(log_gen != -1)
         {
             flock(log_gen, LOCK_EX);
-            fprintf(log_gen, "%lu %lu %lu %lu\n", db->pps, db->bps, db->ip_total, db->session_total);
+            snprintf(buf, sizeof(buf), "%lu %lu %lu %lu %lu\n\0", db->in_pps, db->in_bps, db->out_pps, db->out_bps, db->ip_total);
+            write(log_gen, &buf, strlen(buf));
             flock(log_gen, LOCK_UN);
             close(log_gen);
         }
@@ -698,17 +703,6 @@ static int db_recorder(void *arg)
             for(i = 0; i < db->attack_count; i++)
             {
                 attack_event *attack = &db->attack[i];
-                if(!attack->attack_over)
-                {
-                    id->ip = attack->ip;
-                    if(ipcount_get_ip(db->ict, id))
-                    {
-                        if(id->attack_max_pps)
-                            attack->attack_max_pps = id->attack_max_pps;
-                        if(id->attack_max_bps)
-                            attack->attack_max_bps = id->attack_max_bps;
-                    }
-                }
                 ip_2_str(attack->ip, ip_str);
                 date = localtime(&attack->attack_begin);
                 snprintf(date_str, sizeof(date_str), "%d-%02d-%02d %02d:%02d:%02d",

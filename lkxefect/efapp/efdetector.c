@@ -20,7 +20,7 @@ static volatile int g_run = 0;
 
 extern unsigned long base_time;
 
-unsigned volatile long long pkg_total[MAX_READER] = {0};
+unsigned long no_process_detail = 0;
 
 
 static void lock(char *lock)
@@ -38,18 +38,37 @@ static void unlock(char *lock)
 static int control()
 {
     int i, j;
-    unsigned long long pkg_sum = 0, pkg_prev = 0, pkgs = 0;
     while(g_run)
     {
-        pkg_sum = 0;
         for(i = 0; i < g_reader_num; i++)
-            pkg_sum += pkg_total[i];
-        pkgs = pkg_sum - pkg_prev;
-        fprintf(stderr, "pkg: %llu pps\n", pkgs);
-        pkg_prev += pkgs;
+        {
+            unsigned long tmp_pkg, tmp_flow;
+            reader_t *reader = g_reader[i];
+            database *db = reader->db;
+            tmp_pkg = reader->pkg;
+            tmp_flow = reader->flow;
+            switch(reader->flag)
+            {
+                case READER_FLAG_INBOUND:
+                    db->in_pps = tmp_pkg - reader->l_pkg;
+                    db->in_bps = tmp_flow - reader->l_flow;
+                    break;
+                case READER_FLAG_OUTBOUND:
+                    db->out_pps = tmp_pkg - reader->l_pkg;
+                    db->out_bps = tmp_flow - reader->l_flow;
+                    break;
+                case READER_FLAG_ALL:
+                    break;
+                default:;
+            }
+            reader->l_pkg = tmp_pkg;
+            reader->l_flow = tmp_flow;
+        }
         fprintf(stderr, "database:");
         for(i = 0; i < g_database_num; i++)
-            fprintf(stderr, "|%u %u %u %u %u %u %u %u %llu|", g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj, g_db[i]->pti_cur, g_db[i]->pti_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
+            fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu|", g_db[i]->in_pps + g_db[i]->out_pps, (g_db[i]->in_bps + g_db[i]->out_bps) * 8,
+                        g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj,
+                        g_db[i]->pti_cur, g_db[i]->pti_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
         fprintf(stderr, "\n");
         fprintf(stderr, "reader:");
         for(i = 0; i < g_reader_num; i++)
@@ -127,7 +146,7 @@ static int read(void *arg)
                 continue;
             }
             reads = efio_read(reader->fd, &reader->slot[cur], max_read);
-            pkg_total[reader->id] += reads;
+            reader->pkg += reads;
             for(i = 0; i < reads; i++)
             {
                 void *pkg = reader->slot[cur + i].buf;
@@ -135,6 +154,7 @@ static int read(void *arg)
                 unsigned int key = 0;
                 work_line *line = NULL;
 
+                reader->flow += len;
                 if(IF_IP(pkg))
                 {
                     unsigned int sip = GET_IP_SIP(pkg);
@@ -218,8 +238,19 @@ static http_info *get_http_detail(database *db)
     return detail;
 }
 
+static int rec_http_detail(database *db, http_info *detail)
+{
+    lock(&db->lock);
+    db->pti[db->pti_rec] = detail;
+    db->pti_rec = (db->pti_rec + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_rec + 1);
+    detail->use = 0;
+    unlock(&db->lock);
+    return 1;
+}
+
 static int fin_http_detail(database *db, http_info *detail, int timeout)
 {
+    int fin_succ = 0;
     lock(&db->lock);
     if(!timeout)
     {
@@ -228,6 +259,7 @@ static int fin_http_detail(database *db, http_info *detail, int timeout)
         {
             db->ri[db->rii] = detail;
             db->rii = tmp;
+            fin_succ = 1;
         }
     }
     else
@@ -237,19 +269,15 @@ static int fin_http_detail(database *db, http_info *detail, int timeout)
         {
             db->ri_timeout[db->rti] = detail;
             db->rti = tmp;
+            fin_succ = 1;
         }
     }
     unlock(&db->lock);
-    return 1;
-}
-
-static int rec_http_detail(database *db, http_info *detail)
-{
-    lock(&db->lock);
-    db->pti[db->pti_rec] = detail;
-    db->pti_rec = (db->pti_rec + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_rec + 1);
-    detail->use = 0;
-    unlock(&db->lock);
+    if(!fin_succ)
+    {
+        rec_http_detail(db, detail);
+        no_process_detail++;
+    }
     return 1;
 }
 
@@ -265,6 +293,71 @@ static int timeout_process(session *s)
         fin_http_detail(db, detail, 1);
 	}
 	return 0;
+}
+
+static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attacking,
+                            unsigned long max_pps, unsigned long max_bps)
+{
+    int i;
+    int ret = 0;
+    database *db = NULL;
+    for(i = 0; i < g_database_num; i++)
+    {
+        if(g_db[i]->ict == ict)
+        {
+            db = g_db[i];
+            break;
+        }
+    }
+    if(!db)
+        goto done;
+    if(attacking)
+    {
+        if(db->attack_count < MAX_ATTACK_EVENT)
+        {
+            attack_event *attack = &db->attack[db->attack_count];
+            attack->attack_begin = time(NULL);
+            attack->ip = ip;
+            attack->attack_type = attack_type;
+            if(max_pps > attack->attack_max_pps)
+                attack->attack_max_pps = max_pps;
+            if(max_bps > attack->attack_max_bps)
+                attack->attack_max_bps = max_bps;
+            switch(attack_type)
+            {
+                case IPCOUNT_ATTACK_SYN_FLOOD:
+                    snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "syn_flood\0");
+                    break;
+                case IPCOUNT_ATTACK_UDP_FLOOD:
+                    snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "udp_flood\0");
+                    break;
+                case IPCOUNT_ATTACK_ICMP_FLOOD:
+                    snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "icmp_flood\0");
+                    break;
+                default:
+                    snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "unknow attack\0");
+            }
+            db->attack_count++;
+        }
+    }
+    else
+    {
+        for(i = 0; i < db->attack_count; i++)
+        {
+            attack_event *attack = &db->attack[i];
+            if((!attack->attack_over) && (attack->ip == ip) && (attack_type & attack->attack_type))
+            {
+                attack->attack_over = time(NULL);
+                if(max_pps > attack->attack_max_pps)
+                    attack->attack_max_pps = max_pps;
+                if(max_bps > attack->attack_max_bps)
+                    attack->attack_max_bps = max_bps;
+            }
+        }
+    }
+    ret = 1;
+done:
+    return ret;
 }
 
 #define STR_OVERFLOW(pkg, len, str) ((str < pkg) || (str > pkg + len))
@@ -309,6 +402,7 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                         	session_set_detail(s, detail);
                         	session_set_timeout(s, TCP_TIMEOUT);
                         	session_set_timeout_callback(s, (void *)timeout_process);
+                        	ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_NEW);
                     	}
                     	else
                     	{
@@ -338,7 +432,6 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                     	{
                         	detail->first_ack_time = time;
                         	detail->stats = TCP_STAT_CONN;
-                        	ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_NEW);
                     	}
                     	detail->last_ack_time = time;
 
@@ -534,12 +627,13 @@ static int db_recorder(void *arg)
     database *db = (database *)arg;
     ip_data *id = NULL;
     top_data *td = NULL;
-    char file_all[256] = {0};
+    char file_gen[256] = {0};
+    char file_data[256] = {0};
     char file_top[256] = {0};
-    char buf[256] = {0};
+    char file_attack[256] = {0};
+    char buf[2048] = {0};
     char ip_str[32] = {0};
-    int log_all = 0;
-    int log_top = 0;
+    int log_gen = 0, log_data = 0, log_top = 0, log_attack = 0;
     int ip_total = 0, top_total = 0;
     int top_type[8] = {IPCOUNT_TOP_PPS_IN, IPCOUNT_TOP_PPS_OUT, IPCOUNT_TOP_BPS_IN, IPCOUNT_TOP_BPS_OUT,
                         IPCOUNT_TOP_NEW_SESSION, IPCOUNT_TOP_NEW_HTTP, IPCOUNT_TOP_ICMP_BPS, IPCOUNT_TOP_HTTP_BPS};
@@ -547,23 +641,36 @@ static int db_recorder(void *arg)
 
     id = (ip_data *)malloc(DATABASE_MAX_IP * sizeof(ip_data));
     td = (top_data *)malloc(100 * sizeof(top_data));
-    snprintf(file_all, sizeof(file_all), "/dev/shm/%s", db->name);
+    snprintf(file_gen, sizeof(file_gen), "/dev/shm/gen_%s", db->name);
+    snprintf(file_data, sizeof(file_data), "/dev/shm/data_%s", db->name);
     snprintf(file_top, sizeof(file_top), "/dev/shm/top_%s", db->name);
+    snprintf(file_attack, sizeof(file_attack), "/dev/shm/attack_%s", db->name);
     while(g_run && db && id && td)
     {
-        log_all = open(file_all, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+        log_gen = open(file_gen, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+        log_data = open(file_data, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
         log_top = open(file_top, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+        log_attack = open(file_attack, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
 
-        if(log_all != -1)
+        if(log_gen != -1)
+        {
+            flock(log_gen, LOCK_EX);
+            snprintf(buf, sizeof(buf), "%lu %lu %lu %lu %lu\n\0", db->in_pps, db->in_bps, db->out_pps, db->out_bps, db->ip_total);
+            write(log_gen, &buf, strlen(buf));
+            flock(log_gen, LOCK_UN);
+            close(log_gen);
+        }
+
+        if(log_data != -1)
         {
             int len = sizeof(ip_data);
             ip_total = ipcount_get_all_ip(db->ict, id, DATABASE_MAX_IP);
-            flock(log_all, LOCK_EX);
-            write(log_all, &ip_total, sizeof(int));
-            write(log_all, &len, sizeof(int));
-            write(log_all, (char *)id, ip_total * sizeof(ip_data));
-            flock(log_all, LOCK_UN);
-            close(log_all);
+            flock(log_data, LOCK_EX);
+            write(log_data, &ip_total, sizeof(int));
+            write(log_data, &len, sizeof(int));
+            write(log_data, (char *)id, ip_total * sizeof(ip_data));
+            flock(log_data, LOCK_UN);
+            close(log_data);
         }
         if(log_top != -1)
         {
@@ -585,6 +692,30 @@ static int db_recorder(void *arg)
             write(log_top, &buf, strlen(buf));
             flock(log_top, LOCK_UN);
             close(log_top);
+        }
+        if(log_attack)
+        {
+            int i, j;
+            static struct tm *date = NULL;
+            unsigned char date_str[64];
+            flock(log_attack, LOCK_EX);
+
+            for(i = 0; i < db->attack_count; i++)
+            {
+                attack_event *attack = &db->attack[i];
+                ip_2_str(attack->ip, ip_str);
+                date = localtime(&attack->attack_begin);
+                snprintf(date_str, sizeof(date_str), "%d-%02d-%02d %02d:%02d:%02d",
+                            date->tm_year+1900, date->tm_mon+1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec);
+                snprintf(buf, sizeof(buf), "%s %s %s %lu %lu %s %lu\n\0", ip_str, attack->attack_over ? "over" : "attacking", attack->attack_name,
+                            attack->attack_max_pps, attack->attack_max_bps, date_str,
+                            attack->attack_over ? (attack->attack_over - attack->attack_begin) : (time(NULL) - attack->attack_begin));
+                write(log_attack, &buf, strlen(buf));
+            }
+            snprintf(buf, sizeof(buf), "end\n\0");
+            write(log_attack, &buf, strlen(buf));
+            flock(log_attack, LOCK_UN);
+            close(log_attack);
         }
         sleep(1);
     }
@@ -790,6 +921,8 @@ static int db_collecter(void *arg)
                 }
                 if(!detail)
                 {
+                    fprintf(stderr, "error in collecter detail is null!\n");
+                    g_run = 0;
                     usleep(0);
                     continue;
                 }
@@ -906,9 +1039,20 @@ static int db_sender(void *arg)
         {
             if(g_log_target[i]->log_type && (g_log_target[i]->net_type == LOG_NET_TCP) && !g_log_target[i]->conn && (time - g_log_target[i]->last_reply > LOG_NET_TIMEOUT))
             {
-                connect(db->log_fd[i], (void *)&g_log_target[i]->target, sizeof(g_log_target[i]->target));
-                g_log_target[i]->conn = 1;
-                g_log_target[i]->last_reply = time;
+                if(db->log_fd[i] > 0)
+                    close(db->log_fd[i]);
+                db->log_fd[i] = socket(AF_INET, SOCK_STREAM, 0);
+                if(-1 != db->log_fd[i])
+                {
+                    if(-1 != fcntl(db->log_fd[i], F_SETFL, O_NONBLOCK))
+                    {
+                        connect(db->log_fd[i], (void *)&g_log_target[i]->target, sizeof(g_log_target[i]->target));
+                        g_log_target[i]->conn = 1;
+                        g_log_target[i]->last_reply = time;
+                    }
+                    else
+                        close(db->log_fd[i]);
+                }
             }
         }
 
@@ -1088,6 +1232,8 @@ static int free_database(database *db)
             session_pool_tini(db->pool);
         if(db->opera)
             release_opera(db->opera);
+        if(db->attack)
+            free(db->attack);
         if(db->ti)
             free(db->ti);
         if(db->pti)
@@ -1120,14 +1266,17 @@ static database *init_database(unsigned int id, unsigned char *name)
     memset(db, 0, sizeof(database));
     db->id = id;
     db->ict = ipcount_init();
+    ipcount_set_attack_cbk(db->ict, attack_process);
     db->pool = session_pool_init();
     db->opera = get_opera(name);
+    db->attack = (attack_event *)malloc(MAX_ATTACK_EVENT * sizeof(attack_event));
     db->ti = (http_info *)malloc(DATABASE_MAX_SESSION * sizeof(http_info));
     db->pti = (http_info **)malloc(DATABASE_MAX_SESSION * sizeof(http_info *));
     db->ri = (http_info **)malloc(DATABASE_MAX_REPORT * sizeof(http_info *));
     db->ri_timeout = (http_info **)malloc(DATABASE_MAX_REPORT * sizeof(http_info *));
     db->ip_log = (log_content *)malloc(DATABASE_MAX_LOG * sizeof(log_content));
     db->session_log = (log_content *)malloc(DATABASE_MAX_LOG * sizeof(log_content));
+    memset(db->attack, 0, MAX_ATTACK_EVENT * sizeof(attack_event));
     memset(db->ti, 0, DATABASE_MAX_SESSION * sizeof(http_info));
     memset(db->pti, 0, DATABASE_MAX_SESSION * sizeof(http_info *));
     memset(db->ri, 0, DATABASE_MAX_REPORT * sizeof(http_info *));
@@ -1143,14 +1292,14 @@ static database *init_database(unsigned int id, unsigned char *name)
     snprintf(db->name, sizeof(db->name), "%s\0", name);
     for(j = 0; j < g_log_target_num; j++)
     {
-        if(g_log_target[j]->net_type == LOG_NET_TCP)
-            db->log_fd[j] = socket(AF_INET, SOCK_STREAM, 0);
-        else
+        if(g_log_target[j]->net_type == LOG_NET_UDP)
+        {
             db->log_fd[j] = socket(AF_INET, SOCK_DGRAM, 0);
-        if(-1 == db->log_fd[j])
-            goto err;
-        if(-1 == fcntl(db->log_fd[j], F_SETFL, O_NONBLOCK))
-            goto err;
+            if(-1 == db->log_fd[j])
+                goto err;
+            if(-1 == fcntl(db->log_fd[j], F_SETFL, O_NONBLOCK))
+                goto err;
+        }
     }
     return db;
 err:
@@ -1415,7 +1564,7 @@ int main(int argc, char *argv[])
             fprintf(stderr, "please check conf file!\n");
             goto over;
         }
-        init_worker(g_reader_num * 1);
+        init_worker(g_reader_num * 3);
         num_init();
         signal(SIGINT, sigint_h);
         signal(SIGTERM, sigint_h);

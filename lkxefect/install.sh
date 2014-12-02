@@ -38,13 +38,13 @@ function install_pfring()
 
 	cd $capture_dir/pf_ring/userland/lib
 	chmod 755 configure
-	./configure && make clean && make# && make install
+	./configure && make clean && make #&& make install
 	cp pfring.h $home_dir/inc
 	cp libpfring.a $home_dir/lib
 	cd $capture_dir/pf_ring/userland/libpcap
 	chmod 755 configure
 	chmod 755 runlex.sh
-	./configure && make clean && make# && make install
+	./configure && make clean && make #&& make install
 	cp libpcap.a $home_dir/lib
 
 }

@@ -73,9 +73,8 @@ int session_set_timeout_callback(session *s, void *cbk);
 #define IPCOUNT_TOP_ICMP_BPS            7
 #define IPCOUNT_TOP_HTTP_BPS            8
 #define IPCOUNT_ATTACK_SYN_FLOOD        (1 << 0)
-#define IPCOUNT_ATTACK_TCP_FLOOD        (1 << 1)
-#define IPCOUNT_ATTACK_UDP_FLOOD        (1 << 2)
-#define IPCOUNT_ATTACK_ICMP_FLOOD       (1 << 3)
+#define IPCOUNT_ATTACK_UDP_FLOOD        (1 << 1)
+#define IPCOUNT_ATTACK_ICMP_FLOOD       (1 << 2)
 typedef struct _ip_count_t ip_count_t;
 #pragma pack(push, 8)
 typedef struct _top_data
@@ -86,8 +85,7 @@ typedef struct _top_data
 typedef struct _ip_data
 {
     unsigned int ip;
-    unsigned long attack, attack_max_pps, attack_max_bps;
-    unsigned long recv, send, inflow, outflow, pps_in, pps_out, bps_in, bps_out;
+    unsigned long recv, send, inflow, outflow;
     unsigned long tcp_flow, udp_flow, icmp_flow, http_flow;
     unsigned long session_total, session_close, session_timeout, http_session;
 }ip_data;

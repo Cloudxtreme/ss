@@ -45,10 +45,10 @@ static int read()
             continue;
         }
         reads = efio_read(fdr, slot, 1024);
-        for(i = 0; i < reads; i++)
-        {
-            flow += slot[i].len;
-        }
+        //for(i = 0; i < reads; i++)
+        //{
+            //flow += slot[i].len;
+        //}
         pkg_total += reads;
         flow_total += flow;
 	}

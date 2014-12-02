@@ -200,9 +200,8 @@ int main(int argc, char *argv[])
                 if(save_ip)
                     fprintf(output, "%s\n", ip_str);
                 else
-                    fprintf(output, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+                    fprintf(output, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
                         ip_str, data->recv, data->send, data->inflow, data->outflow,
-                        data->pps_in, data->pps_out, data->bps_in, data->bps_out,
                         data->tcp_flow, data->udp_flow, data->icmp_flow, data->http_flow,
                         data->session_total, data->session_close, data->session_timeout, data->http_session);
             }

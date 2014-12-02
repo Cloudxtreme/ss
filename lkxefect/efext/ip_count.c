@@ -19,22 +19,43 @@
 #define TOP_HTTP_BPS        7
 #define TOP_N               10
 
-#define LIMIT_TYPE          4
-#define LIMIT_PPS_IN        0
-#define LIMIT_PPS_OUT       1
-#define LIMIT_BPS_IN        2
-#define LIMIT_BPS_OUT       3
+#define LIMIT_UDP_IN        10000000
+#define LIMIT_ICMP_IN       10000000
+#define LIMIT_NEW_SESSION   10000
+
+#define MAX_DETAIL_VALUE        7
+#define DETAIL_VALUE_PKG        0
+#define DETAIL_VALUE_FLOW       1
+#define DETAIL_VALUE_TCP        2
+#define DETAIL_VALUE_UDP        3
+#define DETAIL_VALUE_ICMP       4
+#define DETAIL_VALUE_HTTP       5
+#define DETAIL_VALUE_SESSION    6
+
+typedef struct _detail_value
+{
+    unsigned long in, out;
+    unsigned long in_last, out_last;
+    unsigned long in_ps, out_ps;
+    unsigned long in_normal, out_normal;
+    unsigned long in_avg, out_avg;
+    unsigned long hold_time, ab_time;
+}detail_value;
+
+typedef struct _check_info
+{
+    unsigned char chk;
+    unsigned long limit;
+    unsigned long attack_type;
+}check_info;
 
 
 typedef struct _ip_info
 {
     unsigned int ip;
-    unsigned long recv, send, inflow, outflow, pps_in, pps_out, bps_in, bps_out;
-    unsigned long tcp_flow, udp_flow, icmp_flow, http_flow;
-    unsigned long session_total, session_close, session_timeout, http_session;
-    unsigned long last_recv, last_send, last_inflow, last_outflow, last_time;
-    unsigned long last_session_total, last_http_session, last_icmp_flow, last_http_flow;
-    unsigned long new_session, new_http_session, icmp_bps, http_bps;
+    unsigned long attack, attack_max_pps, attack_max_bps;
+    unsigned long last_time;
+    detail_value detail[MAX_DETAIL_VALUE];
     struct _ip_info *prev, *next, *prev_use, *next_use, *next_alive;
 }ip_info;
 
@@ -50,12 +71,13 @@ struct _ip_count_t
     ip_info *cur, *alive, *use_head, *use_tail;
     ip_info **table;
     top_info top[TOP_TYPE][TOP_N + 1];
-    unsigned long limit[LIMIT_TYPE];
     volatile unsigned int stats;
     unsigned int buf_total, use_total, max_level;
     unsigned char lock, add_lock, del_lock, top_lock;
     unsigned char *table_lock;
     unsigned long time;
+    void *attack_cbk;
+    check_info ip_chk[MAX_DETAIL_VALUE];
     pthread_t counter;
     pthread_t timer;
 };
@@ -142,9 +164,12 @@ static void top_repeat(top_info *top)
 #if 1
 static void count_thread(void *arg)
 {
+    int i;
     ip_count_t *ict = (ip_count_t *)arg;
     ip_info *use = NULL, *head = NULL, *tail = NULL;
-    unsigned long recv, send, inflow, outflow, session_total, http_session, icmp_flow, http_flow;
+    detail_value *detail = NULL;
+    check_info *check = NULL;
+    unsigned long tmp_in, tmp_out;
 
     while(ict->stats)
     {
@@ -159,99 +184,110 @@ static void count_thread(void *arg)
         memset(ict->top, 0, sizeof(ict->top));
         while(use)
         {
-            recv = use->recv;
-            send = use->send;
-            inflow = use->inflow;
-            outflow = use->outflow;
-            session_total = use->session_total;
-            http_session = use->http_session;
-            icmp_flow = use->icmp_flow;
-            http_flow = use->http_flow;
-            if(ict->time - use->last_time > 1000000)
+            if(ict->time - use->last_time >= 1000000)
             {
-                if(ict->time - use->last_time < 2000000)    //take attention!     take what attention?
+                for(i = 0; i < MAX_DETAIL_VALUE; i++)
                 {
-                    use->pps_in = recv - use->last_recv;
-                    use->pps_out = send - use->last_send;
-                    use->bps_in = inflow - use->last_inflow;
-                    use->bps_out = outflow - use->last_outflow;
-                    use->new_session = session_total - use->last_session_total;
-                    use->new_http_session = http_session - use->last_http_session;
-                    use->icmp_bps = icmp_flow - use->last_icmp_flow;
-                    use->http_bps = http_flow - use->last_http_flow;
+                    detail = &use->detail[i];
+                    check = &ict->ip_chk[i];
+                    tmp_in = detail->in;
+                    tmp_out = detail->out;
+                    detail->in_ps = tmp_in - detail->in_last;
+                    detail->out_ps = tmp_out - detail->out_last;
+                    detail->in_last = tmp_in;
+                    detail->out_last = tmp_out;
+
+                    if(check->chk)
+                    {
+                        if((detail->hold_time < 600) || (detail->in_ps < check->limit) || ((detail->in_avg << 2) > detail->in_ps))
+                        {
+                            if(detail->ab_time)
+                            {
+                                detail->ab_time--;
+                                if(!detail->ab_time && (use->attack & check->attack_type))
+                                {
+                                    use->attack &= ~(check->attack_type);
+                                    if(ict->attack_cbk)
+                                    {
+                                        ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                                        callback(ict, use->ip, check->attack_type, 0, use->attack_max_pps, use->attack_max_bps);
+                                    }
+                                }
+                            }
+                            detail->hold_time++;
+                            detail->in_normal += detail->in_ps;
+                            detail->in_avg = detail->in_normal / detail->hold_time;
+
+                        }
+                        else
+                        {
+                            detail->ab_time++;
+                            if(detail->ab_time > 10)
+                            {
+                                if(!(use->attack & check->attack_type))
+                                {
+                                    use->attack |= check->attack_type;
+                                    if(ict->attack_cbk)
+                                    {
+                                        ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
+                                        callback(ict, use->ip, check->attack_type, 1, use->attack_max_pps, use->attack_max_bps);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
+                use->last_time = ict->time;
+                if(!use->attack)
+                    use->attack_max_pps = use->attack_max_bps = 0;
                 else
                 {
-                    unsigned long seconds = (ict->time - use->last_time) / 1000000;
-                    use->pps_in = (recv - use->last_recv) / seconds;
-                    use->pps_out = (send - use->last_send) / seconds;
-                    use->bps_in = (inflow - use->last_inflow) / seconds;
-                    use->bps_out = (outflow - use->last_outflow) / seconds;
-                    use->new_session = (session_total - use->last_session_total) / seconds;
-                    use->new_http_session = (http_session - use->last_http_session) / seconds;
-                    use->icmp_bps = (icmp_flow - use->last_icmp_flow) / seconds;
-                    use->http_bps = (http_flow - use->last_http_flow) / seconds;
+                    if(use->detail[DETAIL_VALUE_PKG].in_ps > use->attack_max_pps)
+                        use->attack_max_pps = use->detail[DETAIL_VALUE_PKG].in_ps;
+                    if(use->detail[DETAIL_VALUE_FLOW].in_ps > use->attack_max_bps)
+                        use->attack_max_bps = use->detail[DETAIL_VALUE_FLOW].in_ps;
                 }
-                use->last_recv = recv;
-                use->last_send = send;
-                use->last_inflow = inflow;
-                use->last_outflow = outflow;
-                use->last_session_total = session_total;
-                use->last_http_session = http_session;
-                use->last_icmp_flow = icmp_flow;
-                use->last_http_flow = http_flow;
-                use->last_time = ict->time;
             }
             if(1)
             {
-                if(use->pps_in > ict->top[TOP_PPS_IN][1].val)
+                #if 1
+                if(use->detail[DETAIL_VALUE_PKG].in_ps > ict->top[TOP_PPS_IN][1].val)
                 {
                     ict->top[TOP_PPS_IN][1].ip = use->ip;
-                    ict->top[TOP_PPS_IN][1].val = use->pps_in;
+                    ict->top[TOP_PPS_IN][1].val = use->detail[DETAIL_VALUE_PKG].in_ps;
                     top_repeat(ict->top[TOP_PPS_IN]);
                 }
-                if(use->pps_out > ict->top[TOP_PPS_OUT][1].val)
+                if(use->detail[DETAIL_VALUE_PKG].out_ps > ict->top[TOP_PPS_OUT][1].val)
                 {
                     ict->top[TOP_PPS_OUT][1].ip = use->ip;
-                    ict->top[TOP_PPS_OUT][1].val = use->pps_out;
+                    ict->top[TOP_PPS_OUT][1].val = use->detail[DETAIL_VALUE_PKG].out_ps;
                     top_repeat(ict->top[TOP_PPS_OUT]);
                 }
-                if(use->bps_in > ict->top[TOP_BPS_IN][1].val)
+                if(use->detail[DETAIL_VALUE_FLOW].in_ps > ict->top[TOP_BPS_IN][1].val)
                 {
                     ict->top[TOP_BPS_IN][1].ip = use->ip;
-                    ict->top[TOP_BPS_IN][1].val = use->bps_in;
+                    ict->top[TOP_BPS_IN][1].val = use->detail[DETAIL_VALUE_FLOW].in_ps;
                     top_repeat(ict->top[TOP_BPS_IN]);
                 }
-                if(use->bps_out > ict->top[TOP_BPS_OUT][1].val)
+                if(use->detail[DETAIL_VALUE_FLOW].out_ps > ict->top[TOP_BPS_OUT][1].val)
                 {
                     ict->top[TOP_BPS_OUT][1].ip = use->ip;
-                    ict->top[TOP_BPS_OUT][1].val = use->bps_out;
+                    ict->top[TOP_BPS_OUT][1].val = use->detail[DETAIL_VALUE_FLOW].out_ps;
                     top_repeat(ict->top[TOP_BPS_OUT]);
                 }
-                if(use->new_session > ict->top[TOP_NEW_SESSION][1].val)
+                if(use->detail[DETAIL_VALUE_SESSION].in_ps > ict->top[TOP_NEW_SESSION][1].val)
                 {
                     ict->top[TOP_NEW_SESSION][1].ip = use->ip;
-                    ict->top[TOP_NEW_SESSION][1].val = use->new_session;
+                    ict->top[TOP_NEW_SESSION][1].val = use->detail[DETAIL_VALUE_SESSION].in_ps;
                     top_repeat(ict->top[TOP_NEW_SESSION]);
                 }
-                if(use->new_http_session > ict->top[TOP_NEW_HTTP][1].val)
+                if(use->detail[DETAIL_VALUE_HTTP].in_ps > ict->top[TOP_NEW_HTTP][1].val)
                 {
                     ict->top[TOP_NEW_HTTP][1].ip = use->ip;
-                    ict->top[TOP_NEW_HTTP][1].val = use->new_http_session;
+                    ict->top[TOP_NEW_HTTP][1].val = use->detail[DETAIL_VALUE_HTTP].in_ps;
                     top_repeat(ict->top[TOP_NEW_HTTP]);
                 }
-                if(use->icmp_bps > ict->top[TOP_ICMP_BPS][1].val)
-                {
-                    ict->top[TOP_ICMP_BPS][1].ip = use->ip;
-                    ict->top[TOP_ICMP_BPS][1].val = use->icmp_bps;
-                    top_repeat(ict->top[TOP_ICMP_BPS]);
-                }
-                if(use->http_bps > ict->top[TOP_HTTP_BPS][1].val)
-                {
-                    ict->top[TOP_HTTP_BPS][1].ip = use->ip;
-                    ict->top[TOP_HTTP_BPS][1].val = use->http_bps;
-                    top_repeat(ict->top[TOP_HTTP_BPS]);
-                }
+                #endif
             }
             if(use == tail)
                 break;
@@ -298,6 +334,17 @@ ip_count_t *ipcount_init()
         if(ip_count_expand(ict))
         {
             ict->stats = 1;
+            {
+                ict->ip_chk[DETAIL_VALUE_UDP].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_UDP].limit = LIMIT_UDP_IN;
+                ict->ip_chk[DETAIL_VALUE_UDP].attack_type = IPCOUNT_ATTACK_UDP_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_ICMP].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_ICMP].limit = LIMIT_ICMP_IN;
+                ict->ip_chk[DETAIL_VALUE_ICMP].attack_type = IPCOUNT_ATTACK_ICMP_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_SESSION].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_SESSION].limit = LIMIT_NEW_SESSION;
+                ict->ip_chk[DETAIL_VALUE_SESSION].attack_type = IPCOUNT_ATTACK_SYN_FLOOD;
+            }
             ict->table = (ip_info **)malloc(IP_HASH_SIZE * sizeof(ip_info *));
             ict->table_lock = (unsigned char *)malloc(IP_HASH_SIZE * sizeof(char));
             memset(ict->table, 0, IP_HASH_SIZE * sizeof(ip_info *));
@@ -329,6 +376,16 @@ int ipcount_tini(ip_count_t *ict)
         if(ict->table_lock)
             free(ict->table_lock);
         free(ict);
+        return 1;
+    }
+    return 0;
+}
+
+int ipcount_set_attack_cbk(ip_count_t *ict, void *cbk)
+{
+    if(ict && ict->stats)
+    {
+        ict->attack_cbk = cbk;
         return 1;
     }
     return 0;
@@ -454,6 +511,7 @@ int ipcount_del_ip(ip_count_t *ict, unsigned int ip)      // think about the dat
 
 int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag, unsigned int session_type)
 {
+    int ret = 0;
     int find_level = 0;
     if(ict && ict->stats && pkg && IF_IP(pkg) && len)
     {
@@ -470,7 +528,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         dkey = ((dip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
         sfind = ict->table[skey];
         dfind = ict->table[dkey];
-        if(!add_ip_flag || (add_ip_flag & IPCOUNT_ADD_FLAG_SIP))
+        if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_SIP)))
         {
             lock(&(ict->table_lock[skey]));
             while(!find && sfind)
@@ -478,6 +536,15 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 if(sfind->ip == sip)
                 {
                     find = sfind;
+                    find->detail[DETAIL_VALUE_PKG].out++;
+                    find->detail[DETAIL_VALUE_FLOW].out += len;
+                    if(IF_TCP(pkg))
+                        find->detail[DETAIL_VALUE_TCP].out += len;
+                    else if(IF_UDP(pkg))
+                        find->detail[DETAIL_VALUE_UDP].out += len;
+                    else if(IF_ICMP(pkg))
+                        find->detail[DETAIL_VALUE_ICMP].out += len;
+                    ret = 1;
                     break;
                 }
                 sfind = sfind->next;
@@ -487,7 +554,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         }
         if(find_level > ict->max_level)
             ict->max_level = find_level;
-        if(!add_ip_flag || (add_ip_flag & IPCOUNT_ADD_FLAG_DIP))
+        if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_DIP)))
         {
             lock(&(ict->table_lock[dkey]));
             while(!find && dfind)
@@ -495,6 +562,15 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 if(dfind->ip == dip)
                 {
                     find = dfind;
+                    find->detail[DETAIL_VALUE_PKG].in++;
+                    find->detail[DETAIL_VALUE_FLOW].in += len;
+                    if(IF_TCP(pkg))
+                        find->detail[DETAIL_VALUE_TCP].in += len;
+                    else if(IF_UDP(pkg))
+                        find->detail[DETAIL_VALUE_UDP].in += len;
+                    else if(IF_ICMP(pkg))
+                        find->detail[DETAIL_VALUE_ICMP].in += len;
+                    ret = 1;
                     break;
                 }
                 dfind = dfind->next;
@@ -504,56 +580,20 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         }
         if(find_level > ict->max_level)
             ict->max_level = find_level;
-        if(find)
+        if(!find && add_ip_flag)
         {
-            if(find == sfind)
-            {
-                find->send++;
-                find->outflow += len;
-            }
-            else
-            {
-                find->recv++;
-                find->inflow += len;
-            }
-            if(IF_TCP(pkg))
-                find->tcp_flow += len;
-            else if(IF_UDP(pkg))
-                find->udp_flow += len;
-            else if(IF_ICMP(pkg))
-                find->icmp_flow += len;
-            if(session_type == IPCOUNT_SESSION_TYPE_HTTP)
-                find->http_flow += len;
-            #if 0
-            if(time - find->last_time >= 1000000)
-            {
-                unsigned long seconds = (time - find->last_time) / 1000000;
-                find->pps_in = (find->recv - find->last_recv) / seconds;
-                find->pps_out = (find->send - find->last_send) / seconds;
-                find->bps_in = (find->inflow - find->last_inflow) / seconds;
-                find->bps_out = (find->outflow - find->last_outflow) / seconds;
-                find->last_recv = find->recv;
-                find->last_send = find->send;
-                find->last_inflow = find->inflow;
-                find->last_outflow = find->outflow;
-                find->last_time = time;
-            }
-            #endif
-            return 1;
-        }
-        else if(add_ip_flag)
-        {
-            if(add_ip_flag & IPCOUNT_ADD_FLAG_SIP)
+            if(add_ip_flag & (IPCOUNT_ADD_FLAG_SIP))
                 ipcount_add_ip(ict, sip);
-            if(add_ip_flag & IPCOUNT_ADD_FLAG_DIP)
+            if(add_ip_flag & (IPCOUNT_ADD_FLAG_DIP))
                 ipcount_add_ip(ict, dip);
         }
     }
-    return 0;
+    return ret;
 }
 
 int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type)
 {
+    int ret = 0;
     if(ict && ict->stats && sip && dip)
     {
         unsigned int skey, dkey;
@@ -569,6 +609,23 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(sfind->ip == sip)
             {
                 find = sfind;
+                switch(session_type)
+                {
+                    case IPCOUNT_SESSION_TYPE_NEW:
+                        find->detail[DETAIL_VALUE_SESSION].out++;
+                        break;
+                    case IPCOUNT_SESSION_TYPE_CLOSE:
+                        break;
+                    case IPCOUNT_SESSION_TYPE_TIMEOUT:
+                        break;
+                    case IPCOUNT_SESSION_TYPE_HTTP:
+                        find->detail[DETAIL_VALUE_HTTP].out++;
+                        break;
+                    case IPCOUNT_SESSION_TYPE_UNKNOW:
+                        break;
+                    default:;
+                }
+                ret = 1;
                 break;
             }
             sfind = sfind->next;
@@ -580,35 +637,30 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(dfind->ip == dip)
             {
                 find = dfind;
+                switch(session_type)
+                {
+                    case IPCOUNT_SESSION_TYPE_NEW:
+                        find->detail[DETAIL_VALUE_SESSION].in++;
+                        break;
+                    case IPCOUNT_SESSION_TYPE_CLOSE:
+                        break;
+                    case IPCOUNT_SESSION_TYPE_TIMEOUT:
+                        break;
+                    case IPCOUNT_SESSION_TYPE_HTTP:
+                        find->detail[DETAIL_VALUE_HTTP].in++;
+                        break;
+                    case IPCOUNT_SESSION_TYPE_UNKNOW:
+                        break;
+                    default:;
+                }
+                ret = 1;
                 break;
             }
             dfind = dfind->next;
         }
         unlock(&(ict->table_lock[dkey]));
-        if(find)
-        {
-            switch(session_type)
-            {
-                case IPCOUNT_SESSION_TYPE_NEW:
-                    find->session_total++;
-                    break;
-                case IPCOUNT_SESSION_TYPE_CLOSE:
-                    find->session_close++;
-                    break;
-                case IPCOUNT_SESSION_TYPE_TIMEOUT:
-                    find->session_timeout++;
-                    break;
-                case IPCOUNT_SESSION_TYPE_HTTP:
-                    find->http_session++;
-                    break;
-                case IPCOUNT_SESSION_TYPE_UNKNOW:
-                    break;
-                default:;
-            }
-            return 1;
-        }
     }
-    return 0;
+    return ret;
 }
 
 int ipcount_get_ip(ip_count_t *ict, ip_data *id)
@@ -618,8 +670,7 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
     {
         unsigned int key = ((id->ip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
         ip_info *find = NULL;
-        lock(&(ict->add_lock));
-        //lock(&(ict->del_lock));
+        lock(&(ict->table_lock[key]));
         find = ict->table[key];
         while(find)
         {
@@ -627,24 +678,20 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
                 break;
             find = find->next;
         }
+        unlock(&(ict->table_lock[key]));
         if(find)
         {
-            id->recv = find->recv;
-            id->send = find->send;
-            id->inflow = find->inflow;
-            id->outflow = find->outflow;
-            id->tcp_flow = find->tcp_flow;
-            id->udp_flow = find->udp_flow;
-            id->icmp_flow = find->icmp_flow;
-            id->http_flow = find->http_flow;
-            id->session_total = find->session_total;
-            id->session_close = find->session_close;
-            id->session_timeout = find->session_timeout;
-            id->http_session = find->http_session;
+            id->recv = find->detail[DETAIL_VALUE_PKG].in;
+            id->send = find->detail[DETAIL_VALUE_PKG].out;
+            id->inflow = find->detail[DETAIL_VALUE_FLOW].in;
+            id->outflow = find->detail[DETAIL_VALUE_FLOW].out;
+            id->tcp_flow = find->detail[DETAIL_VALUE_TCP].in + find->detail[DETAIL_VALUE_TCP].out;
+            id->udp_flow = find->detail[DETAIL_VALUE_UDP].in + find->detail[DETAIL_VALUE_UDP].out;
+            id->icmp_flow = find->detail[DETAIL_VALUE_ICMP].in + find->detail[DETAIL_VALUE_ICMP].out;
+            id->session_total = find->detail[DETAIL_VALUE_SESSION].in + find->detail[DETAIL_VALUE_HTTP].out;
+            id->http_session = find->detail[DETAIL_VALUE_HTTP].in + find->detail[DETAIL_VALUE_HTTP].out;
             ret = 1;
         }
-        //unlock(&(ict->del_lock));
-        unlock(&(ict->add_lock));
     }
     return ret;
 }
@@ -722,22 +769,15 @@ int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total)
         while(use && total)
         {
             id->ip = use->ip;
-            id->recv = use->recv;
-            id->send = use->send;
-            id->inflow = use->inflow;
-            id->outflow = use->outflow;
-            id->pps_in = use->pps_in;
-            id->pps_out = use->pps_out;
-            id->bps_in = use->bps_in;
-            id->bps_out = use->bps_out;
-            id->tcp_flow = use->tcp_flow;
-            id->udp_flow = use->udp_flow;
-            id->icmp_flow = use->icmp_flow;
-            id->http_flow = use->http_flow;
-            id->session_total = use->session_total;
-            id->session_close = use->session_close;
-            id->session_timeout = use->session_timeout;
-            id->http_session = use->http_session;
+            id->recv = use->detail[DETAIL_VALUE_PKG].in;
+            id->send = use->detail[DETAIL_VALUE_PKG].out;
+            id->inflow = use->detail[DETAIL_VALUE_FLOW].in;
+            id->outflow = use->detail[DETAIL_VALUE_FLOW].out;
+            id->tcp_flow = use->detail[DETAIL_VALUE_TCP].in + use->detail[DETAIL_VALUE_TCP].out;
+            id->udp_flow = use->detail[DETAIL_VALUE_UDP].in + use->detail[DETAIL_VALUE_UDP].out;
+            id->icmp_flow = use->detail[DETAIL_VALUE_ICMP].in + use->detail[DETAIL_VALUE_ICMP].out;
+            id->session_total = use->detail[DETAIL_VALUE_SESSION].in + use->detail[DETAIL_VALUE_HTTP].out;
+            id->http_session = use->detail[DETAIL_VALUE_HTTP].in + use->detail[DETAIL_VALUE_HTTP].out;
             id++;
             total--;
             if(use == tail)
