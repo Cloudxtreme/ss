@@ -343,8 +343,16 @@ static void count_thread(void *arg)
                         }
                         else if(detail->in_top && (detail->in_ps > check->min))
                         {
-                            float scale = (float)(detail->in_ps) / (float)(detail->in_ps + detail->out_ps);
-                            float scale_avg = (float)(detail->in_avg) / (float)(detail->in_avg + detail->out_avg);
+                            float scale;
+                            float scale_avg;
+                            if(detail->out_ps)
+                                scale = (float)(detail->in_ps) / (float)(detail->out_ps);
+                            else
+                                scale = (float)(detail->in_ps);
+                            if(detail->out_avg)
+                                scale_avg = (float)(detail->in_avg) / (float)(detail->out_avg);
+                            else
+                                scale_avg = (float)(detail->in_avg);
                             if(scale_avg * 4 < scale)
                             {
                                 if(!(use->attack & check->attack_type))
