@@ -70,8 +70,6 @@ int session_set_timeout_callback(session *s, void *cbk);
 #define IPCOUNT_TOP_BPS_OUT             4
 #define IPCOUNT_TOP_NEW_SESSION         5
 #define IPCOUNT_TOP_NEW_HTTP            6
-#define IPCOUNT_TOP_ICMP_BPS            7
-#define IPCOUNT_TOP_HTTP_BPS            8
 #define IPCOUNT_ATTACK_SYN_FLOOD        (1 << 0)
 #define IPCOUNT_ATTACK_UDP_FLOOD        (1 << 1)
 #define IPCOUNT_ATTACK_ICMP_FLOOD       (1 << 2)
@@ -105,7 +103,7 @@ int ipcount_get_top_ip(ip_count_t *ict, int top_flag, top_data *td, unsigned int
 int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total);
 int ipcount_set_attack_cbk(ip_count_t *ict, void *cbk);
 typedef int (*ipcount_attack_cbk)(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attacking,
-                                    unsigned long max_pps, unsigned long max_bps);
+                                    unsigned long pps, unsigned long bps);
 
 
 

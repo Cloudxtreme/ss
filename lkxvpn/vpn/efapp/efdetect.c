@@ -168,10 +168,6 @@ int main(int argc, char *argv[])
                 opera->code = OPERA_GET_TOP_NEW_SESSION;
             if(!memcmp(val, "http", 4))
                 opera->code = OPERA_GET_TOP_NEW_HTTP;
-            if(!memcmp(val, "icmpbps", 7))
-                opera->code = OPERA_GET_TOP_ICMP_BPS;
-            if(!memcmp(val, "httpbps", 7))
-                opera->code = OPERA_GET_TOP_HTTP_BPS;
         }
         else if(load_ip)
         {

@@ -56,7 +56,7 @@ typedef struct _attack_event
 {
     unsigned int ip, attack_type;
     unsigned long attack_begin, attack_over;
-    unsigned long attack_max_pps, attack_max_bps;
+    unsigned long attack_cur_pps, attack_cur_bps, attack_max_pps, attack_max_bps;
     unsigned char attack_name[32];
 }attack_event;
 
@@ -96,8 +96,6 @@ typedef struct _attack_event
 #define OPERA_GET_TOP_BPS_OUT       800
 #define OPERA_GET_TOP_NEW_SESSION   900
 #define OPERA_GET_TOP_NEW_HTTP      1000
-#define OPERA_GET_TOP_ICMP_BPS      1100
-#define OPERA_GET_TOP_HTTP_BPS      1200
 typedef struct _detect_opera
 {
     int *id;
