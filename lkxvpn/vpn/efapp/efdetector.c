@@ -72,7 +72,7 @@ static int control()
         fprintf(stderr, "\n");
         fprintf(stderr, "reader:");
         for(i = 0; i < g_reader_num; i++)
-            fprintf(stderr, "|%d %d|", g_reader[i]->cur, g_reader[i]->fin);
+            fprintf(stderr, "|%d %d %d|", g_reader[i]->cur, g_reader[i]->fin, g_reader[i]->max_read);
         fprintf(stderr, "\n");
         fprintf(stderr, "worker:\n");
         for(i = 0; i < g_worker_num; i++)
@@ -134,6 +134,7 @@ static int read(void *arg)
         cur = reader->cur;
         fin = reader->fin;
         max_read = (cur >= fin) ? (READER_MAX_SLOT - cur + fin - 1) : (fin - cur - 1);
+        reader->max_read = max_read;
         max_read = max_read / 2;
         if(cur + max_read > READER_MAX_SLOT)
             max_read = READER_MAX_SLOT - cur;
@@ -160,6 +161,7 @@ static int read(void *arg)
                     unsigned int sip = GET_IP_SIP(pkg);
                     unsigned int dip = GET_IP_DIP(pkg);
                     key = (sip ^ dip) % g_worker_num;
+                    ipcount_add_pkg(reader->db->ict, pkg, len, reader->flag, 0);
                 }
                 line = &(g_worker[key]->line[reader->id]);
                 if(line->alive)
@@ -557,10 +559,10 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                     }
                 }
         	}
-        	if(detail && detail->protocol == SESSION_PROTO_HTTP)
-                ipcount_add_pkg(ict, pkg, len, reader->flag, IPCOUNT_SESSION_TYPE_HTTP);
-            else
-                ipcount_add_pkg(ict, pkg, len, reader->flag, 0);
+        	//if(detail && detail->protocol == SESSION_PROTO_HTTP)
+                //ipcount_add_pkg(ict, pkg, len, reader->flag, IPCOUNT_SESSION_TYPE_HTTP);
+            //else
+                //ipcount_add_pkg(ict, pkg, len, reader->flag, 0);
         fin_process:
             return 1;
     }

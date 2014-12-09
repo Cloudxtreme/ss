@@ -89,7 +89,7 @@
  * a few hundreds of them.
  */
 #define NETMAP_RING_MAX_SIZE    (9*PAGE_SIZE)
-#define NETMAP_RING_MAX_NUM     200	/* approx 8MB */
+#define NETMAP_RING_MAX_NUM     500	/* approx 8MB */
 
 /*
  * Buffers: the more the better. Buffer size is NETMAP_BUF_SIZE,
@@ -98,9 +98,9 @@
  * or about 72MB of memory. Up to us to use more.
  */
 #ifndef CONSERVATIVE
-#define NETMAP_BUF_MAX_NUM      100000  /* 200MB */
+#define NETMAP_BUF_MAX_NUM      200000  /* 200MB */
 #else /* CONSERVATIVE */
-#define NETMAP_BUF_MAX_NUM      20000   /* 40MB */
+#define NETMAP_BUF_MAX_NUM      200000   /* 40MB */
 #endif
 
 

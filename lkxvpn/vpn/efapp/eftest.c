@@ -6,7 +6,8 @@
 
 static unsigned int run_stats = 0;
 static unsigned long long pkg_total = 0, flow_total = 0;
-static int fdr = 0;
+static int fd[10] = {0};
+static int fd_total;
 static int read_cpu = -1;
 
 static int control()
@@ -24,8 +25,10 @@ static int control()
 }
 
 
-static int read()
+static int handle(int fd, ef_slot *slot, int num)
 {
+    int i;
+    #if 0
     ef_slot slot[1024];
     if(read_cpu >= 0)
 	{
@@ -52,7 +55,17 @@ static int read()
         pkg_total += reads;
         flow_total += flow;
 	}
+    #endif;
+    pkg_total += num;
+    for(i = 0; i < num; i++)
+    {
+        flow_total += slot[i].plen;
+    }
+}
 
+static int read_thread()
+{
+    efio_mbdg_start(handle, 2, fd[0], fd[1], fd[2], fd[3]);
 }
 
 /* control-C handler */
@@ -62,22 +75,24 @@ sigint_h(int sig)
 	(void)sig;	/* UNUSED */
 
 	run_stats = 0;
+	efio_mbdg_stop();
 }
 
 int main(int argc, char *argv[])
 {
+    int i;
     pthread_t read_t;
     pthread_t control_t;
-    fdr = efio_init(argv[1], EF_CAPTURE_NETMAP, EF_ENABLE_READ, 1);
-    read_cpu = atoi(argv[2]);
+    fd_total = argc - 1;
+    for(i = 0; i < argc; i++)
+        fd[i] = efio_init(argv[i + 1], EF_CAPTURE_NETMAP, EF_ENABLE_READ, 1);
     signal(SIGINT, sigint_h);
     signal(SIGTERM, sigint_h);
     signal(SIGKILL, sigint_h);
     run_stats = 1;
     fprintf(stderr, "read begin!\n");
-    pthread_create(&read_t, NULL, read, NULL);
+    pthread_create(&read_t, NULL, read_thread, NULL);
     pthread_create(&control_t, NULL, control, NULL);
-    pthread_join(read_t, NULL);
     pthread_join(control_t, NULL);
     fprintf(stderr, "read end!\n");
     return 0;

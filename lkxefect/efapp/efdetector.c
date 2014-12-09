@@ -72,7 +72,7 @@ static int control()
         fprintf(stderr, "\n");
         fprintf(stderr, "reader:");
         for(i = 0; i < g_reader_num; i++)
-            fprintf(stderr, "|%d %d|", g_reader[i]->cur, g_reader[i]->fin);
+            fprintf(stderr, "|%d %d %d|", g_reader[i]->cur, g_reader[i]->fin, g_reader[i]->max_read);
         fprintf(stderr, "\n");
         fprintf(stderr, "worker:\n");
         for(i = 0; i < g_worker_num; i++)
@@ -134,6 +134,7 @@ static int read(void *arg)
         cur = reader->cur;
         fin = reader->fin;
         max_read = (cur >= fin) ? (READER_MAX_SLOT - cur + fin - 1) : (fin - cur - 1);
+        reader->max_read = max_read;
         max_read = max_read / 2;
         if(cur + max_read > READER_MAX_SLOT)
             max_read = READER_MAX_SLOT - cur;
@@ -160,6 +161,7 @@ static int read(void *arg)
                     unsigned int sip = GET_IP_SIP(pkg);
                     unsigned int dip = GET_IP_DIP(pkg);
                     key = (sip ^ dip) % g_worker_num;
+                    ipcount_add_pkg(reader->db->ict, pkg, len, reader->flag, 0);
                 }
                 line = &(g_worker[key]->line[reader->id]);
                 if(line->alive)
@@ -296,11 +298,13 @@ static int timeout_process(session *s)
 }
 
 static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attacking,
-                            unsigned long max_pps, unsigned long max_bps)
+                            unsigned long pps, unsigned long bps)
 {
     int i;
     int ret = 0;
+    int find = 0;
     database *db = NULL;
+    attack_event *attack = NULL;
     for(i = 0; i < g_database_num; i++)
     {
         if(g_db[i]->ict == ict)
@@ -311,18 +315,41 @@ static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_
     }
     if(!db)
         goto done;
-    if(attacking)
+    for(i = 0; i < db->attack_count; i++)
+    {
+        attack = &db->attack[i];
+        if((!attack->attack_over) && (attack->ip == ip) && (attack_type == attack->attack_type))
+        {
+            find = 1;
+            break;
+        }
+    }
+    if(find)
+    {
+        attack->attack_cur_pps = pps;
+        attack->attack_cur_bps = bps;
+        if(attacking)
+        {
+            if(pps > attack->attack_max_pps)
+                attack->attack_max_pps = pps;
+            if(pps > attack->attack_max_bps)
+                attack->attack_max_bps = bps;
+        }
+        else
+        {
+            attack->attack_over = time(NULL);
+        }
+    }
+    else if(attacking)
     {
         if(db->attack_count < MAX_ATTACK_EVENT)
         {
-            attack_event *attack = &db->attack[db->attack_count];
+            attack = &db->attack[db->attack_count];
             attack->attack_begin = time(NULL);
             attack->ip = ip;
             attack->attack_type = attack_type;
-            if(max_pps > attack->attack_max_pps)
-                attack->attack_max_pps = max_pps;
-            if(max_bps > attack->attack_max_bps)
-                attack->attack_max_bps = max_bps;
+            attack->attack_cur_pps = attack->attack_max_pps = pps;
+            attack->attack_cur_bps = attack->attack_max_bps = bps;
             switch(attack_type)
             {
                 case IPCOUNT_ATTACK_SYN_FLOOD:
@@ -338,21 +365,6 @@ static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_
                     snprintf(attack->attack_name, sizeof(attack->attack_name), "%s", "unknow attack\0");
             }
             db->attack_count++;
-        }
-    }
-    else
-    {
-        for(i = 0; i < db->attack_count; i++)
-        {
-            attack_event *attack = &db->attack[i];
-            if((!attack->attack_over) && (attack->ip == ip) && (attack_type & attack->attack_type))
-            {
-                attack->attack_over = time(NULL);
-                if(max_pps > attack->attack_max_pps)
-                    attack->attack_max_pps = max_pps;
-                if(max_bps > attack->attack_max_bps)
-                    attack->attack_max_bps = max_bps;
-            }
         }
     }
     ret = 1;
@@ -393,7 +405,7 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                     	if(detail)
                     	{
                         	detail->use = 1;
-                        	detail->syn_time = time;
+                        	detail->syn_time = base_time;
                         	detail->stats = TCP_STAT_CREAT;
                         	detail->sip = GET_IP_SIP(pkg);
                         	detail->dip = GET_IP_DIP(pkg);
@@ -430,10 +442,10 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                             goto fin_process;
                     	if(detail->stats != TCP_STAT_CONN)
                     	{
-                        	detail->first_ack_time = time;
+                        	detail->first_ack_time = base_time;
                         	detail->stats = TCP_STAT_CONN;
                     	}
-                    	detail->last_ack_time = time;
+                    	detail->last_ack_time = base_time;
 
                     	http_method = *(unsigned int *)http_info;
                     	switch(http_method)
@@ -524,7 +536,7 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                         }
                         else //if(session_is_master(s))
                         {
-                            detail->fin_time = time;
+                            detail->fin_time = base_time;
                             detail->stats = TCP_STAT_FIN;
                         }
                 	}
@@ -547,10 +559,10 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                     }
                 }
         	}
-        	if(detail && detail->protocol == SESSION_PROTO_HTTP)
-                ipcount_add_pkg(ict, pkg, len, reader->flag, IPCOUNT_SESSION_TYPE_HTTP);
-            else
-                ipcount_add_pkg(ict, pkg, len, reader->flag, 0);
+        	//if(detail && detail->protocol == SESSION_PROTO_HTTP)
+                //ipcount_add_pkg(ict, pkg, len, reader->flag, IPCOUNT_SESSION_TYPE_HTTP);
+            //else
+                //ipcount_add_pkg(ict, pkg, len, reader->flag, 0);
         fin_process:
             return 1;
     }
@@ -607,12 +619,6 @@ static int db_opera(database *db)
             case OPERA_GET_TOP_NEW_HTTP:
                 opera->result = ipcount_get_top_ip(ict, IPCOUNT_TOP_NEW_HTTP, opera->top, 100);
                 break;
-            case OPERA_GET_TOP_ICMP_BPS:
-                opera->result = ipcount_get_top_ip(ict, IPCOUNT_TOP_ICMP_BPS, opera->top, 100);
-                break;
-            case OPERA_GET_TOP_HTTP_BPS:
-                opera->result = ipcount_get_top_ip(ict, IPCOUNT_TOP_HTTP_BPS, opera->top, 100);
-                break;
             case OPERA_GET_ALL:
                 opera->result = ipcount_get_all_ip(ict, opera->ip, DATABASE_MAX_IP);
                 break;
@@ -635,9 +641,9 @@ static int db_recorder(void *arg)
     char ip_str[32] = {0};
     int log_gen = 0, log_data = 0, log_top = 0, log_attack = 0;
     int ip_total = 0, top_total = 0;
-    int top_type[8] = {IPCOUNT_TOP_PPS_IN, IPCOUNT_TOP_PPS_OUT, IPCOUNT_TOP_BPS_IN, IPCOUNT_TOP_BPS_OUT,
-                        IPCOUNT_TOP_NEW_SESSION, IPCOUNT_TOP_NEW_HTTP, IPCOUNT_TOP_ICMP_BPS, IPCOUNT_TOP_HTTP_BPS};
-    int *top_str[8] = {"ppsin", "ppsout", "bpsin", "bpsout", "session", "http", "icmpbps", "httpbps"};
+    int top_type[6] = {IPCOUNT_TOP_PPS_IN, IPCOUNT_TOP_PPS_OUT, IPCOUNT_TOP_BPS_IN, IPCOUNT_TOP_BPS_OUT,
+                        IPCOUNT_TOP_NEW_SESSION, IPCOUNT_TOP_NEW_HTTP};
+    int *top_str[6] = {"ppsin", "ppsout", "bpsin", "bpsout", "session", "http"};
 
     id = (ip_data *)malloc(DATABASE_MAX_IP * sizeof(ip_data));
     td = (top_data *)malloc(100 * sizeof(top_data));
@@ -676,7 +682,7 @@ static int db_recorder(void *arg)
         {
             int i, j;
             flock(log_top, LOCK_EX);
-            for(i = 0; i < 8; i++)
+            for(i = 0; i < 6; i++)
             {
                 top_total = ipcount_get_top_ip(db->ict, top_type[i], td, 100);
                 snprintf(buf, sizeof(buf), "%s %u\n\0", top_str[i], top_total);
@@ -707,8 +713,8 @@ static int db_recorder(void *arg)
                 date = localtime(&attack->attack_begin);
                 snprintf(date_str, sizeof(date_str), "%d-%02d-%02d %02d:%02d:%02d",
                             date->tm_year+1900, date->tm_mon+1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec);
-                snprintf(buf, sizeof(buf), "%s %s %s %lu %lu %s %lu\n\0", ip_str, attack->attack_over ? "over" : "attacking", attack->attack_name,
-                            attack->attack_max_pps, attack->attack_max_bps, date_str,
+                snprintf(buf, sizeof(buf), "%s %s %s %lu %lu %lu %lu %s %lu\n\0", ip_str, attack->attack_over ? "over" : "attacking", attack->attack_name,
+                            attack->attack_cur_pps, attack->attack_cur_bps, attack->attack_max_pps, attack->attack_max_bps, date_str,
                             attack->attack_over ? (attack->attack_over - attack->attack_begin) : (time(NULL) - attack->attack_begin));
                 write(log_attack, &buf, strlen(buf));
             }

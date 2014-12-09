@@ -60,14 +60,15 @@ typedef struct _top_info
 struct _ip_count_t
 {
     ip_info *buf[MAX_COUNT_BUF];
-    ip_info *cur, *alive, *use_head, *use_tail;
-    ip_info **table;
+    ip_info *cur, *alive, *use_head, *use_tail, *max;
+    ip_info **table, **end;
     top_info top[MAX_DETAIL_VALUE * 2][TOP_N + 1];
     volatile unsigned int stats;
     unsigned int buf_total, use_total, max_level;
     unsigned char lock, add_lock, del_lock, top_lock;
     unsigned char *table_lock;
     unsigned long time;
+    unsigned long max_pps;
     void *attack_cbk;
     check_info ip_chk[MAX_DETAIL_VALUE];
     pthread_t counter;
@@ -449,6 +450,7 @@ ip_count_t *ipcount_init()
                 ict->ip_chk[DETAIL_VALUE_SESSION].attack_type = IPCOUNT_ATTACK_SYN_FLOOD;
             }
             ict->table = (ip_info **)malloc(IP_HASH_SIZE * sizeof(ip_info *));
+            ict->end = (ip_info **)malloc(IP_HASH_SIZE * sizeof(ip_info *));
             ict->table_lock = (unsigned char *)malloc(IP_HASH_SIZE * sizeof(char));
             memset(ict->table, 0, IP_HASH_SIZE * sizeof(ip_info *));
             memset(ict->table_lock, 0, IP_HASH_SIZE * sizeof(char));
@@ -530,6 +532,7 @@ int ipcount_add_ip(ip_count_t *ict, unsigned int ip)
                 }
                 else
                     ict->table[key] = find;
+                ict->end[key] = find;
                 if(ict->use_tail)
                 {
                     ict->use_tail->next_use = find;
@@ -633,7 +636,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         dfind = ict->table[dkey];
         if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_SIP)))
         {
-            lock(&(ict->table_lock[skey]));
+            //lock(&(ict->table_lock[skey]));
             while(!find && sfind)
             {
                 if(sfind->ip == sip)
@@ -650,16 +653,18 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                     ret = 1;
                     break;
                 }
+                if(sfind == ict->end[skey])
+                    break;
                 sfind = sfind->next;
                 find_level++;
             }
-            unlock(&(ict->table_lock[skey]));
+            //unlock(&(ict->table_lock[skey]));
         }
         if(find_level > ict->max_level)
             ict->max_level = find_level;
         if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_DIP)))
         {
-            lock(&(ict->table_lock[dkey]));
+            //lock(&(ict->table_lock[dkey]));
             while(!find && dfind)
             {
                 if(dfind->ip == dip)
@@ -676,17 +681,19 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                     ret = 1;
                     break;
                 }
+                if(dfind == ict->end[dkey])
+                    break;
                 dfind = dfind->next;
                 find_level++;
             }
-            unlock(&(ict->table_lock[dkey]));
+            //unlock(&(ict->table_lock[dkey]));
         }
         if(find_level > ict->max_level)
             ict->max_level = find_level;
         if(!find && add_ip_flag)
         {
-            if(add_ip_flag & (IPCOUNT_ADD_FLAG_SIP))
-                ipcount_add_ip(ict, sip);
+            //if(add_ip_flag & (IPCOUNT_ADD_FLAG_SIP))
+                //ipcount_add_ip(ict, sip);
             if(add_ip_flag & (IPCOUNT_ADD_FLAG_DIP))
                 ipcount_add_ip(ict, dip);
         }
