@@ -34,7 +34,7 @@ typedef struct _ef_slot
 #pragma pack(pop)
 
 
-int efio_read(int fd, ef_slot *slot, int num);
+int efio_read(int fd, ef_slot *slot, int num, int copy);
 
 int efio_send(int fd, ef_slot *slot, int num);
 

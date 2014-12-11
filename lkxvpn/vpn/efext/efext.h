@@ -60,10 +60,11 @@ int session_set_timeout_callback(session *s, void *cbk);
 #define IPCOUNT_ADD_FLAG_SIP            1 << 0
 #define IPCOUNT_ADD_FLAG_DIP            1 << 1
 #define IPCOUNT_SESSION_TYPE_NEW        1
-#define IPCOUNT_SESSION_TYPE_CLOSE      2
-#define IPCOUNT_SESSION_TYPE_TIMEOUT    3
-#define IPCOUNT_SESSION_TYPE_HTTP       4
-#define IPCOUNT_SESSION_TYPE_UNKNOW     5
+#define IPCOUNT_SESSION_TYPE_CONN       2
+#define IPCOUNT_SESSION_TYPE_CLOSE      3
+#define IPCOUNT_SESSION_TYPE_TIMEOUT    4
+#define IPCOUNT_SESSION_TYPE_HTTP       5
+#define IPCOUNT_SESSION_TYPE_UNKNOW     6
 #define IPCOUNT_TOP_PPS_IN              1
 #define IPCOUNT_TOP_PPS_OUT             2
 #define IPCOUNT_TOP_BPS_IN              3
@@ -71,8 +72,12 @@ int session_set_timeout_callback(session *s, void *cbk);
 #define IPCOUNT_TOP_NEW_SESSION         5
 #define IPCOUNT_TOP_NEW_HTTP            6
 #define IPCOUNT_ATTACK_SYN_FLOOD        (1 << 0)
-#define IPCOUNT_ATTACK_UDP_FLOOD        (1 << 1)
-#define IPCOUNT_ATTACK_ICMP_FLOOD       (1 << 2)
+#define IPCOUNT_ATTACK_TCP_FLOOD        (1 << 1)
+#define IPCOUNT_ATTACK_UDP_FLOOD        (1 << 2)
+#define IPCOUNT_ATTACK_ICMP_FLOOD       (1 << 3)
+#define IPCOUNT_ATTACK_HTTP_FLOOD       (1 << 4)
+#define IPCOUNT_ATTACK_ACK_FLOOD        (1 << 5)
+#define IPCOUNT_ATTACK_DNS_FLOOD        (1 << 6)
 typedef struct _ip_count_t ip_count_t;
 #pragma pack(push, 8)
 typedef struct _top_data
@@ -96,7 +101,7 @@ int ipcount_tini(ip_count_t *ict);
 int ipcount_add_ip(ip_count_t *ict, unsigned int ip);
 int ipcount_del_ip(ip_count_t *ict, unsigned int ip);
 int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag, unsigned int session_type);
-int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type);
+int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type, unsigned int session_flow);
 int ipcount_get_ip(ip_count_t *ict, ip_data *id);
 int ipcount_get_ip_total(ip_count_t *ict);
 int ipcount_get_top_ip(ip_count_t *ict, int top_flag, top_data *td, unsigned int total);

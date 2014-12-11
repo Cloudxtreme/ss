@@ -1,1 +1,0 @@
-cmd_/usr/work/efdetector/efio/iobase/capture/pf_ring/kernel/pf_ring.ko := ld -r -m elf_x86_64 -T /usr/work/efdetector/tools/linux-3.0.8/scripts/module-common.lds --build-id  -o /usr/work/efdetector/efio/iobase/capture/pf_ring/kernel/pf_ring.ko /usr/work/efdetector/efio/iobase/capture/pf_ring/kernel/pf_ring.o /usr/work/efdetector/efio/iobase/capture/pf_ring/kernel/pf_ring.mod.o

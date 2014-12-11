@@ -10,10 +10,16 @@
 
 #define MIN_UDP_IN          50000000
 #define MIN_ICMP_IN         10000000
+#define MIN_DNS_IN          10000
 #define MIN_NEW_SESSION     1000
+#define MIN_NEW_CONN        1000
+#define MIN_NEW_HTTP        1000
+
+#define CHECK_TYPE_FLOW     1
+#define CHECK_TYPE_SOURCE   2
 
 #define TOP_N                   10
-#define MAX_DETAIL_VALUE        7
+#define MAX_DETAIL_VALUE        10
 #define DETAIL_VALUE_PKG        0
 #define DETAIL_VALUE_FLOW       1
 #define DETAIL_VALUE_TCP        2
@@ -21,6 +27,9 @@
 #define DETAIL_VALUE_ICMP       4
 #define DETAIL_VALUE_HTTP       5
 #define DETAIL_VALUE_SESSION    6
+#define DETAIL_VALUE_CONN       7
+#define DETAIL_VALUE_ACK        8
+#define DETAIL_VALUE_DNS        9
 
 typedef struct _detail_value
 {
@@ -36,6 +45,7 @@ typedef struct _detail_value
 typedef struct _check_info
 {
     unsigned char chk;
+    unsigned char type;
     unsigned long min;
     unsigned long attack_type;
 }check_info;
@@ -188,6 +198,7 @@ static void count_thread(void *arg)
     check_info *check = NULL;
     top_info *top = NULL;
     unsigned long tmp_in, tmp_out;
+    unsigned char abnormal = 0;
 
     while(ict->stats)
     {
@@ -331,42 +342,45 @@ static void count_thread(void *arg)
 
                     if(check->chk)
                     {
-                        if((detail->hold_time < 30) || ((detail->in_avg << 2) > detail->in_ps)
-                            || (detail->in_ps < detail->out_ps))
+                        abnormal = 0;
+                        if((detail->hold_time < 30) || ((detail->in_avg << 3) > detail->in_ps))
                         {
-                            if(detail->ab_time)
-                                detail->ab_time--;
                             detail->hold_time++;
                             detail->in_normal += detail->in_ps;
                             detail->out_normal += detail->out_ps;
                             detail->in_avg = detail->in_normal / detail->hold_time;
                             detail->out_avg = detail->out_normal / detail->hold_time;
                         }
-                        else if(detail->in_top && (detail->in_ps > check->min))
+                        else if(detail->in_top)
                         {
-                            float scale;
-                            float scale_avg;
-                            if(detail->out_ps)
-                                scale = (float)(detail->in_ps) / (float)(detail->out_ps);
-                            else
-                                scale = (float)(detail->in_ps);
-                            if(detail->out_avg)
-                                scale_avg = (float)(detail->in_avg) / (float)(detail->out_avg);
-                            else
-                                scale_avg = (float)(detail->in_avg);
-                            if(scale_avg * 4 < scale)
+                            if(check->type == CHECK_TYPE_FLOW)
                             {
-                                if(!(use->attack & check->attack_type))
-                                {
-                                    detail->ab_time++;
-                                    if(detail->ab_time > 10)
-                                        use->attack |= check->attack_type;
-                                }
+                                if(detail->in_ps > check->min)
+                                    abnormal = 1;
                             }
                             else
                             {
-                                if(detail->ab_time)
-                                    detail->ab_time--;
+                                float scale;
+                                float scale_avg;
+                                if(detail->out_ps)
+                                    scale = (float)(detail->in_ps) / (float)(detail->out_ps);
+                                else
+                                    scale = (float)(detail->in_ps);
+                                if(detail->out_avg)
+                                    scale_avg = (float)(detail->in_avg) / (float)(detail->out_avg);
+                                else
+                                    scale_avg = (float)(detail->in_avg);
+                                if(scale_avg * 10 < scale)
+                                    abnormal = 1;
+                            }
+                        }
+                        if(abnormal)
+                        {
+                            if(!(use->attack & check->attack_type))
+                            {
+                                detail->ab_time++;
+                                if(detail->ab_time > 10)
+                                    use->attack |= check->attack_type;
                             }
                         }
                         else
@@ -440,14 +454,33 @@ ip_count_t *ipcount_init()
             ict->stats = 1;
             {
                 ict->ip_chk[DETAIL_VALUE_UDP].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_UDP].type = CHECK_TYPE_FLOW;
                 ict->ip_chk[DETAIL_VALUE_UDP].min = MIN_UDP_IN;
                 ict->ip_chk[DETAIL_VALUE_UDP].attack_type = IPCOUNT_ATTACK_UDP_FLOOD;
                 ict->ip_chk[DETAIL_VALUE_ICMP].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_ICMP].type = CHECK_TYPE_FLOW;
                 ict->ip_chk[DETAIL_VALUE_ICMP].min = MIN_ICMP_IN;
                 ict->ip_chk[DETAIL_VALUE_ICMP].attack_type = IPCOUNT_ATTACK_ICMP_FLOOD;
                 ict->ip_chk[DETAIL_VALUE_SESSION].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_SESSION].type = CHECK_TYPE_SOURCE;
                 ict->ip_chk[DETAIL_VALUE_SESSION].min = MIN_NEW_SESSION;
-                ict->ip_chk[DETAIL_VALUE_SESSION].attack_type = IPCOUNT_ATTACK_SYN_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_SESSION].attack_type = IPCOUNT_ATTACK_TCP_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_CONN].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_CONN].type = CHECK_TYPE_SOURCE;
+                ict->ip_chk[DETAIL_VALUE_CONN].min = MIN_NEW_CONN;
+                ict->ip_chk[DETAIL_VALUE_CONN].attack_type = IPCOUNT_ATTACK_SYN_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_HTTP].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_HTTP].type = CHECK_TYPE_SOURCE;
+                ict->ip_chk[DETAIL_VALUE_HTTP].min = MIN_NEW_HTTP;
+                ict->ip_chk[DETAIL_VALUE_HTTP].attack_type = IPCOUNT_ATTACK_HTTP_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_ACK].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_ACK].type = CHECK_TYPE_SOURCE;
+                ict->ip_chk[DETAIL_VALUE_ACK].min = 0;
+                ict->ip_chk[DETAIL_VALUE_ACK].attack_type = IPCOUNT_ATTACK_ACK_FLOOD;
+                ict->ip_chk[DETAIL_VALUE_DNS].chk = 1;
+                ict->ip_chk[DETAIL_VALUE_DNS].type = CHECK_TYPE_FLOW;
+                ict->ip_chk[DETAIL_VALUE_DNS].min = MIN_DNS_IN;
+                ict->ip_chk[DETAIL_VALUE_DNS].attack_type = IPCOUNT_ATTACK_DNS_FLOOD;
             }
             ict->table = (ip_info **)malloc(IP_HASH_SIZE * sizeof(ip_info *));
             ict->end = (ip_info **)malloc(IP_HASH_SIZE * sizeof(ip_info *));
@@ -645,7 +678,11 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                     find->detail[DETAIL_VALUE_PKG].out++;
                     find->detail[DETAIL_VALUE_FLOW].out += len;
                     if(IF_TCP(pkg))
+                    {
                         find->detail[DETAIL_VALUE_TCP].out += len;
+                        if(IF_ACK(pkg))
+                            find->detail[DETAIL_VALUE_ACK].out++;
+                    }
                     else if(IF_UDP(pkg))
                         find->detail[DETAIL_VALUE_UDP].out += len;
                     else if(IF_ICMP(pkg))
@@ -673,9 +710,17 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                     find->detail[DETAIL_VALUE_PKG].in++;
                     find->detail[DETAIL_VALUE_FLOW].in += len;
                     if(IF_TCP(pkg))
+                    {
                         find->detail[DETAIL_VALUE_TCP].in += len;
+                        if(IF_ACK(pkg))
+                            find->detail[DETAIL_VALUE_ACK].in++;
+                    }
                     else if(IF_UDP(pkg))
+                    {
                         find->detail[DETAIL_VALUE_UDP].in += len;
+                        if(GET_IP_DPORT(pkg) == 0x3500)
+                            find->detail[DETAIL_VALUE_DNS].in++;
+                    }
                     else if(IF_ICMP(pkg))
                         find->detail[DETAIL_VALUE_ICMP].in += len;
                     ret = 1;
@@ -701,7 +746,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
     return ret;
 }
 
-int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type)
+int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type, unsigned int session_flow)
 {
     int ret = 0;
     if(ict && ict->stats && sip && dip)
@@ -748,13 +793,19 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
                 switch(session_type)
                 {
                     case IPCOUNT_SESSION_TYPE_NEW:
+                        find->detail[DETAIL_VALUE_CONN].in++;
+                        break;
+                    case IPCOUNT_SESSION_TYPE_CONN:
+                        find->detail[DETAIL_VALUE_CONN].out++;
                         find->detail[DETAIL_VALUE_SESSION].in++;
+                        find->detail[DETAIL_VALUE_HTTP].out++;
                         break;
                     case IPCOUNT_SESSION_TYPE_CLOSE:
                         //find->detail[DETAIL_VALUE_HTTP].out++;
-                        find->detail[DETAIL_VALUE_SESSION].out++;
+                        find->detail[DETAIL_VALUE_SESSION].out += session_flow;
                         break;
                     case IPCOUNT_SESSION_TYPE_TIMEOUT:
+                        find->detail[DETAIL_VALUE_SESSION].out += session_flow;
                         break;
                     case IPCOUNT_SESSION_TYPE_HTTP:
                         find->detail[DETAIL_VALUE_HTTP].in++;

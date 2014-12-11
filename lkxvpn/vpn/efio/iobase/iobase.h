@@ -43,6 +43,8 @@ int ef_netmap_close(void *_fd);
 
 int ef_netmap_read(void *_fd, io_slot *slot, int num);
 
+int ef_netmap_read_nocopy(void *_fd, io_slot *slot, int num);
+
 int ef_netmap_send(void *_fd, io_slot *slot, int num);
 
 int ef_netmap_flush(void *_fd, int flush_type, int flush_wait);

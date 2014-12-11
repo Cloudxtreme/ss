@@ -146,7 +146,7 @@ static int read(void *arg)
                 usleep(0);
                 continue;
             }
-            reads = efio_read(reader->fd, &reader->slot[cur], max_read);
+            reads = efio_read(reader->fd, &reader->slot[cur], max_read, 1);
             reader->pkg += reads;
             for(i = 0; i < reads; i++)
             {
@@ -291,7 +291,7 @@ static int timeout_process(session *s)
         database *db = g_db[detail->db_id];
         int flow = session_get_flow(s);
         detail->stats = TCP_STAT_TIMEOUT;
-        ipcount_add_session(db->ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_TIMEOUT);
+        ipcount_add_session(db->ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_TIMEOUT, flow);
         fin_http_detail(db, detail, 1);
 	}
 	return 0;
@@ -414,7 +414,7 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                         	session_set_detail(s, detail);
                         	session_set_timeout(s, TCP_TIMEOUT);
                         	session_set_timeout_callback(s, (void *)timeout_process);
-                        	ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_NEW);
+                        	ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_NEW, 0);
                     	}
                     	else
                     	{
@@ -471,7 +471,7 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                         if(!detail->protocol)
                         {
                             detail->protocol = SESSION_PROTO_HTTP;
-                            ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_HTTP);
+                            ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_HTTP, 0);
                         }
                     	url_begin = http_info;
                     	url_end = strstr(url_begin, "HTTP");
@@ -552,7 +552,8 @@ static int pkg_process(database *db, reader_t *reader, ef_slot *slot)
                     }
                     if(detail->stats == TCP_STAT_FIN || detail->stats == TCP_STAT_ERROR)
                     {
-                        ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_CLOSE);
+                        int flow = session_get_flow(s);
+                        ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_CLOSE, flow);
                         fin_http_detail(db, detail, 0);
                         //rec_http_detail(db, detail);
                         session_close(s);

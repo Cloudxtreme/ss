@@ -17,11 +17,12 @@ typedef struct _ef_fd
 	int			bdg;
 	void		*bdg_handle;
 	void		*fd;
-	void*		(*open)		(char *dev, int direction, int promisc);
-	int			(*close)	(void *fd);
-	int			(*read)		(void *fd, io_slot *slot, int num);
-	int			(*send)		(void *fd, io_slot *slot, int num);
-	int			(*flush)	(void *fd, int flush_type, int flush_wait);
+	void*		(*open)		    (char *dev, int direction, int promisc);
+	int			(*close)	    (void *fd);
+	int			(*read)		    (void *fd, io_slot *slot, int num);
+	int			(*read_nocopy)	(void *fd, io_slot *slot, int num);
+	int			(*send)		    (void *fd, io_slot *slot, int num);
+	int			(*flush)	    (void *fd, int flush_type, int flush_wait);
 }ef_fd;
 
 typedef int (*ef_handle)(int fd, ef_slot *slot, int num);
@@ -85,6 +86,7 @@ int efio_init(char *dev, int use, int direction, int promisc)
 			fd->open = ef_netmap_open;
 			fd->close = ef_netmap_close;
 			fd->read = ef_netmap_read;
+			fd->read_nocopy = ef_netmap_read_nocopy;
 			fd->send = ef_netmap_send;
 			fd->flush = ef_netmap_flush;
 			break;
@@ -175,7 +177,7 @@ int efio_getfd_bydev(unsigned char *dev)
 	return 0;
 }
 
-int efio_read(int n, ef_slot *slot, int num)
+int efio_read(int n, ef_slot *slot, int num, int copy)
 {
 	ef_fd *fd;
 
@@ -189,7 +191,10 @@ int efio_read(int n, ef_slot *slot, int num)
     }
 	if(!(fd->direction & EF_ENABLE_READ))
 		return 0;
-	return fd->read(fd->fd, (io_slot *)slot, num);
+    if(copy)
+        return fd->read(fd->fd, (io_slot *)slot, num);
+    else
+        return fd->read_nocopy(fd->fd, (io_slot *)slot, num);
 }
 
 int efio_send(int n, ef_slot *slot, int num)

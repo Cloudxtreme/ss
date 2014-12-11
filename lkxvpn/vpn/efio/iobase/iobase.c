@@ -350,6 +350,62 @@ do_recv:
 	return n;
 }
 
+int ef_netmap_read_nocopy(void *_fd, io_slot *slot, int num)
+{
+	int n = 0;
+	ef_netmap *fd = (ef_netmap *)_fd;
+	struct netmap_ring *rxring;
+
+	char *p;
+	int len;
+
+do_recv:
+	if(fd->host_open && fd->host_rxavail)
+	{
+		rxring = NETMAP_RXRING(fd->nifp, fd->rxrings);
+		while((fd->host_rxavail > 0) && (n < num))
+		{
+			struct netmap_slot *nm_slot = &rxring->slot[fd->host_rxcur];
+			p = NETMAP_BUF(rxring, nm_slot->buf_idx);
+			len = nm_slot->len;
+			slot->pbuf = p;
+			slot->plen = len;
+			slot->time = cur_time;
+			slot->flag = IO_FROM_HOST;
+			slot++; n++;
+			fd->host_rxcur = NETMAP_RING_NEXT(rxring, fd->host_rxcur);
+			fd->host_rxavail--;
+		}
+	}
+	while((fd->rxavail) && (n < num))
+	{
+		rxring = NETMAP_RXRING(fd->nifp, fd->cur_rxring);
+		if (rxring->avail == 0)
+		{
+			fd->cur_rxring = ((fd->cur_rxring+1) == fd->rxrings ? 0 : (fd->cur_rxring+1));
+		}
+		else
+		{
+			while((rxring->avail > 0) && (n < num))
+			{
+				struct netmap_slot *nm_slot = &rxring->slot[rxring->cur];
+				p = NETMAP_BUF(rxring, nm_slot->buf_idx);
+				len = nm_slot->len;
+				slot->pbuf = p;
+				slot->plen = len;
+				slot->time = cur_time;
+				slot->flag = 0;
+				slot++; n++;
+				rxring->cur = NETMAP_RING_NEXT(rxring, rxring->cur);
+				rxring->avail--;
+				fd->rxavail--;
+			}
+		}
+	}
+
+	return n;
+}
+
 int ef_netmap_send(void *_fd, io_slot *slot, int num)
 {
 	int n = 0;
