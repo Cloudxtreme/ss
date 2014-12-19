@@ -58,10 +58,8 @@ typedef struct _attack_event
     unsigned long attack_begin, attack_over;
     unsigned long attack_cur_pps, attack_cur_bps, attack_max_pps, attack_max_bps;
     unsigned char attack_name[32];
+    struct _attack_event *next;
 }attack_event;
-
-
-#define MAX_ATTACK_EVENT            1000
 
 #define MAX_DATABASE                8
 #define MAX_READER                  16
@@ -127,12 +125,11 @@ typedef struct _database
     ip_count_t *ict;
     session_pool *pool;
     detect_opera *opera;
-    attack_event *attack;
+    attack_event *attack_head, *attack_tail;
     http_info *ti, **pti, **ri, **ri_timeout;
-    unsigned int attack_count;
     unsigned int rii, rij, rti, rtj, pti_cur, pti_rec, sli, slj, ili, ilj;
     unsigned long ip_total, in_pps, out_pps, in_bps, out_bps;
-    unsigned char lock;
+    unsigned char detail_lock, attack_lock;
     log_content *ip_log;
     log_content *session_log;
     unsigned int log_fd[LOG_MAX_TARGET];

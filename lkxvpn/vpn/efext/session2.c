@@ -57,7 +57,7 @@ typedef struct _pool_source
 {
     session *session_buf, *session_alive;
     session_slot *slot_buf, *slot_alive;
-    unsigned int use, alives, lost;
+    unsigned int alives;
     struct _pool_source *prev, *next;
 }pool_source;
 
@@ -216,17 +216,21 @@ static int get_source(session_pool *pool, session **s, session_slot **master, se
     {
         if(source->alives)
         {
-            void *tmp;
+            void *tmp1, *tmp2, *tmp3;
             *s = source->session_alive;
             *master = source->slot_alive;
             *other = source->slot_alive->next_alive;
             source->session_alive = source->session_alive->next_alive;
             source->slot_alive = source->slot_alive->next_alive->next_alive;
-            tmp = (*s)->source;
+            tmp1 = (*s)->source;
+            tmp2 = (*master)->source;
+            tmp3 = (*other)->source;
             memset(*s, 0, sizeof(session));
             memset(*master, 0, sizeof(session_slot));
             memset(*other, 0, sizeof(session_slot));
-            (*s)->source = tmp;
+            (*s)->source = tmp1;
+            (*master)->source = tmp2;
+            (*other)->source = tmp3;
             source->alives--;
             pool->source_alive--;
             ret = 1;
@@ -366,7 +370,6 @@ static int pool_reduce(session_pool *pool)
 {
     int ret = 0;
     pool_source *source = pool->source;
-    fprintf(stderr, "session reduce!\n");
     while(source)
     {
         if(source->alives == POOL_EACH_BUF_SIZE)
@@ -391,8 +394,9 @@ static int pool_reduce(session_pool *pool)
     return ret;
 }
 
-static pool_source *create_source()
+static int pool_expand(session_pool *pool)
 {
+    pool_source *link = pool->source;
     pool_source *source = NULL;
     session *session_buf = NULL;
     session_slot *slot_buf = NULL;
@@ -419,6 +423,9 @@ static pool_source *create_source()
             source->session_buf = session_buf;
             source->slot_buf = slot_buf;
 			source->alives = POOL_EACH_BUF_SIZE;
+			pool->source_alive += POOL_EACH_BUF_SIZE;
+			pool->source_total++;
+			pool->expand++;
 			goto succ;
 		}
 	}
@@ -429,21 +436,12 @@ err:
         free(session_buf);
     if(slot_buf)
         free(slot_buf);
-    source = NULL;
+    return 0;
 succ:
-    return source;
-}
-
-static int pool_expand(session_pool *pool, pool_source *source)
-{
-    pool_source *link = pool->source;
-
-    fprintf(stderr, "session expand!\n");
     while(link)
     {
         if(link->next == NULL)
             break;
-		link = link->next;
     }
     if(link)
     {
@@ -454,9 +452,6 @@ static int pool_expand(session_pool *pool, pool_source *source)
     {
         pool->source = source;
     }
-    pool->source_alive += POOL_EACH_BUF_SIZE;
-    pool->source_total++;
-    pool->expand++;
 	return 1;
 }
 
@@ -503,20 +498,10 @@ static int pool_recover(void *arg)
                 	}
 					release_session_in_pool(pool, use);
 				}
-				else
-                {
-                    pool_source *source = (pool_source *)use->source;
-                    source->use++;
-                }
 				if(use->other->key != use->master->key)
                     unlock(&(pool->table_lock[use->other->key]));
 				unlock(&(pool->table_lock[use->master->key]));
 				unlock(&(pool->pool_lock));
-            }
-            else
-            {
-                pool_source *source = (pool_source *)use->source;
-                source->use++;
             }
             prev_use = use;
             //mprotect(p, ps, PROT_READ|PROT_WRITE);
@@ -526,22 +511,11 @@ static int pool_recover(void *arg)
                 use = next_use;
             //mprotect(p, ps, PROT_READ);
         }//while(use != tail);
-        pool_source *source = pool->source;
-        while(source)
-        {
-            source->lost = POOL_EACH_BUF_SIZE - (source->use + source->alives);
-            source->use = 0;
-            source = source->next;
-        }
         if(pool->source_alive < (POOL_EACH_BUF_SIZE >> 1))
         {
-            pool_source *source = create_source();
-            if(source)
-            {
-                lock(&(pool->pool_lock));
-                pool_expand(pool, source);
-                unlock(&(pool->pool_lock));
-			}
+            lock(&(pool->pool_lock));
+            pool_expand(pool);
+            unlock(&(pool->pool_lock));
         }
         else if(pool->source_alive > (POOL_EACH_BUF_SIZE << 1))
         {
@@ -556,7 +530,6 @@ static int pool_recover(void *arg)
 session_pool *session_pool_init()
 {
     session_pool *sp = NULL;
-    pool_source *source;
     int i;
 
     sp = (session_pool *)malloc(sizeof(session_pool));
@@ -570,9 +543,8 @@ session_pool *session_pool_init()
     memset(sp->table, 0, SESSION_HASH_SIZE * sizeof(session_slot *));
     memset(sp->table_lock, 0, SESSION_HASH_SIZE * sizeof(char));
     lock(&g_lock);
-	if((source = create_source()))
+	if(pool_expand(sp))
 	{
-        pool_expand(sp, source);
 		sp->stats = 1;
 		pthread_create(&sp->recover, NULL, pool_recover, (void *)sp);
 		g_pool_total++;
@@ -608,13 +580,14 @@ int session_pool_tini(session_pool *sp)
             sp->stats = 0;
         	pthread_join(sp->recover, NULL);
         }
-		while(sp->source)
+		if(sp->buf_total)
         {
-        	pool_source *source = sp->source;
-			sp->source = source->next;
-			free(source->session_buf);
-			free(source->slot_buf);
-			free(source);
+        	int i = 0;
+			for(i = 0; i < sp->buf_total; i++)
+			{
+				free(sp->session_buf[i]);
+				free(sp->slot_buf[i]);
+			}
         }
         if(sp->table)
             free(sp->table);
@@ -651,9 +624,12 @@ session *session_get(session_pool *sp, void *pkg, int len)
         link_info pkg_link_info;
         if(!get_pkg_info(pkg, &pkg_link_info))
             goto done;
+        //key = (pkg_link_info.sip ^ pkg_link_info.dip ^ ((pkg_link_info.sport << 16) + pkg_link_info.dport)) % SESSION_HASH_SIZE;
+        //key = ((pkg_link_info.sip ^ pkg_link_info.dip) * pkg_link_info.sport) % SESSION_HASH_SIZE;
         key = CRC20_key((unsigned char *)&pkg_link_info, sizeof(link_info));
 		lock(&(sp->table_lock[key]));
         slot = sp->table[key];
+        //fprintf(stderr, "find : %u\n", key);
         while(slot)
         {
             link_info *li = &slot->li;
@@ -664,6 +640,7 @@ session *session_get(session_pool *sp, void *pkg, int len)
             deep++;
             slot = slot->next;
         }
+        //fprintf(stderr, "finded!\n");
         if(deep > sp->max_deep)
             sp->max_deep = deep;
 		if(slot)
