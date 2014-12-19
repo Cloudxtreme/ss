@@ -8,12 +8,13 @@
 #define IP_EACH_BUF_SIZE    1000000
 #define IP_HASH_SIZE        0x1000000
 
-#define MIN_UDP_IN          50000000
+#define MIN_UDP_IN          10000000
 #define MIN_ICMP_IN         10000000
 #define MIN_DNS_IN          10000
 #define MIN_NEW_SESSION     1000
 #define MIN_NEW_CONN        1000
 #define MIN_NEW_HTTP        1000
+#define MIN_ACK_IN          10000
 
 #define CHECK_TYPE_FLOW     1
 #define CHECK_TYPE_SOURCE   2
@@ -56,6 +57,7 @@ typedef struct _ip_info
     unsigned int ip;
     unsigned long attack;
     unsigned long last_time;
+    FILE *fd;
     detail_value detail[MAX_DETAIL_VALUE];
     struct _ip_info *prev, *next, *prev_use, *next_use, *next_alive;
 }ip_info;
@@ -199,6 +201,8 @@ static void count_thread(void *arg)
     top_info *top = NULL;
     unsigned long tmp_in, tmp_out;
     unsigned char abnormal = 0;
+    unsigned char filename[64];
+    unsigned char cap_hdr[24] = {0xd4, 0xc3, 0xb2, 0xa1, 0x2, 0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0};
 
     while(ict->stats)
     {
@@ -342,8 +346,9 @@ static void count_thread(void *arg)
 
                     if(check->chk)
                     {
+                        unsigned char new_attack = 0;
                         abnormal = 0;
-                        if((detail->hold_time < 30) || ((detail->in_avg << 3) > detail->in_ps))
+                        if((detail->hold_time < 30) || (detail->in_ps && (detail->in_avg << 2) > detail->in_ps))
                         {
                             detail->hold_time++;
                             detail->in_normal += detail->in_ps;
@@ -351,17 +356,30 @@ static void count_thread(void *arg)
                             detail->in_avg = detail->in_normal / detail->hold_time;
                             detail->out_avg = detail->out_normal / detail->hold_time;
                         }
-                        else if(detail->in_top)
+                        else if(detail->in_ps > check->min)//if(detail->in_top)
                         {
                             if(check->type == CHECK_TYPE_FLOW)
                             {
-                                if(detail->in_ps > check->min)
-                                    abnormal = 1;
+                                abnormal = 1;
                             }
                             else
                             {
-                                float scale;
-                                float scale_avg;
+                                float in_scale = 0;
+                                float out_scale = 0;
+                                if(detail->in_avg)
+                                    in_scale = (float)(detail->in_ps - detail->in_avg) / (float)(detail->in_avg);
+                                else
+                                    in_scale = (float)(detail->in_ps - detail->out_avg);
+                                if(detail->out_ps > detail->out_avg)
+                                {
+                                    if(detail->out_avg)
+                                        out_scale = (float)(detail->out_ps - detail->out_avg) / (float)(detail->out_avg);
+                                    else
+                                        out_scale = (float)(detail->out_ps - detail->out_avg);
+                                }
+                                if(out_scale * 5 < in_scale)
+                                    abnormal = 1;
+                                #if 0
                                 if(detail->out_ps)
                                     scale = (float)(detail->in_ps) / (float)(detail->out_ps);
                                 else
@@ -372,6 +390,7 @@ static void count_thread(void *arg)
                                     scale_avg = (float)(detail->in_avg);
                                 if(scale_avg * 10 < scale)
                                     abnormal = 1;
+                                #endif
                             }
                         }
                         if(abnormal)
@@ -380,7 +399,30 @@ static void count_thread(void *arg)
                             {
                                 detail->ab_time++;
                                 if(detail->ab_time > 10)
+                                {
+                                    if(!use->attack)
+                                    {
+                                        int len = 0;
+                                        FILE *fd;
+                                        memcpy(filename, "/tmp/", 5);
+                                        len = 5;
+                                        len += ip_2_str(use->ip, &filename[len]);
+                                        filename[len++] = '-';
+                                        len += num_2_str(ict->time, &filename[len]);
+                                        memcpy(&filename[len], ".cap\0", 5);
+                                        if(use->fd)
+                                            fclose(use->fd);
+                                        fprintf(stderr, "attack save in file:%s\n", filename);
+                                        fd = fopen(filename, "wb+");
+                                        if(fd)
+                                        {
+                                        	fwrite(cap_hdr, 1, sizeof(cap_hdr), fd);
+                                        	use->fd = fd;
+                                        }
+                                    }
+                                    new_attack = 1;
                                     use->attack |= check->attack_type;
+                                }
                             }
                         }
                         else
@@ -394,11 +436,16 @@ static void count_thread(void *arg)
                             {
                                 ipcount_attack_cbk callback = (ipcount_attack_cbk)ict->attack_cbk;
                                 if(detail->ab_time)
-                                    callback(ict, use->ip, check->attack_type, 1, use->detail[DETAIL_VALUE_PKG].in_ps, use->detail[DETAIL_VALUE_FLOW].in_ps);
+                                {
+                                    if(new_attack)
+                                        callback(ict, use->ip, check->attack_type, IPCOUNT_ATTACK_NEW, use->detail[DETAIL_VALUE_PKG].in_ps, use->detail[DETAIL_VALUE_FLOW].in_ps);
+                                    else
+                                        callback(ict, use->ip, check->attack_type, IPCOUNT_ATTACK_ING, use->detail[DETAIL_VALUE_PKG].in_ps, use->detail[DETAIL_VALUE_FLOW].in_ps);
+                                }
                                 else
                                 {
                                     use->attack &= ~(check->attack_type);
-                                    callback(ict, use->ip, check->attack_type, 0, 0, 0);
+                                    callback(ict, use->ip, check->attack_type, IPCOUNT_ATTACK_OVER, 0, 0);
                                 }
                             }
                         }
@@ -475,7 +522,7 @@ ip_count_t *ipcount_init()
                 ict->ip_chk[DETAIL_VALUE_HTTP].attack_type = IPCOUNT_ATTACK_HTTP_FLOOD;
                 ict->ip_chk[DETAIL_VALUE_ACK].chk = 1;
                 ict->ip_chk[DETAIL_VALUE_ACK].type = CHECK_TYPE_SOURCE;
-                ict->ip_chk[DETAIL_VALUE_ACK].min = 0;
+                ict->ip_chk[DETAIL_VALUE_ACK].min = MIN_ACK_IN;
                 ict->ip_chk[DETAIL_VALUE_ACK].attack_type = IPCOUNT_ATTACK_ACK_FLOOD;
                 ict->ip_chk[DETAIL_VALUE_DNS].chk = 1;
                 ict->ip_chk[DETAIL_VALUE_DNS].type = CHECK_TYPE_FLOW;
@@ -735,6 +782,14 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         }
         if(find_level > ict->max_level)
             ict->max_level = find_level;
+        if(find && find->attack && find->fd)
+        {
+            unsigned long cap_time = ict->time;
+            fwrite(&cap_time, 1, sizeof(cap_time), find->fd);
+            fwrite(&len, 1, sizeof(len), find->fd);
+            fwrite(&len, 1, sizeof(len), find->fd);
+            fwrite(pkg, 1, len, find->fd);
+        }
         if(!find && add_ip_flag)
         {
             //if(add_ip_flag & (IPCOUNT_ADD_FLAG_SIP))
