@@ -23,6 +23,7 @@ unsigned long no_process_detail = 0;
 static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int len);
 static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attacking,
                             unsigned long pps, unsigned long bps);
+static int timeout_process(session_pool *pool, session *s);
 
 
 static void lock(char *lock)
@@ -89,10 +90,10 @@ static int free_database(database *db)
             free(db->attack_head);
             db->attack_head = next;
         }
-        if(db->ti)
-            free(db->ti);
-        if(db->pti)
-            free(db->pti);
+        if(db->hi)
+            free(db->hi);
+        if(db->phi)
+            free(db->phi);
         if(db->ri)
             free(db->ri);
         if(db->ri_timeout)
@@ -122,23 +123,23 @@ static database *init_database(unsigned int id, unsigned char *name)
     db->id = id;
     db->ict = ipcount_init();
     ipcount_set_attack_cbk(db->ict, attack_process);
-    db->pool = session_pool_init();
+    db->pool = session_pool_init(timeout_process);
     db->opera = get_opera(name);
-    db->ti = (http_info *)malloc(DATABASE_MAX_SESSION * sizeof(http_info));
-    db->pti = (http_info **)malloc(DATABASE_MAX_SESSION * sizeof(http_info *));
-    db->ri = (http_info **)malloc(DATABASE_MAX_REPORT * sizeof(http_info *));
-    db->ri_timeout = (http_info **)malloc(DATABASE_MAX_REPORT * sizeof(http_info *));
+    db->hi = (http_info *)malloc(DATABASE_MAX_HTTP * sizeof(http_info));
+    db->phi = (http_info **)malloc(DATABASE_MAX_HTTP * sizeof(http_info *));
+    db->ri = (report_info *)malloc(DATABASE_MAX_REPORT * sizeof(report_info));
+    db->ri_timeout = (report_info *)malloc(DATABASE_MAX_REPORT * sizeof(report_info));
     db->ip_log = (log_content *)malloc(DATABASE_MAX_LOG * sizeof(log_content));
     db->session_log = (log_content *)malloc(DATABASE_MAX_LOG * sizeof(log_content));
-    memset(db->ti, 0, DATABASE_MAX_SESSION * sizeof(http_info));
-    memset(db->pti, 0, DATABASE_MAX_SESSION * sizeof(http_info *));
-    memset(db->ri, 0, DATABASE_MAX_REPORT * sizeof(http_info *));
-    memset(db->ri_timeout, 0, DATABASE_MAX_REPORT * sizeof(http_info *));
+    memset(db->hi, 0, DATABASE_MAX_HTTP * sizeof(http_info));
+    memset(db->phi, 0, DATABASE_MAX_HTTP * sizeof(http_info *));
+    memset(db->ri, 0, DATABASE_MAX_REPORT * sizeof(report_info));
+    memset(db->ri_timeout, 0, DATABASE_MAX_REPORT * sizeof(report_info));
     memset(db->ip_log, 0, DATABASE_MAX_LOG * sizeof(log_content));
     memset(db->session_log, 0, DATABASE_MAX_LOG * sizeof(log_content));
-    for(j = 0; j < DATABASE_MAX_SESSION; j++)
+    for(j = 0; j < DATABASE_MAX_HTTP; j++)
     {
-        db->pti[j] = &(db->ti[j]);
+        db->phi[j] = &(db->hi[j]);
     }
     db->rij = db->rtj = DATABASE_MAX_REPORT - 1;
     db->ilj = db->slj = DATABASE_MAX_LOG - 1;
@@ -240,11 +241,27 @@ static int tini()
 }
 
 
+int detail_tmp1 = 0, detail_tmp2 = 0;
 static int control()
 {
     int i, j;
     while(g_run)
     {
+        #if 0
+        for(i = 0; i < DATABASE_MAX_HTTP - 1; i++)
+        {
+            for(j = i + 1; j < DATABASE_MAX_HTTP; j++)
+            {
+                http_info *detail1 = g_db[0]->phi[i];
+                http_info *detail2 = g_db[0]->phi[j];
+                if(detail1 == detail2)
+                {
+                    detail_tmp1 = i;
+                    detail_tmp2 = j;
+                }
+            }
+        }
+        #endif
         for(i = 0; i < g_reader_num; i++)
         {
             unsigned long tmp_pkg, tmp_flow;
@@ -273,7 +290,7 @@ static int control()
         for(i = 0; i < g_database_num; i++)
             fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu|", g_db[i]->in_pps + g_db[i]->out_pps, (g_db[i]->in_bps + g_db[i]->out_bps) * 8,
                         g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj,
-                        g_db[i]->pti_cur, g_db[i]->pti_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
+                        g_db[i]->phi_cur, g_db[i]->phi_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
         fprintf(stderr, "\n");
         fprintf(stderr, "\n------------------------------------------------------------------------\n");
         sleep(1);
@@ -412,12 +429,12 @@ static http_info *get_http_detail(database *db)
 {
     http_info *detail = NULL;
     lock(&db->detail_lock);
-    if(!db->pti[db->pti_cur]->use)
+    if(!db->phi[db->phi_cur]->use)
     {
-        detail = db->pti[db->pti_cur];
+        detail = db->phi[db->phi_cur];
         memset(detail, 0, sizeof(http_info));
-        detail->db_id = db->id;
-        db->pti_cur = (db->pti_cur + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_cur + 1);
+        detail->use = 1;
+        db->phi_cur = (db->phi_cur + 1 == DATABASE_MAX_HTTP) ? 0 : (db->phi_cur + 1);
     }
     unlock(&db->detail_lock);
     return detail;
@@ -426,57 +443,79 @@ static http_info *get_http_detail(database *db)
 static int rec_http_detail(database *db, http_info *detail)
 {
     lock(&db->detail_lock);
-    db->pti[db->pti_rec] = detail;
-    db->pti_rec = (db->pti_rec + 1 == DATABASE_MAX_SESSION) ? 0 : (db->pti_rec + 1);
+    db->phi[db->phi_rec] = detail;
+    db->phi_rec = (db->phi_rec + 1 == DATABASE_MAX_HTTP) ? 0 : (db->phi_rec + 1);
     detail->use = 0;
     unlock(&db->detail_lock);
     return 1;
 }
 
-static int fin_http_detail(database *db, http_info *detail, int timeout)
+static int create_report(database *db, session *s, unsigned int stats)
 {
-    int fin_succ = 0;
+    report_info *report = NULL;
     lock(&db->detail_lock);
-    if(!timeout)
-    {
-        unsigned int tmp = (db->rii + 1 == DATABASE_MAX_REPORT) ? 0 : (db->rii + 1);
-        if(tmp != db->rij)
-        {
-            db->ri[db->rii] = detail;
-            db->rii = tmp;
-            fin_succ = 1;
-        }
-    }
-    else
+	#if 1
+    if(!stats)
     {
         unsigned int tmp = (db->rti + 1 == DATABASE_MAX_REPORT) ? 0 : (db->rti + 1);
         if(tmp != db->rtj)
         {
-            db->ri_timeout[db->rti] = detail;
+            report = &(db->ri_timeout[db->rti]);
             db->rti = tmp;
-            fin_succ = 1;
         }
     }
-    unlock(&db->detail_lock);
-    if(!fin_succ)
+    else
     {
-        rec_http_detail(db, detail);
+        unsigned int tmp = (db->rii + 1 == DATABASE_MAX_REPORT) ? 0 : (db->rii + 1);
+        if(tmp != db->rij)
+        {
+            report = &(db->ri[db->rii]);
+            db->rii = tmp;
+        }
+    }
+    if(report)
+    {
+        report->stats = stats;
+        report->sip = session_get_sip(s);
+        report->dip = session_get_dip(s);
+        report->sport = session_get_sport(s);
+        report->dport = session_get_dport(s);
+        report->flow = session_get_flow(s);
+        if(session_get_conn_time(s))
+        {
+            report->conn_time = session_get_conn_time(s) - session_get_create_time(s);
+            if(session_get_close_time(s))
+                report->tran_time = session_get_close_time(s) - session_get_conn_time(s);
+            else
+                report->tran_time = base_time - session_get_conn_time(s);
+        }
+        report->type = session_get_type(s);
+        report->detail = session_get_detail(s);
+    }
+	#endif
+    unlock(&db->detail_lock);
+    if(!report && session_get_detail(s))
+    {
+        rec_http_detail(db, session_get_detail(s));
         no_process_detail++;
     }
-    return 1;
 }
 
-static int timeout_process(session *s)
+static int timeout_process(session_pool *pool, session *s)
 {
-	http_info *detail = (http_info *)session_get_detail(s);
-	if(detail)
-	{
-        database *db = g_db[detail->db_id];
-        int flow = session_get_flow(s);
-        detail->stats = TCP_STAT_TIMEOUT;
-        ipcount_add_session(db->ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_TIMEOUT, flow);
-        fin_http_detail(db, detail, 1);
-	}
+    if(session_get_conn_time(s))
+    {
+        int i;
+        for(i = 0; i < g_database_num; i++)
+        {
+            if(g_db[i]->pool == pool)
+            {
+                create_report(g_db[i], s, 0);
+                ipcount_add_session(g_db[i]->ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_TIMEOUT, session_get_flow(s));
+                break;
+            }
+        }
+    }
 	return 0;
 }
 
@@ -585,6 +624,7 @@ static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int l
 {
     session_pool *pool = db->pool;
     session *s;
+    int session_stat = 0;
     ip_count_t *ict = db->ict;
     http_info *detail = NULL;
 
@@ -593,190 +633,122 @@ static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int l
         struct iphdr *iph = P_IPP(pkg);
         if(IF_TCP(pkg))
         {
-            	struct tcphdr *tph = P_TCPP(pkg);
-         		unsigned int seq, ack;
+            struct tcphdr *tph = P_TCPP(pkg);
 
-         		s = session_get(pool, pkg, len);
-            	if(!s)
-                	goto fin_process;
-            	seq = ntohi(tph->seq);
-            	ack = ntohi(tph->ack_seq);
-            	detail = (http_info *)session_get_detail(s);
-            	if(IF_SYN(pkg) && !IF_ACK(pkg))//if(IF_SYN(pkg))
-            	{
-                    ipcount_add_session(ict, iph->saddr, iph->daddr, IPCOUNT_SESSION_TYPE_NEW, 0);
-                	if(!detail)
-                	{
-                        detail = get_http_detail(db);
-                    	if(detail)
-                    	{
-                        	detail->use = 1;
-                        	detail->syn_time = base_time;
-                        	detail->stats = TCP_STAT_CREAT;
-                        	detail->sip = GET_IP_SIP(pkg);
-                        	detail->dip = GET_IP_DIP(pkg);
-                        	detail->sport = GET_IP_SPORT(pkg);
-                        	detail->dport = GET_IP_DPORT(pkg);
-                        	session_set_detail(s, detail);
-                        	session_set_timeout(s, TCP_TIMEOUT);
-                        	session_set_timeout_callback(s, (void *)timeout_process);
-                    	}
-                    	else
-                    	{
-                            fprintf(stderr, "no free detail!\n");
-                            goto fin_process;
-                        }
-                	}
-            	}
-            syn_end:
-            	if(IF_ACK(pkg) && !IF_SYN(pkg))
-            	{
-                	if(detail)
-                	{
-                    	char *http_cont = ((char*)P_TCPP(pkg)+(P_TCPP(pkg)->doff<<2));
-                    	unsigned int http_method;
-                    	char *url_begin = NULL;
-                    	char *url_end = NULL;
-                    	char *host_begin = NULL;
-                    	char *host_end = NULL;
-						int http_host = 0;
-                    	unsigned int url_len = 0, host_len = 0;
+            session_stat = session_get(pool, &s, pkg, len);
+            if(session_stat & SESSION_TYPE_CREATE)
+            {
+                //ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_NEW, 0);
+            }
+            if(session_stat & SESSION_TYPE_CONN)
+            {
+                ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_CONN, 0);
+            }
+            if(IF_ACK(pkg) && session_if_conn(s))
+            {
+                char *http_cont = ((char*)P_TCPP(pkg)+(P_TCPP(pkg)->doff<<2));
+                unsigned int http_method;
+                char *url_begin = NULL;
+                char *url_end = NULL;
+                char *host_begin = NULL;
+                char *host_end = NULL;
+                int http_host = 0;
+                unsigned int url_len = 0, host_len = 0;
 
-                        if(STR_OVERFLOW(pkg, len, http_cont))
-                            goto ack_end;
-                        if(detail->stats == TCP_STAT_FIN)
-                            goto fin_process;
-                    	if(detail->stats != TCP_STAT_CONN)
-                    	{
-                        	detail->first_ack_time = base_time;
-                        	detail->stats = TCP_STAT_CONN;
-                        	ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_CONN, 0);
-                    	}
-                    	detail->last_ack_time = base_time;
+                if(STR_OVERFLOW(pkg, len, http_cont))
+                    goto ack_end;
 
-                    	http_method = *(unsigned int *)http_cont;
-                    	switch(http_method)
-                    	{
-                            case HTTP_METHOD_GET:
-                            case HTTP_METHOD_POST:
-                            case HTTP_METHOD_HEAD:
-                            case HTTP_METHOD_PUT:
-                                goto http_parse;
-                            case HTTP_METHOD_DELETE1:
-                                if(*(unsigned short *)(http_cont + 4) == HTTP_METHOD_DELETE2)
-                                    goto http_parse;
-                            case HTTP_METHOD_TRACE1:
-                                if(http_cont[5] == HTTP_METHOD_TRACE2)
-                                    goto http_parse;
-                            default:;
-                    	}
-                    	if((*(unsigned long long *)http_cont == HTTP_METHOD_OPTIONS) || (*(unsigned long long *)http_cont == HTTP_METHOD_CONNECT))
-                            goto http_parse;
-                        goto ack_end;
-
-                	http_parse:
-                        if(!detail->protocol)
-                        {
-                            detail->protocol = SESSION_PROTO_HTTP;
-                        }
-                        ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_HTTP, 0);
-                    	url_begin = http_cont;
-                    	url_end = strstr(url_begin, "HTTP");
-                    	if(!url_end)
-                            url_end = strstr(url_begin, "\r\n");
-
-                        if(url_end && !STR_OVERFLOW(pkg, len, url_end))
-                        {
-                            url_len = url_end - url_begin;
-                            host_begin = strstr(url_end, "Host:");
-                        }
-                        else
-                        {
-                            url_len = len - ((unsigned int)http_cont - (unsigned int)pkg);
-                        }
-
-                    	if(host_begin && !STR_OVERFLOW(pkg, len, host_begin))
-                    	{
-                            host_begin += 6;
-                        	host_end = strstr(host_begin, "\r\n");
-                        	if(host_end && !STR_OVERFLOW(pkg, len, host_end))
-                        	{
-                        		http_host = 1;
-                                host_len = host_end - host_begin;
-                            }
-                    	}
-                    	if(!http_host)
-                            host_len = 16;
-                        if(host_len > 64)
-                            host_len = 64;
-                        if(url_len > 128)
-                            url_len = 128;
-
-
-                    	if(0)//detail->url_len + host_len + url_len + 3 < HTTP_URL_LEN)
-                    	{
-                            detail->url[detail->url_len++] = '|';
-                            if(http_host)
-                                memcpy(&detail->url[detail->url_len], host_begin, host_len);
-                            else
-                                host_len = ip_2_str(GET_IP_DIP(pkg), &detail->url[detail->url_len]);
-                            detail->url_len += host_len;
-                            detail->url[detail->url_len++] = ' ';
-                            memcpy(&detail->url[detail->url_len], http_cont, url_len);
-                            detail->url_len += url_len;
-                            detail->url[detail->url_len++] = '|';
-                        }
-                        else
-                        {
-                            //char tmp[2048];
-                            //int tmp_len = len - ((unsigned int)http_info - (unsigned int)pkg);
-                            //memcpy(tmp, http_info, tmp_len);
-                            //tmp[tmp_len] = 0;
-                            //fprintf(stderr, "%s \n----\n %s %u %u\n", tmp, detail->url, url_len, host_len);
-                        }
-                	}
-            	}
-            ack_end:
-            	if(IF_FIN(pkg) || IF_RST(pkg))
-            	{
-                    if(detail)
-                    {
-                        if(detail->stats != TCP_STAT_CONN)
-                        {
-                            detail->stats = TCP_STAT_ERROR;
-                        }
-                        else //if(session_is_master(s))
-                        {
-                            detail->fin_time = base_time;
-                            detail->stats = TCP_STAT_FIN;
-                        }
-                	}
-            	}
-                if(detail)
+                http_method = *(unsigned int *)http_cont;
+                switch(http_method)
                 {
-                    if(detail->sip == GET_IP_SIP(pkg))//if(session_is_master(s))
+                    case HTTP_METHOD_GET:
+                    case HTTP_METHOD_POST:
+                    case HTTP_METHOD_HEAD:
+                    case HTTP_METHOD_PUT:
+                        goto http_parse;
+                    case HTTP_METHOD_DELETE1:
+                        if(*(unsigned short *)(http_cont + 4) == HTTP_METHOD_DELETE2)
+                            goto http_parse;
+                    case HTTP_METHOD_TRACE1:
+                        if(http_cont[5] == HTTP_METHOD_TRACE2)
+                            goto http_parse;
+                    default:;
+                }
+                if((*(unsigned long long *)http_cont == HTTP_METHOD_OPTIONS) || (*(unsigned long long *)http_cont == HTTP_METHOD_CONNECT))
+                    goto http_parse;
+                goto ack_end;
+
+            http_parse:
+                ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_HTTP, 0);
+                session_set_type(s, SESSION_PROTO_HTTP);
+                detail = session_get_detail(s);
+                if(!detail)
+                {
+                    detail = get_http_detail(db);
+                    if(!detail)
+                        goto ack_end;
+                    session_set_detail(s, detail);
+                }
+                url_begin = http_cont;
+                url_end = strstr(url_begin, "HTTP");
+                if(!url_end)
+                    url_end = strstr(url_begin, "\r\n");
+
+                if(url_end && !STR_OVERFLOW(pkg, len, url_end))
+                {
+                    url_len = url_end - url_begin;
+                    host_begin = strstr(url_end, "Host:");
+                }
+                else
+                {
+                    url_len = len - ((unsigned int)http_cont - (unsigned int)pkg);
+                }
+
+                if(host_begin && !STR_OVERFLOW(pkg, len, host_begin))
+                {
+                    host_begin += 6;
+                    host_end = strstr(host_begin, "\r\n");
+                    if(host_end && !STR_OVERFLOW(pkg, len, host_end))
                     {
-                        if(seq < detail->min_seq || !detail->min_seq) detail->min_seq = seq;
-                        if(seq > detail->max_seq) detail->max_seq = seq;
-                        if(ack < detail->min_ack || !detail->min_ack) detail->min_ack = ack;
-                        if(ack > detail->max_ack) detail->max_ack = ack;
-                    }
-                    if(detail->stats == TCP_STAT_FIN || detail->stats == TCP_STAT_ERROR)
-                    {
-                        int flow = session_get_flow(s);
-                        ipcount_add_session(ict, detail->sip, detail->dip, IPCOUNT_SESSION_TYPE_CLOSE, flow);
-                        fin_http_detail(db, detail, 0);
-                        //rec_http_detail(db, detail);
-                        session_close(s);
+                        http_host = 1;
+                        host_len = host_end - host_begin;
                     }
                 }
-        	}
-        	//if(detail && detail->protocol == SESSION_PROTO_HTTP)
-                //ipcount_add_pkg(ict, pkg, len, reader->flag, IPCOUNT_SESSION_TYPE_HTTP);
-            //else
-                //ipcount_add_pkg(ict, pkg, len, reader->flag, 0);
-        fin_process:
+                if(!http_host)
+                    host_len = 16;
+                if(host_len > 64)
+                    host_len = 64;
+                if(url_len > 128)
+                    url_len = 128;
+
+
+                if(detail && detail->url_len + host_len + url_len + 3 < HTTP_URL_LEN)
+                {
+                    detail->url[detail->url_len++] = '|';
+                    if(http_host)
+                        memcpy(&detail->url[detail->url_len], host_begin, host_len);
+                    else
+                        host_len = ip_2_str(GET_IP_DIP(pkg), &detail->url[detail->url_len]);
+                    detail->url_len += host_len;
+                    detail->url[detail->url_len++] = ' ';
+                    memcpy(&detail->url[detail->url_len], http_cont, url_len);
+                    detail->url_len += url_len;
+                    detail->url[detail->url_len++] = '|';
+                }
+
+            }
+        ack_end:
+            if(session_stat & SESSION_TYPE_CLOSE)
+            {
+                ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_CLOSE, session_get_flow(s));
+                create_report(db, s, SESSION_TYPE_CLOSE);
+            }
+            if(session_stat & SESSION_TYPE_ERR)
+            {
+                create_report(db, s, SESSION_TYPE_ERR);
+            }
             return 1;
+        }
     }
 }
 
@@ -986,7 +958,7 @@ static int db_collecter(void *arg)
 
 
     ip_detail = (ip_data *)malloc(DATABASE_MAX_IP * sizeof(ip_data));
-    if(1)
+    if(0)
 	{
         unsigned long mask = 1;
 		mask = mask << (g_reader_num + db->id);
@@ -1150,23 +1122,24 @@ static int db_collecter(void *arg)
             {
                 char *session_log;
                 int log_len = 0;
+                report_info *report = NULL;
                 http_info *detail = NULL;
 
                 if(max_timeout_detail)
                 {
                     db->rtj = (db->rtj + 1 == DATABASE_MAX_REPORT) ? 0 : (db->rtj + 1);
-                    detail = db->ri_timeout[db->rtj];
+                    report = &(db->ri_timeout[db->rtj]);
                     max_timeout_detail--;
                 }
                 else
                 {
                     db->rij = (db->rij + 1 == DATABASE_MAX_REPORT) ? 0 : (db->rij + 1);
-                    detail = db->ri[db->rij];
+                    report = &(db->ri[db->rij]);
                     max_normal_detail--;
                 }
-                if(!detail)
+                if(!report)
                 {
-                    fprintf(stderr, "error in collecter detail is null!\n");
+                    fprintf(stderr, "error in collecter report is null!\n");
                     g_run = 0;
                     usleep(0);
                     continue;
@@ -1178,69 +1151,62 @@ static int db_collecter(void *arg)
 
                 memcpy(&session_log[log_len], "{\"session_info\":{", 17); log_len += 17;
                 memcpy(&session_log[log_len], "\"sip\":\"", 7); log_len += 7;
-                log_len += ip_2_str(detail->sip, &session_log[log_len]);
+                log_len += ip_2_str(report->sip, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
                 memcpy(&session_log[log_len], "\"dip\":\"", 7); log_len += 7;
-                log_len += ip_2_str(detail->dip, &session_log[log_len]);
+                log_len += ip_2_str(report->dip, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
                 memcpy(&session_log[log_len], "\"sport\":\"", 9); log_len += 9;
-                log_len += num_2_str(detail->sport, &session_log[log_len]);
+                log_len += num_2_str(report->sport, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
                 memcpy(&session_log[log_len], "\"dport\":\"", 9); log_len += 9;
-                log_len += num_2_str(detail->dport, &session_log[log_len]);
+                log_len += num_2_str(report->dport, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
-                switch(detail->stats)
+                switch(report->stats)
                 {
-                    case TCP_STAT_FIN:
+                    case SESSION_TYPE_CLOSE:
                         memcpy(&session_log[log_len], "\"stats\":\"normal\",", 17);
                         log_len += 17;
                         break;
-                    case TCP_STAT_ERROR:
+                    case SESSION_TYPE_ERR:
                         memcpy(&session_log[log_len], "\"stats\":\"error\",", 16);
                         log_len += 16;
                         break;
-                    case TCP_STAT_TIMEOUT:
+                    case 0:
                         memcpy(&session_log[log_len], "\"stats\":\"timeout\",", 18);
                         log_len += 18;
                         break;
                     default:;
                 }
 
-                detail->conn_time = (detail->syn_time && (detail->first_ack_time > detail->syn_time)) ? (detail->first_ack_time - detail->syn_time) : 0;
-                detail->tran_time = detail->last_ack_time - detail->first_ack_time;
-                detail->close_time = (detail->last_ack_time && (detail->fin_time > detail->last_ack_time)) ? (detail->fin_time - detail->last_ack_time) : 0;
-
                 memcpy(&session_log[log_len], "\"conn_time\":\"", 13); log_len += 13;
-                log_len += num_2_str(detail->conn_time/1000, &session_log[log_len]);
+                log_len += num_2_str(report->conn_time/1000, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
                 memcpy(&session_log[log_len], "\"tran_time\":\"", 13); log_len += 13;
-                log_len += num_2_str(detail->tran_time/1000, &session_log[log_len]);
+                log_len += num_2_str(report->tran_time/1000, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
-                memcpy(&session_log[log_len], "\"close_time\":\"", 14); log_len += 14;
-                log_len += num_2_str(detail->close_time/1000, &session_log[log_len]);
+                memcpy(&session_log[log_len], "\"flow\":\"", 8); log_len += 8;
+                log_len += num_2_str(report->flow, &session_log[log_len]);
                 session_log[log_len++] = '"'; session_log[log_len++] = ',';
 
-                memcpy(&session_log[log_len], "\"send\":\"", 8); log_len += 8;
-                log_len += num_2_str(detail->max_seq - detail->min_seq, &session_log[log_len]);
-                session_log[log_len++] = '"'; session_log[log_len++] = ',';
-                memcpy(&session_log[log_len], "\"recv\":\"", 8); log_len += 8;
-                log_len += num_2_str(detail->max_ack - detail->min_ack, &session_log[log_len]);
-                session_log[log_len++] = '"'; session_log[log_len++] = ',';
-
-                switch(detail->protocol)
+                switch(report->type)
                 {
                     case SESSION_PROTO_HTTP:
+                        detail = (http_info *)report->detail;
                         memcpy(&session_log[log_len], "\"type\":\"http\",", 14);
                         log_len += 14;
                         memcpy(&session_log[log_len], "\"url\":\"", 7); log_len += 7;
-                        if(detail->url_len)
+                        if(detail)
+                        {
                             memcpy(&session_log[log_len], detail->url, detail->url_len); log_len += detail->url_len;
+                            rec_http_detail(db, detail);
+                        }
                         session_log[log_len++] = '"'; session_log[log_len++] = '}';
                         break;
                     default:
@@ -1252,7 +1218,7 @@ static int db_collecter(void *arg)
                 db->sli = (db->sli + 1 == DATABASE_MAX_LOG) ? 0 : (db->sli + 1);
                 max_log--;
             next_report:
-                rec_http_detail(db, detail);
+                ;
             }
             #endif
         }
@@ -1267,7 +1233,7 @@ static int db_sender(void *arg)
     char buf[32];
     unsigned long time;
 
-    if(1)
+    if(0)
 	{
         unsigned long mask = 1;
 		mask = mask << (g_reader_num + db->id);

@@ -11,7 +11,9 @@
 #include <errno.h>
 
 
-#define SESSION_TIMEOUT_DEFAUT		(30 * 1000000)
+#define SESSION_TIMEOUT_CREATE      (30 * 1000000)
+#define SESSION_TIMEOUT_CONN        (300 * 1000000)
+#define SESSION_TIMEOUT_CLOSE       (5 * 1000000)
 
 typedef struct _link_info
 {
@@ -28,6 +30,7 @@ typedef struct _session_slot
     struct _session_slot *next;
     struct _session_slot *next_alive;
     unsigned int key;
+    unsigned long pkg, flow;
     session *s;
     link_info li;
 }session_slot;
@@ -41,15 +44,13 @@ struct _session
     session_slot *master;
     session_slot *other;
 
-    unsigned char   stats;
 	unsigned char   lock;
-	unsigned long   pkg, flow, recv, send, inflow, outflow;
+	unsigned long   pkg, flow;
 	unsigned long   timeout, last_active;
 
 	unsigned long   create_time, conn_time, close_time;
 
     unsigned int type;
-	void *timeout_cbk;
 	void *detail;
 };
 
@@ -57,7 +58,7 @@ typedef struct _pool_source
 {
     session *session_buf, *session_alive;
     session_slot *slot_buf, *slot_alive;
-    unsigned int use, alives, lost;
+    unsigned int alives, use, alive_tmp, lost;
     struct _pool_source *prev, *next;
 }pool_source;
 
@@ -75,6 +76,7 @@ struct _session_pool
 	//unsigned char table_lock[SESSION_HASH_SIZE];
 	unsigned char *table_lock;
 	unsigned int max_deep, expand, reduce;
+	void *timeout_cbk;
 };
 
 
@@ -292,10 +294,8 @@ static session *build_session_in_pool(session_pool *pool, link_info *li)
         other->prev = table;
     }
 
-    s->stats = 1;
     s->master = master;
     s->other = other;
-    s->timeout = SESSION_TIMEOUT_DEFAUT;
 
     if(s->master && s->other && master->s && other->s)
     {
@@ -472,7 +472,13 @@ static int pool_recover(void *arg)
     //mprotect(p, ps, PROT_READ|PROT_WRITE);
     while(pool->stats)
     {
+        pool_source *source = pool->source;
         lock(&(pool->pool_lock));
+        while(source)
+        {
+            source->alive_tmp = source->alives;
+            source = source->next;
+        }
         head = pool->session_use_head;
         tail = pool->session_use_tail;
         unlock(&(pool->pool_lock));
@@ -487,36 +493,28 @@ static int pool_recover(void *arg)
         prev_use = next_use = NULL;
         while(use)
         {
+        	source = (pool_source *)use->source;
+			source->use++;
             next_use = use->next;
-            if((!use->stats) || (use->last_active && (base_time - use->last_active > use->timeout)))
+            if((use->last_active && (base_time - use->last_active > use->timeout)))
             {
             	lock(&(pool->pool_lock));
             	lock(&(pool->table_lock[use->master->key]));
             	if(use->other->key != use->master->key)
                     lock(&(pool->table_lock[use->other->key]));
-				if((!use->stats) || (use->last_active && (base_time - use->last_active > use->timeout)))
+				if((use->last_active && (base_time - use->last_active > use->timeout)))
 				{
-					if(use->timeout_cbk)
+					if(!use->close_time && pool->timeout_cbk)
                 	{
-                    	callback = (session_timeout_cbk)use->timeout_cbk;
-                    	callback(use);
+                    	callback = (session_timeout_cbk)pool->timeout_cbk;
+                    	callback(pool, use);
                 	}
 					release_session_in_pool(pool, use);
 				}
-				else
-                {
-                    pool_source *source = (pool_source *)use->source;
-                    source->use++;
-                }
 				if(use->other->key != use->master->key)
                     unlock(&(pool->table_lock[use->other->key]));
 				unlock(&(pool->table_lock[use->master->key]));
 				unlock(&(pool->pool_lock));
-            }
-            else
-            {
-                pool_source *source = (pool_source *)use->source;
-                source->use++;
             }
             prev_use = use;
             //mprotect(p, ps, PROT_READ|PROT_WRITE);
@@ -526,10 +524,10 @@ static int pool_recover(void *arg)
                 use = next_use;
             //mprotect(p, ps, PROT_READ);
         }//while(use != tail);
-        pool_source *source = pool->source;
+        source = pool->source;
         while(source)
         {
-            source->lost = POOL_EACH_BUF_SIZE - (source->use + source->alives);
+            source->lost = POOL_EACH_BUF_SIZE - (source->use + source->alive_tmp);
             source->use = 0;
             source = source->next;
         }
@@ -553,7 +551,7 @@ static int pool_recover(void *arg)
     }
 }
 
-session_pool *session_pool_init()
+session_pool *session_pool_init(void *timeout_cbk)
 {
     session_pool *sp = NULL;
     pool_source *source;
@@ -574,6 +572,7 @@ session_pool *session_pool_init()
 	{
         pool_expand(sp, source);
 		sp->stats = 1;
+		sp->timeout_cbk = timeout_cbk;
 		pthread_create(&sp->recover, NULL, pool_recover, (void *)sp);
 		g_pool_total++;
 		if(g_pool_total == 1)
@@ -631,18 +630,20 @@ int session_pool_tini(session_pool *sp)
 
 int session_close(session *s)
 {
-    if(s && s->stats)
+    if(s)
     {
-    	s->stats = 0;
+    	s->close_time = base_time;
+    	s->timeout = SESSION_TIMEOUT_CLOSE;
 		return 1;
     }
     return 0;
 }
 
-session *session_get(session_pool *sp, void *pkg, int len)
+int session_get(session_pool *sp, session **rs, void *pkg, int len)
 {
     session_slot *slot = NULL;
     session *s = NULL;
+    int session_stat = 0;
     unsigned int deep = 0;
     unsigned long the_time = base_time;
     if(sp && sp->stats && pkg)
@@ -669,22 +670,51 @@ session *session_get(session_pool *sp, void *pkg, int len)
 		if(slot)
 		{
 			s = slot->s;
-			if(!s->stats)
+			if(s->close_time && ( (IF_TCP(pkg) && IF_SYN(pkg)) || !(IF_TCP(pkg)) ) )
 			{
+                session_stat |= SESSION_TYPE_CREATE;
                 s->create_time = the_time;
                 s->conn_time = s->close_time = 0;
-                s->pkg = s->flow = s->recv = s->send = s->inflow = s->outflow = 0;
-                s->timeout = SESSION_TIMEOUT_DEFAUT;
+                s->pkg = s->flow = s->master->pkg = s->master->flow = s->other->pkg = s->other->flow = 0;
+                s->timeout = SESSION_TIMEOUT_CREATE;
                 s->type = 0;
-                s->detail = s->timeout_cbk = NULL;
-				s->stats = 1;
+                s->detail = NULL;
             }
+            if(!s->conn_time)
+            {
+                if(IF_TCP(pkg))
+                {
+                    if(IF_ACK(pkg) && !IF_SYN(pkg))
+                    {
+                        session_stat |= SESSION_TYPE_CONN;
+                        s->conn_time = the_time;
+                        s->timeout = SESSION_TIMEOUT_CONN;
+                    }
+                }
+                else if(slot != s->master)
+                {
+                    session_stat |= SESSION_TYPE_CONN;
+                    s->conn_time = the_time;
+                    s->timeout = SESSION_TIMEOUT_CONN;
+                }
+            }
+            if(!s->close_time && IF_TCP(pkg) && (IF_FIN(pkg) || IF_RST(pkg)))
+            {
+                if(s->conn_time)
+                    session_stat |= SESSION_TYPE_CLOSE;
+                else
+                    session_stat |= SESSION_TYPE_ERR;
+                s->close_time = the_time;
+                s->timeout = SESSION_TIMEOUT_CLOSE;
+            }
+            slot->pkg++;
+            slot->flow += len;
 			s->pkg++;
 			s->flow += len;
 			s->last_active = the_time;
 		}
 		unlock(&(sp->table_lock[key]));
-        if(!slot)
+        if(!slot && ( (IF_TCP(pkg) && IF_SYN(pkg)) || !(IF_TCP(pkg)) ) )
         {
             lock(&(sp->pool_lock));
             if(sp->source_alive)
@@ -692,8 +722,9 @@ session *session_get(session_pool *sp, void *pkg, int len)
                 s = build_session_in_pool(sp, &pkg_link_info);
                 if(s)
                 {
+                    session_stat |= SESSION_TYPE_CREATE;
                     s->create_time = the_time;
-                    s->pkg++;
+                    s->timeout = SESSION_TIMEOUT_CREATE;
                     s->last_active = the_time;
                 }
             }
@@ -701,21 +732,17 @@ session *session_get(session_pool *sp, void *pkg, int len)
         }
     }
 done:
-    return s;
-}
-
-int session_transmit(session *s, void *pkg)
-{
-    if(s && s->stats)
+    if(rs)
     {
-        return 1;
+        *rs = s;
+        return session_stat;
     }
     return 0;
 }
 
 int session_set_type(session *s, unsigned int type)
 {
-    if(s && s->stats && type)
+    if(s && type)
     {
         s->type = type;
         return 1;
@@ -725,15 +752,17 @@ int session_set_type(session *s, unsigned int type)
 
 unsigned int session_get_type(session *s)
 {
-    if(s && s->stats)
+    if(s)
         return s->type;
     return 0;
 }
 
 int session_set_detail(session *s, void *detail)
 {
-    if(s && s->stats)
+    if(s)
     {
+        if(s->detail)
+            fprintf(stderr, "already has detail!\n");
         s->detail = detail;
         return 1;
     }
@@ -742,36 +771,70 @@ int session_set_detail(session *s, void *detail)
 
 void *session_get_detail(session *s)
 {
-    if(s && s->stats)
+    if(s)
         return s->detail;
     return NULL;
 }
 
-int session_get_flow(session *s)
+unsigned int session_get_sip(session *s)
 {
-    if(s && s->stats)
+    if(s)
+        return s->master->li.sip;
+    return 0;
+}
+
+unsigned int session_get_dip(session *s)
+{
+    if(s)
+        return s->master->li.dip;
+    return 0;
+}
+
+unsigned short session_get_sport(session *s)
+{
+    if(s)
+        return s->master->li.sport;
+    return 0;
+}
+
+unsigned short session_get_dport(session *s)
+{
+    if(s)
+        return s->master->li.dport;
+    return 0;
+}
+
+int session_if_conn(session *s)
+{
+    if(s)
+        return (s->conn_time && !s->close_time);
+    return 0;
+}
+
+unsigned long session_get_create_time(session *s)
+{
+    if(s)
+        return s->create_time;
+    return 0;
+}
+
+unsigned long session_get_conn_time(session *s)
+{
+    if(s)
+        return s->conn_time;
+    return 0;
+}
+
+unsigned long session_get_close_time(session *s)
+{
+    if(s)
+        return s->close_time;
+    return 0;
+}
+
+unsigned long session_get_flow(session *s)
+{
+    if(s)
         return s->flow;
     return 0;
 }
-
-int session_set_timeout(session *s, unsigned long timeout)
-{
-    if(s && s->stats)
-    {
-        s->timeout = timeout;
-        return 1;
-    }
-    return 0;
-}
-
-int session_set_timeout_callback(session *s, void *cbk)
-{
-    if(s && s->stats)
-    {
-        s->timeout_cbk = cbk;
-        return 1;
-    }
-    return 0;
-}
-
-
