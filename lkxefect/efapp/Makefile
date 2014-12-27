@@ -26,7 +26,7 @@ all:
 	#gcc -o eftrack eftrack.c conf.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o eftest eftest.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o efproxy efproxy.c conf.c $(CFLAGS) $(LDFLAGS)
-	gcc -o efdetectd efdetector.c conf.c $(CFLAGS) $(LDFLAGS)
+	#gcc -o efdetectd efdetector.c conf.c $(CFLAGS) $(LDFLAGS)
 	gcc -o efdetectd2 efdetector2.c conf.c $(CFLAGS) $(LDFLAGS)
 	gcc -o efdetect efdetect.c conf.c $(CFLAGS) $(LDFLAGS)
 

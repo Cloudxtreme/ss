@@ -14,14 +14,6 @@
 #include <fcntl.h>
 #include <errno.h>
 
-
-#define TCP_STAT_CREAT          1
-#define TCP_STAT_CONN           2
-#define TCP_STAT_FIN            3
-#define TCP_STAT_ERROR          4
-#define TCP_STAT_TIMEOUT        5
-#define TCP_TIMEOUT             (360 * 1000000)
-
 #define SESSION_PROTO_HTTP      1
 
 #define HTTP_METHOD_GET         0x20544547          //"GET "
@@ -35,22 +27,23 @@
 #define HTTP_METHOD_TRACE2      0x45                //"E"
 #define HTTP_METHOD_CONNECT     0x205443454E4E4F43  //"CONNECT "
 
-#define HTTP_URL_LEN            512
+#define HTTP_URL_LEN            2048
 
 typedef struct _http_info
 {
-    unsigned int db_id;
     unsigned char use;
-    unsigned long syn_time, first_ack_time, last_ack_time, fin_time, conn_time, tran_time, close_time;
-    unsigned int min_seq, max_seq;
-    unsigned int min_ack, max_ack;
-    unsigned char stats;
-    unsigned char protocol;
-    unsigned int sip, dip;
-    unsigned short sport, dport;
 	unsigned int url_len;
 	unsigned char url[HTTP_URL_LEN];
 }http_info;
+
+typedef struct _report_info
+{
+    unsigned int sip, dip;
+    unsigned short sport, dport;
+    unsigned long conn_time, tran_time, flow;
+    unsigned int stats, type;
+    void *detail;
+}report_info;
 
 typedef struct _attack_event
 {
@@ -69,9 +62,8 @@ typedef struct _attack_event
 #define READER_FLAG_OUTBOUND        IPCOUNT_ADD_FLAG_SIP
 #define READER_FLAG_ALL             (IPCOUNT_ADD_FLAG_SIP | IPCOUNT_ADD_FLAG_DIP)
 #define READER_MAX_SLOT             10240
-#define LINE_LENGTH                 (MAX_READER * READER_MAX_SLOT)
 
-#define DATABASE_MAX_SESSION        10000000
+#define DATABASE_MAX_HTTP           1000000
 #define DATABASE_MAX_REPORT         1024000
 #define DATABASE_MAX_LOG            102400
 #define DATABASE_LOG_LENGTH         2048
@@ -126,8 +118,9 @@ typedef struct _database
     session_pool *pool;
     detect_opera *opera;
     attack_event *attack_head, *attack_tail;
-    http_info *ti, **pti, **ri, **ri_timeout;
-    unsigned int rii, rij, rti, rtj, pti_cur, pti_rec, sli, slj, ili, ilj;
+    http_info *hi, **phi;
+    report_info *ri, *ri_timeout;
+    unsigned int rii, rij, rti, rtj, phi_cur, phi_rec, sli, slj, ili, ilj;
     unsigned long ip_total, in_pps, out_pps, in_bps, out_bps;
     unsigned char detail_lock, attack_lock;
     log_content *ip_log;

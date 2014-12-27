@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="content" style="width:780px;"><!-- 内容 -->
+	<!-- main s -->
+	<div class="main" style="width:780px;">
+		<input type="hidden" value="{$device.sid}" id="sid" /> 
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class='list-header'>
+				<ul>
+					<li style="width:230px;"><a href="javascript:void(0);" title="设备">设备编号</a></li>
+					<li style="width:80px;"><a href="javascript:void(0);" title="授权开始时间">授权开始时间</a></li>
+					<li style="width:80px;"><a href="javascript:void(0);" title="授权结束时间">授权结束时间</a></li>
+					<li style="width:120px;"><a href="javascript:void(0);" title="授权信息">授权信息</a></li>
+					<li style="width:140px;"><a href="javascript:void(0);" title="生成时间">生成时间</a></li>
+					<li style="width:100px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>
+					<table id="license-list" class="domain-list">
+						<volist name="licenselist" id="license">
+						<tr id="{$license.id}">
+							<td style="width:120px;">{$license.sid}</td>
+							<td style="width:68px;">{$license.start}</td>
+							<td style="width:68px;">{$license.over}</td>
+							<td style="width:120px;">{$license.info}</td>
+							<td style="width:120px;">{$license.create_time}</td>
+							<td style="width:108px;"><a href="javascript:void(0);" onclick="delLicense(this);">删除</a> | <a href="__APP__/Index/download?sid={$license.sid}" target="_bank">下载</a></td>
+						</tr>
+						<tr style="background:#fff;display:none;">
+							<td colspan="5" style="text-align:left">
+							</td>
+						</tr>
+						</volist>
+					</table>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				url: '__APP__/Index/logout',
+				dataType: 'json',
+				type: "POST",
+				success: function (data) {
+					if (data && data.result == 1) {
+						window.top.location = '__APP__/Index/login';
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+
+	function delLicense(evt){
+		var sid = $($(evt).parent().parent().find("td").get(0)).html();
+		if(confirm("确定删除设备："+ sid + " 的授权文件吗？")){
+			$.ajax({
+				  url: '__APP__/Index/delLicense',
+				  dataType: 'json',
+				  data: { sid: sid },
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result >= 1) {
+						  alert(data.reason);
+						  $(evt).parent().parent().remove();
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+</script>
+</body>
+</html>

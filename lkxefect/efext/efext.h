@@ -36,23 +36,32 @@ int ipp_pool_recport(unsigned int ip, unsigned short port, int proto);
 
 
 
-
+#define SESSION_TYPE_CREATE     (1 << 0)
+#define SESSION_TYPE_CONN       (1 << 1)
+#define SESSION_TYPE_CLOSE      (1 << 2)
+#define SESSION_TYPE_ERR        (1 << 3)
 /* SESSION API */
 typedef struct _session_pool session_pool;
 typedef struct _session session;
-typedef int (*session_timeout_cbk)(session *s);
+typedef int (*session_timeout_cbk)(session_pool *pool, session *s);
 
-session_pool *session_pool_init();
+session_pool *session_pool_init(void *timeout_cbk);
 int session_pool_tini(session_pool *sp);
-session *session_get(session_pool *sp, void *pkg, int flow);
+int session_get(session_pool *sp, session **s, void *pkg, int flow);
 int session_close(session *s);
+int session_if_conn(session *s);
 int session_set_type(session *s, unsigned int type);
 unsigned int session_get_type(session *s);
 int session_set_detail(session *s, void *detail);
 void *session_get_detail(session *s);
-int session_get_flow(session *s);
-int session_set_timeout(session *s, unsigned long timeout);
-int session_set_timeout_callback(session *s, void *cbk);
+unsigned int session_get_sip(session *s);
+unsigned int session_get_dip(session *s);
+unsigned short session_get_sport(session *s);
+unsigned short session_get_dport(session *s);
+unsigned long session_get_create_time(session *s);
+unsigned long session_get_conn_time(session *s);
+unsigned long session_get_close_time(session *s);
+unsigned long session_get_flow(session *s);
 
 
 

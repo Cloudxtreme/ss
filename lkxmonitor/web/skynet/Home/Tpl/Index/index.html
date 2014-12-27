@@ -1,0 +1,1078 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/popup_layer.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/layer/layer.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/popup_layer.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Monitor/traffic">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+	
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- main s -->
+	<div class="main">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="hd">
+				<span style="float:left;">选择项目组：
+					<select id="group_list" style="min-width:120px;" onchange="selGroup();">
+						<option>全部</option>
+						<volist name="grouplist" id="g">
+							<if condition="$g.type eq $group">
+								<option selected>{$g.type}</option>
+								<else/><option>{$g.type}</option>
+							</if>
+						</volist>
+					</select>
+				</span>
+				<span style="float:left;margin-left:10px;">选择子类：
+					<select id="area_list" style="min-width:120px;" onchange="selArea();">
+						<option>全部</option>
+						<volist name="arealist" id="a">
+						<if condition="$a.subtype eq $subtype">
+							<option selected>{$a.subtype}</option>
+							<else/><option>{$a.subtype}</option>
+						</if>
+						</volist>
+					</select>
+				</span>
+				<ul>
+					<li><a href="javascript:void(0);">设备列表</a></li>
+					<li><a href="javascript:void(0);">文件列表</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>
+					<div class="memu_bar">
+						<ul>
+							<li><button onclick="showAdd();">添加设备</button></li>
+							<li><button id="showTask">下发任务</button></li>
+							<li><button id="showUpload">上传文件</button></li>
+							<li><button id="showSet">设置属性</button></li>
+							<li><button id="showTop">设置报警</button></li>
+						</ul>
+					</div>
+					
+					<div id="blk1" class="blk" style="display:none;">
+					    <div class="head"><div class="head-right"></div></div>
+					    <div class="mn">
+						<h2>上传文件</h2>
+						<a href="javascript:void(0);" id="close1" class="closeBtn">关闭</a>
+						<form id="upload" method='post' action="__APP__/Index/upload/" enctype="multipart/form-data" onsubmit="return checkForm(this);">
+						<div><span>文件名称：</span><input name="file_name" id="file_name" type="text" style="width:120px;" placeholder="文件名称" /></div>
+						<div><span>备注信息：</span><input name="file_desc" id="file_desc" type="text" style="width:180px;" placeholder="备注信息" /></div>
+						<div><span>选择文件：</span><input name="file_path" id="file_path" type="file" /></div>
+						<div><span id="upload_msg"></span><input type="submit" value="上传" /></div>
+						</form>
+					    </div>
+					    <div class="foot"><div class="foot-right"></div></div>
+					</div>
+					
+					<div id="blk2" class="blk" style="display:none;">
+					    <div class="head"><div class="head-right"></div></div>
+					    <div class="mn">
+						<h2>下发任务</h2>
+						<a href="javascript:void(0);" id="close2" class="closeBtn">关闭</a>
+						<ul class="choose_node">
+						    <!--li>211.161.210.212<a href="javascript:void(0);" onclick="delchoose(this)">删除</a></li-->
+						</ul>
+						<div><span>任务名称：</span><input id="task_name" type="text" style="width:120px;" placeholder="任务名称" /></div>
+						<div><span>任务类型：</span><select id="task_type"><option selected>shell</option></select></div>
+						<div><span>超时时间：</span><input id="task_time" type="text" style="width:30px;" value="3" />s</div>
+						<div><span>重复次数：</span><input id="task_num" type="text" style="width:30px;" value="1" />次</div>
+						<div><span>执行指令：</span><textarea id="task_exe" rows="4" cols="28" placeholder="请输入具体指令"></textarea></div>
+						<div><span>任务状态：</span>
+							<select id="task_status">
+								<option value="true" selected>可用</option>
+								<option value="false">不可用</option>
+							</select>
+						</div>
+						<!--div><span>选择文件：</span>
+							<select id="task_file">
+								<option value=""></option>
+								<volist name="filelist" id="item">
+									<option value="{$item.id}">{$item.name}</option>
+								</volist>
+							</select>
+						</div-->
+						<div><span id="send_msg"></span><button onclick="send()">发送</button></div>
+					    </div>
+					    <div class="foot"><div class="foot-right"></div></div>
+					</div>
+					
+					<div id="blk3" class="blk" style="display:none;">
+					    <div class="head"><div class="head-right"></div></div>
+					    <div class="mn">
+						<h2>设置属性</h2>
+						<a href="javascript:void(0);" id="close3" class="closeBtn">关闭</a>
+						<ul class="choose_node">
+						    <!--li>211.161.210.212<a href="javascript:void(0);" onclick="delchoose(this)">删除</a></li-->
+						</ul>
+						<div><span>设置类型：</span>
+							<select id="set_type">
+								<volist name="typelist" id="type">
+									<option value="{$type.key}">{$type.name}</option>
+								</volist>
+							</select>
+						</div>
+						<div><span>&nbsp;&nbsp;&nbsp;&nbsp;设置值：</span><input id="set_value" type="text" style="width:260px;" placeholder="用空格隔开" /></div>
+						<div><span id="set_msg"></span><button onclick="multSet()">保存</button></div>
+					    </div>
+					    <div class="foot"><div class="foot-right"></div></div>
+					</div>
+					
+					<div id="blk4" class="blk" style="display:none;">
+					    <div class="head"><div class="head-right"></div></div>
+					    <div class="mn">
+						<h2>设置报警</h2>
+						<a href="javascript:void(0);" id="close4" class="closeBtn">关闭</a>
+						<ul class="choose_node">
+						    <!--li>211.161.210.212<a href="javascript:void(0);" onclick="delchoose(this)">删除</a></li-->
+						</ul>
+						<div><span>报警类型：</span>
+							<select onchange="changeRuleType();" id="rule_type">
+								<option value='in'>流入流量</option>
+								<option value='out'>流出流量</option>
+								<option value='cpu'>CPU使用</option>
+								<option value='mem'>内存</option>
+								<option value='disk'>磁盘使用</option>
+								<option value='link'>连接超时</option>
+								<option value='http'>http监控</option>
+								<option value='dns'>dns监控</option>
+							</select>
+						</div>
+						<div><span>执行策略：</span>
+							<select class="rule_list" id="rule_list">
+								<volist name="rulelist" id="rule">
+									<option value="{$rule.id}">{$rule.rule}</option>
+								</volist>
+							</select>
+							<a href="javascript:void(0);" onclick="addRule(this);">添加策略</a>
+						</div>
+						<div><span>策略级别：</span>
+							<select id="alarm_level">
+								<option>警告</option>
+								<option>严重</option>
+								<option>紧急</option>
+							</select>
+						</div>
+						<div><span>报警间隔：</span>
+							<input type="text" style="height:18px;width:60px;" id="alarm_span" placeholder="分钟">
+						</div>
+						<div><span>开启状态：</span>
+							<select id="alarm_status">
+								<option value="on">开启</option>
+								<option value="off">关闭</option>
+							</select>
+						</div>
+						<div><span id="alarm_msg"></span><button onclick="alarmSet()">保存</button></div>
+					    </div>
+					    <div class="foot"><div class="foot-right"></div></div>
+					</div>
+					
+					<div class='list-header'>
+						<ul>
+							<li style="width:40px;"><input type='checkbox' id="selectAll" name="selectAll" value="checkbox" onclick="checkAll(this);" /></li>
+							<li style="width:168px;"><a href="javascript:void(0);" title="设备编号">设备编号</a></li>
+							<li style="width:172px;"><a href="javascript:void(0);" title="IP地址">IP地址</a></li>
+							<!--li style="width:54px;"><a href="javascript:void(0);" title="类型">类型</a></li>
+							<li style="width:58px;"><a href="javascript:void(0);" title="类型">小类</a></li>
+							<li style="width:72px;"><a href="javascript:void(0);" title="所在大区">所在大区</a></li>
+							<li style="width:72px;"><a href="javascript:void(0);" title="所在小区">所在小区</a></li-->
+							<li style="width:190px;"><a href="javascript:void(0);" title="备注信息">备注信息</a></li>
+							<li style="width:146px;"><a href="javascript:void(0);" title="最近上报">最近上报</a></li>
+							<li style="width:150px;"><a href="javascript:void(0);" title="可用状态">可用状态</a></li>
+							<li style="width:106px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="node-list" class="domain-list">
+						<volist name="nodelist" id="node">
+						<tr id="{$node.id}">
+							<td style="width:30px;"><input type="hidden" value="{$node.id}"/><input type='checkbox' onclick="checkOne(this);" style="wdith:22px;" value='none'/></td>
+							<td style="width:104px;"><input onFocus="inputFocus(this);this.select();" type="text" style="width:86%;" value="{$node.sid}" /></td>
+							<td style="width:104px;"><input onFocus="inputFocus(this);this.select();" type="text" style="width:82%;" value="{$node.wanip}" /></td>
+							<!--td style="width:42px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:40px;" value="{$node.type}" /></td>
+							<td style="width:42px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:40px;" value="{$node.subtype}" /></td>
+							<td style="width:52px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:50px;" value="{$node.zone}" /></td>
+							<td style="width:52px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:50px;" value="{$node.local}" /></td-->
+							<td style="width:120px;"><input onFocus="inputFocus(this);" type="text" style="width:90%;" value="{$node.desc}" /></td>
+							<td style="width:110px;" class="noedit">{$node.lasttime}</td>
+							<if condition="$node.status eq 'true'">
+								<td style="width:52px;" class="select"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:50px;" value="可用" /><input type="hidden" value="{$node.status}"/></td>
+								<else/><td style="width:60px;" class="select"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:50px;" value="不可用" /><input type="hidden" value="{$node.status}"/></td>
+							</if>
+							<td style="width:106px;"><a href="javascript:void(0);" onclick="deleteNode(this);">删除</a> | 
+								<a href="javascript:void(0);" onclick="readNode(this);">属性</a> | 
+								<a href="javascript:void(0);" onclick="readAlarm(this);">告警</a></td>
+						</tr>
+						<tr style="background:#fff;display:none;">
+							<td colspan="7" style="text-align:left">
+								<div class='mycss'>
+								</div>
+							</td>
+						</tr>
+						</volist>
+					</table>
+					<div class="memu_bar" style="float:right;">
+						{$page}
+					</div>
+				</ul>
+				<ul>
+					<div class='list-header'>
+						<ul>
+							<li style="width:40px;"><a href="javascript:void(0);" title="编号">编号</a></li>
+							<li style="width:160px;"><a href="javascript:void(0);" title="文件名称">文件名称</a></li>
+							<li style="width:460px;"><a href="javascript:void(0);" title="链接地址">URL地址</a></li>
+							<li style="width:200px;"><a href="javascript:void(0);" title="备注信息">备注信息</a></li>
+							<li style="width:96px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="file-list" class="domain-list">
+						<volist name="filelist" id="file">
+						<tr id="{$file.id}">
+							<td style="width:32px;">{$file.id}</td>
+							<td style="width:108px;">{$file.name}</td>
+							<td style="width:328px;"><a href="http://{$_SERVER['HTTP_HOST']}__ROOT__/{$file.path}" target="_blank">http://{$_SERVER['HTTP_HOST']}__ROOT__/{$file.path}</td>
+							<td style="width:120px;">{$file.desc}</td>
+							<td style="width:88px;"><a href="javascript:void(0);" onclick="deleteFile(this);">删除</a></td>
+						</tr>
+						</volist>
+					</table>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<!-- Tab切换 E -->
+	</div>
+	
+</div>
+<script type="text/javascript">
+	$(function(){
+		//焦点触发函数
+		new PopupLayer({
+			trigger:"#showTask",
+			popupBlk:"#blk2",
+			closeBtn:"#close2",
+			offsets:{
+				x:85,
+				y:-37
+			},
+			useFx:true
+		});
+		new PopupLayer({
+			trigger:"#showUpload",
+			popupBlk:"#blk1",
+			closeBtn:"#close1",
+			offsets:{
+				x:85,
+				y:-37
+			},
+			useFx:true
+		});
+		new PopupLayer({
+			trigger:"#showSet",
+			popupBlk:"#blk3",
+			closeBtn:"#close3",
+			offsets:{
+				x:85,
+				y:-37
+			},
+			useFx:true
+		});
+		new PopupLayer({
+			trigger:"#showTop",
+			popupBlk:"#blk4",
+			closeBtn:"#close4",
+			offsets:{
+				x:85,
+				y:-37
+			},
+			useFx:true
+		});
+	});
+	//刷新状态
+	function myrefresh(){
+		$.ajax({
+			url: '__APP__/Index/node_status',
+			dataType: 'json',
+			type: "POST",
+			success: function (data) {
+				if (data && data != null) {
+					for (var item in data) {
+						$("#node-list").find("tr").each(function(i){
+							var id = $(this).attr("id");
+							if(id && data[item].id == id){
+								if(data[item].time > 5){
+								      $(this).addClass("red");
+								}else{
+								      $(this).removeClass("red");
+								}
+								$(this).find("td").get(4).innerHTML = data[item].lasttime;
+							}
+						});
+					}
+				}
+			},
+			error: function (data) {
+				//art.dialog({content: '错误提示，错误代码：' + data.statusText, icon: 'error', lock: false, time: 1.5});
+			}
+		});
+	}
+	window.setInterval(myrefresh, 1000 * 10);
+	
+	function alarmSet(){
+		var ridstr = "";
+		$(".rule_list").each(function(){
+			if($(this).val()==null){
+				ridstr += "";
+			}else{
+				ridstr += $(this).val() + ",";
+			}
+		});
+		if(!ridstr){
+			alert("策略为空，请先添加策略！");
+			return false;
+		}
+		//alert(ridstr);
+		ridstr = ridstr.substring(0, ridstr.length-1);
+		var sidstr = "";
+		$("#node-list").find("tr").each(function (i) {
+			if($($(this).find(":checkbox").get(0)).attr("checked")){
+				var sid = $($(this).find("input[type=text]").get(0)).val(); //$(this).removeAttr("checked"); 
+				sidstr += sid + ",";
+			}
+		});
+		if(!sidstr){
+			alert("必须选择主机，请在列表勾选需要设置的服务器！");
+			return false;
+		}
+		sidstr = sidstr.substring(0, sidstr.length-1);
+		var type = $("#rule_type").val();
+		var level = $("#alarm_level").val();
+		var span = $("#alarm_span").val();
+		var status = $("#alarm_status").val();
+		//alert(type + "," + sidstr + "," + ridstr + "," + level + "," + span + "," +status);return false;
+		if(confirm("该操作会删除原来设置的cpu和内存报警策略，确定执行该操作吗？")){
+			$.ajax({
+				url: '__APP__/Index/AlarmSet',
+				dataType: 'json',
+				data: { type: type, sidstr: sidstr, ridstr: ridstr, level: level, span: span, status: status },
+				type: "POST",
+				success: function (data) {
+					if (data.result == 1) {
+						alert(data.reason);
+					}
+					else{
+						$("#set_msg").html(data.reason);
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+	function addRule(evt){
+		//alert($(evt).parent().html());
+		$(evt).parent().after("<div><span>执行策略：</span> <select class=\"rule_list\">" + $("#rule_list").html() + "</select> <a href='javascript:void(0);' onclick='cancelRule(this);'>取消</a></div>");
+	}
+	function cancelRule(evt){
+		$(evt).parent().remove();
+	}
+ 	function changeRuleType(){
+		var type = $("#rule_type").val();
+		$.ajax({
+			url: '__APP__/Index/readRule',
+			dataType: 'json',
+			data: { type: type },
+			type: "POST",
+			success: function (data) {
+				$("#rule_list").empty();
+				if (data && data.length >= 1) {
+					for(var i=0;i<data.length;i++){
+						$("#rule_list").append("<option value='"+data[i].id+"'>"+data[i].rule+"</option>");
+					}
+				}
+				else{
+					alert("没有该类型的报警执行策略，请先添加！");
+				}
+			},
+			error: function (data) {
+				  alert(data.statusText);
+			}
+		});
+ 	}
+ 	
+	function selGroup(){
+		var group = $("#group_list").val();
+		var zone = "全部";
+		window.top.location.href = '__APP__/Index/index?g='+group+'&z='+zone;
+	}
+	function selArea(){
+		var group = $("#group_list").val();
+		var zone = $("#area_list").val();
+		window.top.location.href = '__APP__/Index/index?g='+group+'&z='+zone;
+	}
+
+	function readNode(evt){
+		//var id = $(evt).parent().parent().attr("id");
+		var td1 = $(evt).parent().parent().find("td").get(1);
+		var sid = $(td1).children("input[type=text]").val();
+		//alert(ip);
+		$.ajax({
+			url: '__APP__/Index/readAttr',
+			dataType: 'json',
+			data: { sid: sid },
+			type: "POST",
+			success: function (data) {
+				$($(evt).parent().parent().next().find(".mycss").get(0)).empty();
+				if (data && data.length >= 1) {
+					for(var i=0;i<data.length;i++){
+						//var str_error = data[i].error.length <= 0 ? "":"margin-top:-34px;";
+						//var str_reslt = data[i].result.length <= 0 ? "":"margin-top:-34px;";
+						$($(evt).parent().parent().next().find(".mycss").get(0)).append("<span style='float:left;font-weight:bold;color:#3CADED'>"+data[i].attr+" ：</span><input onFocus='inFocus(this);' type='text' style='width:200px;' value='"+data[i].value+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+data[i].id+"\",\""+data[i].key+"\", this);'>保存</a><br/>");
+					}
+				}
+				else{
+					$($(evt).parent().parent().next().find(".mycss").get(0)).append("没有找到该设备的其他属性信息！");
+				}
+			},
+			error: function (data) {
+				  alert(data.statusText);
+			}
+		});
+		if($(evt).html() == "属性"){
+			$(evt).parent().parent().next().show();
+			$(evt).html("收起");
+			//alert($(evt).parent().parent().next().html());
+		}else{
+			$(evt).parent().parent().next().hide();
+			$(evt).html("属性");
+		}
+	}
+	
+	function readAlarm(evt){
+		var td1 = $(evt).parent().parent().find("td").get(1);
+		var sid = $(td1).children("input[type=text]").val();
+		$.ajax({
+			url: '__APP__/Index/readAlarm',
+			dataType: 'json',
+			data: { sid: sid },
+			type: "POST",
+			success: function (data) {
+				$($(evt).parent().parent().next().find(".mycss").get(0)).empty();
+				if (data && data.length >= 1) {
+					for(var i=0;i<data.length;i++){
+						if(data[i].status == "on"){
+							$($(evt).parent().parent().next().find(".mycss").get(0)).append("<span style='float:left;font-weight:bold;color:#3CADED'>"+data[i].rtype+"报警策略 ：</span><input type='text' style='width:200px;' value='"+data[i].rule+"'/> <a href='javascript:void(0);' onclick='delAlarm(\""+data[i].id+"\",this);'>删除</a> | <a href='javascript:void(0);' onclick='stopAlarm(\""+data[i].id+"\",this);'>暂停</a><br/>");
+						}else{
+							$($(evt).parent().parent().next().find(".mycss").get(0)).append("<span style='float:left;font-weight:bold;color:#3CADED'>"+data[i].rtype+"报警策略 ：</span><input type='text' style='width:200px;' value='"+data[i].rule+"'/> <a href='javascript:void(0);' onclick='delAlarm(\""+data[i].id+"\",this);'>删除</a> | <a href='javascript:void(0);' onclick='startAlarm(\""+data[i].id+"\",this);'>启用</a><br/>");
+						}
+					}
+				}
+				else{
+					$($(evt).parent().parent().next().find(".mycss").get(0)).append("没有找到该设备的报警设置！<br/>");
+				}
+				$($(evt).parent().parent().next().find(".mycss").get(0)).append("<button onclick='showAddAlarm(\""+sid+"\",this);'>添加策略</button>");
+			},
+			error: function (data) {
+				  alert(data.statusText);
+			}
+		});
+		if($(evt).html() == "告警"){
+			$(evt).parent().parent().next().show();
+			$(evt).html("收起");
+		}else{
+			$(evt).parent().parent().next().hide();
+			$(evt).html("告警");
+		}
+	}
+	
+	function stopAlarm(id,evt){
+		$.ajax({
+			url: '__APP__/Index/stopAlarm',
+			dataType: 'json',
+			data: { id: id },
+			type: "POST",
+			success: function (data) {
+					alert(data.reason);
+					$(evt).attr("onclick","startAlarm(\""+id+"\",this);");
+					$(evt).html("启用");
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}
+	function startAlarm(id,evt){
+		$.ajax({
+			url: '__APP__/Index/startAlarm',
+			dataType: 'json',
+			data: { id: id },
+			type: "POST",
+			success: function (data) {
+				alert(data.reason);
+				$(evt).attr("onclick","stopAlarm(\""+id+"\",this);");
+				$(evt).html("停用");
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}
+	
+	function delAlarm(id,evt){
+		if(confirm("确定执行该删除报警策略吗？")){
+			$.ajax({
+				url: '__APP__/Index/delAlarm',
+				dataType: 'json',
+				data: { id: id },
+				type: "POST",
+				success: function (data) {
+					alert(data.reason);
+					$(evt).prev().prev().remove();
+					$(evt).prev().remove();
+					$(evt).next().remove();
+					$(evt).remove();
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+	
+	function showAddAlarm(sid, evt){
+		$(evt).before("<span>添加报警：</span><select onchange='changeType(this);' class=\"rule_list\">" + $("#rule_type").html() + "</select> <select class=\"rule_list\">" + $("#rule_list").html() + "</select> 报警级别：<select class=\"rule_list\"><option>警告</option><option>严重</option><option>紧急</option></select> 时间间隔：<input type='text on' style='width:40px;' value='10'/><a href='javascript:void(0);' onclick='addAlarm(\""+sid+"\",this);'>保存</a><br/>");
+	}
+	
+	function addAlarm(sid,evt){
+		var type = $(evt).prev().prev().prev().prev().val();
+		var rid = $(evt).prev().prev().prev().val();
+		var level = $(evt).prev().prev().val();
+		var span = $(evt).prev().val();
+		//alert(sid + type + rid + level + span);return false;
+		$.ajax({
+				url: '__APP__/Index/AlarmSet',
+				dataType: 'json',
+				data: { type: type, sidstr: sid, ridstr: rid, level: level, span: span, status: "on" },
+				type: "POST",
+				success: function (data) {
+					if (data.result == 1) {
+						alert(data.reason);
+						//$(evt).parent().hide();
+					}
+					else{
+						$("#set_msg").html(data.reason);
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+		});
+	}
+	
+	function changeType(evt){
+		var type = $(evt).val();
+		$.ajax({
+			url: '__APP__/Index/readRule',
+			dataType: 'json',
+			data: { type: type },
+			type: "POST",
+			success: function (data) {
+				$(evt).next().empty();
+				if (data && data.length >= 1) {
+					for(var i=0;i<data.length;i++){
+						$(evt).next().append("<option value='"+data[i].id+"'>"+data[i].rule+"</option>");
+					}
+				}
+				else{
+					alert("没有该类型的报警执行策略，请先添加！");
+				}
+			},
+			error: function (data) {
+				  alert(data.statusText);
+			}
+		});
+ 	}
+
+function checkForm(obj){
+	if(obj.file_name.value==""){
+		obj.file_name.focus();
+		return false;
+	}
+	if(obj.file_path.value==""){
+		obj.file_path.focus();
+		return false;
+	}
+}
+
+function deleteFile(evt){
+	var td0 = $(evt).parent().parent().find("td").get(0);
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var id = $(td0).html();
+	var name = $(td1).html();
+	if(confirm("确定删除文件："+ name + "吗？")){
+	      $.ajax({
+		      url: '__APP__/Index/deleteFile',
+		      dataType: 'json',
+		      data: { id: id },
+		      type: "POST",
+		      success: function (data) {
+			      if (data.result == 1) {
+				      alert(data.reason);
+				      $(evt).parent().parent().remove();
+			      }
+			      else{
+				      alert(data.reason);
+			      }
+		      },
+		      error: function (data) {
+			      alert(data.statusText);
+		      }
+	      });
+	}
+}
+
+function multSet(){
+	var sidstr = "";
+	$("#node-list").find("tr").each(function (i) {
+		if($($(this).find(":checkbox").get(0)).attr("checked")){
+			var sid = $($(this).find("input[type=text]").get(0)).val(); //$(this).removeAttr("checked"); 
+			sidstr += sid + ",";
+		}
+	});
+	if(!sidstr){
+		alert("必须选择主机，请在列表勾选需要设置的服务器！");
+		return false;
+	}
+	sidstr = sidstr.substring(0, sidstr.length-1);
+	var set_type = $("#set_type").val(), set_value = $("#set_value").val();
+	if(!set_value){
+		$("#set_msg").html("必须输入设置值！");
+		$("#set_value").focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/multSet',
+		dataType: 'json',
+		data: { sidstr: sidstr, type: set_type, value: set_value },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				alert(data.reason);
+			}
+			else{
+				$("#set_msg").html(data.reason);
+			}
+		},
+		error: function (data) {
+			alert(data.statusText);
+		}
+	});
+}
+
+function send(){
+	var sidstr = "";
+	$("#node-list").find("tr").each(function (i) {
+		if($($(this).find(":checkbox").get(0)).attr("checked")){
+			var sid = $($(this).find("input[type=text]").get(0)).val(); //$(this).removeAttr("checked"); 
+			sidstr += sid + ",";
+		}
+	});
+	if(!sidstr){
+		alert("必须选择主机，请在列表勾选执行该任务的服务器！");
+		return false;
+	}
+	sidstr = sidstr.substring(0, sidstr.length-1);
+	var task_name = $("#task_name").val(), task_type = $("#task_type").val(), task_time = $("#task_time").val();
+	var task_num = $("#task_num").val(), task_exe = $("#task_exe").val(), task_status = $("#task_status").val();
+	if(!task_name){
+		$("#send_msg").html("必须输入任务名称！");
+		$("#task_name").focus();
+		return false;
+	}
+	if(!task_time){
+		$("#send_msg").html("必须输入任务超时时间！");
+		$("#task_time").focus();
+		return false;
+	}
+	if(!task_num){
+		$("#send_msg").html("必须输入任务重复次数！");
+		$("#task_num").focus();
+		return false;
+	}
+	if(!task_exe){
+		$("#send_msg").html("必须输入任务指定！");
+		$("#task_exe").focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/addTask',
+		dataType: 'json',
+		data: { sidarr: sidstr, name: task_name, type: task_type, time: task_time, num: task_num, exe: task_exe, status: task_status  },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				alert(data.reason);
+			}
+			else{
+				$("#send_msg").html(data.reason);
+			}
+		},
+		error: function (data) {
+			alert(data.statusText);
+		}
+	});
+}
+
+function inFocus(evt){
+	$(evt).addClass("on");
+	$(evt).next().show();
+}
+
+function saveSet(id, key, evt){
+	var val = $(evt).prev().val();
+	//alert(id + key + val);
+	if(!val){
+		alert("必须输入设置值！");
+		$(evt).prev().focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/updateSet',
+		dataType: 'json',
+		data: { id: id, key: key, value: val },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				alert(data.reason);
+			}
+			else{
+				alert(data.reason);
+			}
+		},
+		error: function (data) {
+			alert(data.statusText);
+		}
+	});
+}
+
+//焦点触发函数
+function inputFocus(evt){
+	$(evt).parent().parent().find("td").get(6).innerHTML = "<button onclick=\"save(this)\">保存</button> <button onclick=\"cancel(this)\">取消</button>";
+	$(evt).parent().parent().find("td").each(function(){
+		if($(this).hasClass("select")){
+			if($(this).children("input[type=hidden]").val() == "true"){
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" value=\"true\"/><select><option value=\"true\" selected>可用</option><option value=\"false\">不可用</option></select>";
+			}else{
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" value=\"false\"/><select><option value=\"true\" selected>不可用</option><option value=\"false\">可用</option></select>";
+			}
+		}else{
+			$(this).children("input[type=text]").addClass("on");
+		}
+	});
+	//$(evt).addClass("on");
+}
+
+function checkAll(evt) {
+	$(".choose_node").empty();
+	$("#node-list").find("tr").each(function (i) {
+		$($(this).find(":checkbox").get(0)).attr("checked", evt.checked);
+		//$(this).attr("checked", evt.checked);
+	});
+	if(evt.checked){
+		$("#node-list").find("tr").each(function (i) {
+			if(typeof($(this).attr("id")) != "undefined"){
+				var sid = $($(this).find("input[type=text]").get(0)).val(); //$(this).removeAttr("checked"); 
+				$(".choose_node").append("<li>"+sid+"<a href=\"javascript:void(0);\" onclick=\"delchoose(this)\">删除</a></li>");
+			}
+		});
+	}
+}
+function checkOne(evt){
+	$(".choose_node").empty();
+	$("#node-list").find("tr").each(function (i) {
+		if($($(this).find(":checkbox").get(0)).attr("checked")){
+			var sid = $($(this).find("input[type=text]").get(0)).val(); //$(this).removeAttr("checked"); 
+			$(".choose_node").append("<li>"+sid+"<a href=\"javascript:void(0);\" onclick=\"delchoose(this)\">删除</a></li>");
+		}else{  //存在没选中的
+			$("#selectAll").attr("checked", false);
+		}
+	});
+}
+
+function delchoose(evt){
+	//alert($(evt).parent().html());return false;
+	$("#node-list").find("tr").each(function (i) {
+		var sid = $($(this).find("input[type=text]").get(0)).val();
+		if($(evt).parent().html().indexOf(sid) >= 0){
+			$($(this).find(":checkbox").get(0)).attr("checked", false);
+		}
+	});
+	$(evt).parent().remove();
+	$("#selectAll").attr("checked", false);
+}
+    
+function cancel(evt){
+    $(evt).parent().parent().find("td").each(function(){
+		if($(this).hasClass("select")){
+			if($(this).children("input[type=hidden]").val() == "true"){
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" value=\"true\"/><input type=\"text\" onFocus=\"inputFocus(this);\" class=\"tc\" style=\"width:58px;\" value=\"可用\" />";
+			}else{
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" value=\"false\"/><input type=\"text\" onFocus=\"inputFocus(this);\" class=\"tc\" style=\"width:58px;\" value=\"不可用\" />";
+			}
+		}else{
+			$(this).children("input[type=text]").removeClass("on");
+		}
+    });
+    $(evt).parent().parent().find("td").get(6).innerHTML = "<a href=\"javascript:void(0);\" onclick=\"deleteNode(this);\">删除</a> | <a href=\"javascript:void(0);\" onclick=\"readNode(this);\">查看属性</a>";
+}
+
+function showAdd(){
+		$.layer({
+			type: 2,
+			title: '添加设备',
+			iframe: { src : '__APP__/Index/addDevice' },
+			area: ['680px' , '480px'],
+			offset: ['100px','']
+		});
+	}
+
+/*function showAdd(){
+	$("#node-list").prepend("<tr class='add'>"+
+		"<td></td>"+
+		"<td><input type='text' class='tc on' style='width:102px;' placeholder='IP地址' /></td>"+
+		"<td><input type='text' class='tc on' style='width:102px;' placeholder='设备编号' /></td>"+
+		"<td><input type='text' class='tc on' style='width:40px;' placeholder='类型' /></td>"+
+		"<td><input type='text' class='tc on' style='width:40px;' placeholder='小类' /></td>"+
+		"<td><input type='text' class='tc on' style='width:50px;' placeholder='所在大区' /></td>"+
+		"<td><input type='text' class='tc on' style='width:50px;' placeholder='所在小区' /></td>"+
+		"<td><input type='text' class='tc on' style='width:90%;' placeholder='备注信息' /></td>"+
+		"<td></td>"+
+		"<td><select><option value=\"true\" selected>可用</option><option value=\"false\">不可用</option></select></td>"+
+		"<td><button onclick=\"addNode(this)\">保存</button> <button onclick=\"cancelNode(this)\">取消</button></td>"+
+		"</tr>");
+}
+
+function addNode(evt){
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var td2 = $(evt).parent().parent().find("td").get(2);
+	var td3 = $(evt).parent().parent().find("td").get(3);
+	var td4 = $(evt).parent().parent().find("td").get(4);
+	var td5 = $(evt).parent().parent().find("td").get(5);
+	var td6 = $(evt).parent().parent().find("td").get(6);
+	var td7 = $(evt).parent().parent().find("td").get(7);
+	var td9 = $(evt).parent().parent().find("td").get(9);
+	
+	var ip = $(td1).children("input[type=text]").val();
+	var sn = $(td2).children("input[type=text]").val();
+	var type = $(td3).children("input[type=text]").val();
+	var subtype = $(td4).children("input[type=text]").val();
+	var zone = $(td5).children("input[type=text]").val();
+	var local = $(td6).children("input[type=text]").val();
+	var desc = $(td7).children("input[type=text]").val();
+	var status = $(td9).children("select").find('option:selected').text() == "可用" ? "true":"false";
+	if(!ip){
+		alert("错误提示：主机名称不能为空！");
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/add',
+		dataType: 'json',
+		data: { ip: ip, sn: sn, type: type, subtype: subtype, zone: zone, local: local, desc: desc, status: status },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+			      alert(data.reason);  // + data.id
+			      var s = "不可用";
+			      if(status == "true"){s="可用";}
+			      $(evt).parent().parent().remove();
+			      $("#node-list").prepend("<tr>"+
+				  "<td><input type='hidden' value='"+data.id+"'/><input type='checkbox' style='wdith:22px;' value='none'/></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:102px;' value='"+ip+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:102px;' value='"+sn+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:40px;' value='"+type+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:40px;' value='"+subtype+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:50px;' value='"+zone+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:50px;' value='"+local+"' /></td>"+
+				  "<td><input type='text' onFocus=\"inputFocus(this);\" class='tc' style='width:90%;' value='"+desc+"' /></td>"+
+				  "<td></td>"+
+				  "<td class='select'><input onFocus='inputFocus(this);' type='text' class='tc' style='width:58px;' value='"+s+"'/><input type='hidden' value='"+status+"'/></td>"+
+				  "<td><a href=\"javascript:void(0);\" onclick=\"deleteNode(this);\">删除</a> | <a href=\"javascript:void(0);\" onclick=\"readNode(this);\">查看属性</a></td>"+
+				  "</tr>");
+			}
+			else{
+			      alert(data.reason);
+			}
+		},
+		error: function (data) {
+		      alert(data.statusText);
+		}
+	});
+}*/
+function cancelNode(evt){
+	$(evt).parent().parent().remove();
+}
+
+function deleteNode(evt){
+	var td0 = $(evt).parent().parent().find("td").get(0);
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var id = $(td0).children("input[type=hidden]").val();
+	var sid = $(td1).children("input[type=text]").val();
+	if(confirm("确定删除主机："+ sid + "吗？")){
+	      $.ajax({
+		      url: '__APP__/Index/delete',
+		      dataType: 'json',
+		      data: { id: id },
+		      type: "POST",
+		      success: function (data) {
+			      if (data.result == 1) {
+				      alert(data.reason);
+				      $(evt).parent().parent().remove();
+			      }
+			      else{
+				      alert(data.reason);
+			      }
+		      },
+		      error: function (data) {
+			      alert(data.statusText);
+		      }
+	      });
+	}
+}
+
+function save(evt){
+	var td0 = $(evt).parent().parent().find("td").get(0);
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var td2 = $(evt).parent().parent().find("td").get(2);
+	var td3 = $(evt).parent().parent().find("td").get(3);
+	var td5 = $(evt).parent().parent().find("td").get(5);
+	
+	var id = $(td0).children("input[type=hidden]").val();
+	var sn = $(td1).children("input[type=text]").val();
+	var ip = $(td2).children("input[type=text]").val();
+	var desc = $(td3).children("input[type=text]").val();
+	var status = $(td5).children("select").find('option:selected').text() == "可用" ? "true":"false";
+	//alert(status);return false;
+	if(!sn){
+		alert("错误提示：设备编号不能为空！");
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/edit',
+		dataType: 'json',
+		data: { id: id, ip: ip, sn: sn, desc: desc, status: status },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				alert(data.reason);
+				$(td5).children("input[type=hidden]").val(status);
+				cancel(evt);
+			}
+			else{
+				alert(data.reason);
+			}
+		},
+		error: function (data) {
+			alert(data.statusText);
+		}
+	});
+}
+
+	//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+	jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script> 
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				  url: '__APP__/Index/logout',
+				  dataType: 'json',
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result == 1) {
+						  window.top.location = '__APP__/Index/login';
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+</script>
+</body>
+</html>

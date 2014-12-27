@@ -400,7 +400,7 @@ static void count_thread(void *arg)
                                 detail->ab_time++;
                                 if(detail->ab_time > 10)
                                 {
-                                    if(!use->attack)
+                                    if(!use->attack && (check->attack_type == IPCOUNT_ATTACK_UDP_FLOOD))
                                     {
                                         int len = 0;
                                         FILE *fd;

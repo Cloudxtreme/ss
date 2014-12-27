@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Monitor/traffic">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+	
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	
+	<!-- left菜单 S -->
+	<div id="sideMenu" class="side">
+		<div class="hd">
+			<h3>系统管理</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a style="color:#3CADED; text-decoration:underline;" href="__APP__/Index/system">用户管理</a></li>
+				<li><a href="__APP__/Index/alarm">报警策略管理</a></li>
+				<li><a href="__APP__/Index/attrMgr">设备属性管理</a></li>
+				<li><a href="__APP__/Index/optlog">系统操作日志</a></li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">jQuery("#sideMenu").slide({ titCell:".hd", targetCell:".bd", effect:"slideDown", trigger:"click" });</script>
+	<!-- left菜单 E -->
+	
+	<!-- main s -->
+	<div class="mainContent">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="">
+				<ul>
+					<div class="memu_bar">
+						<ul>
+							<li><button onclick="showAdd();">添加用户</button></li>
+						</ul>
+					</div>
+					<select id="type_list" style="display:none;">
+						<!--option value="admin">超级管理员</option-->
+						<option value="cacti">超级监控员</option>
+						<volist name="glist" id="t">
+						<option value="{$t.type}|admin">{$t.type}管理员</option>
+						<option value="{$t.type}|cacti">{$t.type}监控员</option>
+						</volist>
+					</select>
+					<div class='list-header'>
+						<ul>
+							<li style="width:32px;"><a href="javascript:void(0);" title="编号">编号</a></li>
+							<li style="width:135px;"><a href="javascript:void(0);" title="用户名">用户名</a></li>
+							<li style="width:135px;"><a href="javascript:void(0);" title="登陆密码">登陆密码</a></li>
+							<li style="width:120px;"><a href="javascript:void(0);" title="用户类型">用户角色</a></li>
+							<li style="width:240px;"><a href="javascript:void(0);" title="备注信息">备注信息</a></li>
+							<li style="width:116px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="user-list" class="domain-list">
+						<volist name="ulist" id="user">
+						<tr id="{$user.id}">
+							<td style="width:32px;">{$user.id}</td>
+							<td style="width:120px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:100px;" value="{$user.user}" /></td>
+							<td style="width:120px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:100px;" value="******" /></td>
+							<if condition="$user.type eq 'admin'">
+								<td style="width:108px;"><input type="hidden" class="{$user.zone}" value="{$user.type}"/><input onFocus="inputFocus(this);" type="text" class="tc" style="width:100px;" value="{$user.zone}管理员" /></td>
+								<else/><td style="width:108px;" class="select"><input type="hidden" class="{$user.zone}" value="{$user.type}"/><input onFocus="inputFocus(this);" type="text" class="tc" style="width:100px;" value="{$user.zone}监控员" /></td>
+							</if>
+							<td style="width:208px;"><input onFocus="inputFocus(this);" type="text" class="tc" style="width:200px;" value="{$user.desc}" /></td>
+							<if condition="$user.type eq 'admin'">
+								<if condition="$user.zone eq 'all'">
+								<td style="width:116px;"></td>
+								<else/><td style="width:116px;"><a href="javascript:void(0);" onclick="deleteUser(this);">删除</a></td>
+								</if>
+								<else/><td style="width:116px;"><a href="javascript:void(0);" onclick="deleteUser(this);">删除</a></td>
+							</if>
+						</tr>
+						</volist>
+					</table>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<!-- Tab切换 E -->
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				  url: '__APP__/Index/logout',
+				  dataType: 'json',
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result == 1) {
+						  window.top.location = '__APP__/Index/login';
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+//焦点触发函数
+function inputFocus(evt){
+	$(evt).parent().parent().find("td").get(5).innerHTML = "<button onclick=\"save(this)\">保存</button> <button onclick=\"cancel(this)\">取消</button>";
+	var td2 = $(evt).parent().parent().find("td").get(2);
+	$(td2).children("input[type=text]").val("");
+	$(evt).parent().parent().find("td").each(function(){
+		if($(this).hasClass("select")){
+			var zone = $(this).children("input[type=hidden]").attr("class");
+			if($(this).children("input[type=hidden]").val() == "admin"){
+				$(this).empty();
+				
+				this.innerHTML = "<input type=\"hidden\" class=\""+zone+"\" value=\"admin\"/><select style='width:110px;'><option value=\""+zone+"|admin\" selected>"+zone+"管理员</option><option>"+zone+"监控员</option></select>";
+			}else{
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" class=\""+zone+"\" value=\"cacti\"/><select style='width:110px;'><option value=\""+zone+"|cacti\" selected>"+zone+"监控员</option><option>"+zone+"管理员</option></select>";
+			}
+		}else{
+			$(this).children("input[type=text]").addClass("on");
+		}
+	});
+	//$(evt).addClass("on");
+}
+    
+function cancel(evt){
+    $(evt).parent().parent().find("td").each(function(){
+		if($(this).hasClass("select")){
+			var zone = $(this).children("input[type=hidden]").attr("class");
+			if($(this).children("input[type=hidden]").val() == "admin"){
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" class=\""+zone+"\" value=\"admin\"/><input type=\"text\" onFocus=\"inputFocus(this);\" class=\"tc\" style=\"width:100px;\" value=\""+zone+"管理员\" />";
+			}else{
+				$(this).empty();
+				this.innerHTML = "<input type=\"hidden\" class=\""+zone+"\" value=\"cacti\"/><input type=\"text\" onFocus=\"inputFocus(this);\" class=\"tc\" style=\"width:100px;\" value=\""+zone+"监控员\" />";
+			}
+		}else{
+			$(this).children("input[type=text]").removeClass("on");
+		}
+    });
+    $($(evt).parent().parent().find("td").get(2)).children("input[type=text]").val("******");
+    if($($(evt).parent().parent().find("td").get(3)).children("input[type=text]").val() != "all管理员"){
+	    $(evt).parent().parent().find("td").get(5).innerHTML = "<a href=\"javascript:void(0);\" onclick=\"deleteUser(this);\">删除</a>";
+    }else{
+	    $(evt).parent().parent().find("td").get(5).innerHTML = "";
+    }
+}
+
+function showAdd(){
+	var str = $("#type_list").html();
+	$("#user-list").prepend("<tr class='add'>"+
+		"<td></td>"+
+		"<td><input type='text' class='tc on' style='width:100px;' placeholder='用户名' /></td>"+
+		"<td><input type='text' class='tc on' style='width:100px;' placeholder='登陆密码' /></td>"+
+		"<td><select style='width:110px;'>"+str+"</select></td>"+
+		"<td><input type='text' class='tc on' style='width:200px;' placeholder='备注信息' /></td>"+
+		"<td><button onclick=\"addUser(this)\">保存</button> <button onclick=\"cancelNode(this)\">取消</button></td>"+
+		"</tr>");
+}
+function addUser(evt){
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var td2 = $(evt).parent().parent().find("td").get(2);
+	var td3 = $(evt).parent().parent().find("td").get(3);
+	var td4 = $(evt).parent().parent().find("td").get(4);
+	
+	var name = $(td1).children("input[type=text]").val();
+	var pwd = $(td2).children("input[type=text]").val();
+	var type = $(td3).children("select").val();
+	var desc = $(td4).children("input[type=text]").val();
+	//alert(name + ", " + pwd + ", " + type + ", " + desc );return false;
+	if(!name){
+		alert("错误提示：用户名不能为空！");
+		$(td1).children("input[type=text]").focus();
+		return false;
+	}
+	if(!pwd){
+		alert("错误提示：用户登陆密码不能为空！");
+		$(td2).children("input[type=text]").focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/addUser',
+		dataType: 'json',
+		data: { user: name, pwd: pwd, type: type, desc: desc },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+			      alert(data.reason);
+			      window.location.reload();
+			}
+			else{
+			      alert(data.reason);
+			}
+		},
+		error: function (data) {
+		      alert(data.statusText);
+		}
+	});
+}
+function cancelNode(evt){
+	$(evt).parent().parent().remove();
+}
+
+function deleteUser(evt){
+	var td0 = $(evt).parent().parent().find("td").get(0);
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var id = $(td0).html();
+	var user = $(td1).children("input[type=text]").val();
+	if(confirm("确定删除用户："+ user + "吗？")){
+	      $.ajax({
+		      url: '__APP__/Index/deleteUser',
+		      dataType: 'json',
+		      data: { id: id },
+		      type: "POST",
+		      success: function (data) {
+			      if (data.result == 1) {
+				      alert(data.reason);
+				      $(evt).parent().parent().remove();
+			      }
+			      else{
+				      alert(data.reason);
+			      }
+		      },
+		      error: function (data) {
+			      alert(data.statusText);
+		      }
+	      });
+	}
+}
+
+function save(evt){
+	var td0 = $(evt).parent().parent().find("td").get(0);
+	var td1 = $(evt).parent().parent().find("td").get(1);
+	var td2 = $(evt).parent().parent().find("td").get(2);
+	var td3 = $(evt).parent().parent().find("td").get(3);
+	var td4 = $(evt).parent().parent().find("td").get(4);
+	
+	var id = $(td0).html();
+	var name = $(td1).children("input[type=text]").val();
+	var pwd = $(td2).children("input[type=text]").val();
+	var type = $(td3).children("select").val();
+	var desc = $(td4).children("input[type=text]").val();
+	if(!name){
+		alert("错误提示：用户名不能为空！");
+		$(td1).children("input[type=text]").focus();
+		return false;
+	}
+	if(!pwd){
+		alert("错误提示：用户登陆密码不能为空！");
+		$(td2).children("input[type=text]").focus();
+		return false;
+	}
+	$.ajax({
+		url: '__APP__/Index/editUser',
+		dataType: 'json',
+		data: { id: id, user: name, pwd: pwd, type: type, desc: desc },
+		type: "POST",
+		success: function (data) {
+			if (data.result == 1) {
+				alert(data.reason);
+				window.location.reload();
+			}
+			else{
+				alert(data.reason);
+			}
+		},
+		error: function (data) {
+			alert(data.statusText);
+		}
+	});
+}
+
+	//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+	jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script> 
+</body>
+</html>

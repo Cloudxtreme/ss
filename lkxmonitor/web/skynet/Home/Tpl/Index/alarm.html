@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/popup_layer.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/popup_layer.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Monitor/traffic">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+	
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- left菜单 S -->
+	<div id="sideMenu" class="side">
+		<div class="hd">
+			<h3>系统管理</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a href="__APP__/Index/system">用户管理</a></li>
+				<li><a style="color:#3CADED; text-decoration:underline;" href="__APP__/Index/alarm">报警策略管理</a></li>
+				<li><a href="__APP__/Index/attrMgr">设备属性管理</a></li>
+				<li><a href="__APP__/Index/optlog">系统操作日志</a></li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">jQuery("#sideMenu").slide({ titCell:".hd", targetCell:".bd", effect:"slideDown", trigger:"click" });</script>
+	<!-- left菜单 E -->
+	
+	<!-- main s -->
+	<div class="mainContent">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="hd">
+				<span style="float:left;">搜索策略：<input type="text" class="on" style="width:120px;" placeholder="输入策略名称" /></span>
+				<ul>
+					<li><a href="javascript:void(0);">策略列表</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>
+					<div class="memu_bar">
+						<ul>
+							<li><button onclick="showAddRule();">添加策略</button></li>
+						</ul>
+					</div>
+					<div class='list-header'>
+						<ul>
+							<li style="width:50px;"><a href="javascript:void(0);" title="编号">编号</a></li>
+							<li style="width:250px;"><a href="javascript:void(0);" title="策略名称">策略名称</a></li>
+							<li style="width:60px;"><a href="javascript:void(0);" title="策略类型">策略类型</a></li>
+							<li style="width:60px;"><a href="javascript:void(0);" title="策略阀值">策略阀值</a></li>
+							<li style="width:131px;"><a href="javascript:void(0);" title="额外信息">额外信息</a></li>
+							<li style="width:64px;"><a href="javascript:void(0);" title="开启状态">开启状态</a></li>
+							<li style="width:160px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="rule-list" class="domain-list">
+						<volist name="rulelist" id="rule">
+						<tr id="{$rule.id}">
+							<td style="width:35px;">{$rule.id}</td>
+							<td style="width:180px;text-align:left;padding-left:10px;" align="left">{$rule.rule}</td>
+							<td style="width:40px;">{$rule.type}</td>
+							<td style="width:40px;">{$rule.top}</td>
+							<td style="width:100px;">{$rule.ext}</td>
+							<td style="width:40px;">{$rule.status}</td>
+							<if condition="$rule.status eq 'on'">
+								<td style="width:128px;"><a href="javascript:void(0);" onclick="turnRule(this,'off');">停用</a> | <a href="javascript:void(0);" onclick="delRule(this);">删除</a> | <a href="javascript:void(0);" onclick="readAction(this);">查看接收对象</a></td>
+								<else/><td style="width:128px;"><a href="javascript:void(0);" onclick="turnRule(this,'on');">启用</a> | <a href="javascript:void(0);" onclick="delRule(this);">删除</a>  | <a href="javascript:void(0);" onclick="readAction(this);">查看接收对象</a></td>
+							</if>
+							
+						</tr>
+						<tr style="background:#fff;display:none;">
+							<td colspan="7" style="text-align:center;">
+								<div class='list-header' style="width:786px;">
+									<ul style="width:100%;">
+										<li style="width:140px;"><a href="javascript:void(0);" title="编号">姓名</a></li>
+										<li style="width:100px;"><a href="javascript:void(0);" title="途径">途径</a></li>
+										<li style="width:180px;"><a href="javascript:void(0);" title="手机或邮件">手机或邮件</a></li>
+										<li style="width:120px;"><a href="javascript:void(0);" title="开启状态">开启状态</a></li>
+										<li style="width:100px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+									</ul>
+									<table>
+										<!--tr style="background:#f0f0f0;line-height:22px;height:22px;">
+											<td style="width:140px;">张三</td>
+											<td style="width:100px;">手机号码</td>
+											<td style="width:180px;">18653214422</td>
+											<td style="width:120px;">开启</td>
+											<td style="width:108px;"><a href="javascript:void(0);" onclick="delTask(this);">停用</a> | <a href="javascript:void(0);" onclick="delTask(this);">删除</a></td>
+										</tr>
+										<tr style="background:#f0f0f0;line-height:22px;height:22px;">
+											<td style="width:140px;">张三</td>
+											<td style="width:100px;">手机号码</td>
+											<td style="width:180px;">18653214422</td>
+											<td style="width:120px;">开启</td>
+											<td style="width:108px;"><a href="javascript:void(0);" onclick="delTask(this);">停用</a> | <a href="javascript:void(0);" onclick="delTask(this);">删除</a></td>
+										</tr-->
+									</table>
+									<button onclick="showAddAction(this,'{$rule.id}');">添加接收者</button>
+								</div>
+							</td>
+						</tr>
+						</volist>
+					</table>
+					<div class="memu_bar" style="float:right;">
+						{$page}
+					</div>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<!-- Tab切换 E -->
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				url: '__APP__/Index/logout',
+				dataType: 'json',
+				type: "POST",
+				success: function (data) {
+					if (data && data.result == 1) {
+						window.top.location = '__APP__/Index/login';
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+	function showAddRule(){
+		$("#rule-list").prepend("<tr class='add'>"+
+			"<td></td>"+
+			"<td><input type='text' class='tc on' style='width:86%;' placeholder='例如：流出流量超过1000M给研发运维组发短信' /></td>"+
+			"<td><select><option value='in'>流入流量</option><option value='out'>流出流量</option><option value='cpu'>CPU使用</option><option value='mem'>内存</option><option value='disk'>磁盘使用</option><option value='link'>连接超时</option><option value='http'>http监控</option><option value='dns'>dns监控</option></select></td>"+
+			"<td><input type='text' class='tc on' style='width:40px;' placeholder='阀值' /></td>"+
+			"<td><input type='text' class='tc on' style='width:100px;' placeholder='额外信息' /></td>"+
+			"<td><select><option value='on'>开启</option><option value='off'>关闭</option></select></td>"+
+			"<td><button onclick=\"addRule(this)\">保存</button> <button onclick=\"cancelRow(this)\">取消</button></td>"+
+			"</tr>");
+	}
+  	function addRule(evt){
+		var td1 = $(evt).parent().parent().find("td").get(1);
+		var td2 = $(evt).parent().parent().find("td").get(2);
+		var td3 = $(evt).parent().parent().find("td").get(3);
+		var td4 = $(evt).parent().parent().find("td").get(4);
+		var td5 = $(evt).parent().parent().find("td").get(5);
+		
+		var act = $(td1).children("input[type=text]").val();
+		var type = $(td2).children("select").val();
+		var top = $(td3).children("input[type=text]").val();
+		var ext = $(td4).children("input[type=text]").val();
+		var status = $(td5).children("select").val();
+		if(!act){
+			alert("错误提示：策略名称不能为空！");
+			$(td1).children("input[type=text]").focus();
+			return false;
+		}
+		if(!top){
+			alert("错误提示：阀值不能为空！");
+			$(td3).children("input[type=text]").focus();
+			return false;
+		}
+		$.ajax({
+			url: '__APP__/Index/addRule',
+			dataType: 'json',
+			data: { act: act, type: type, top: top, ext: ext, status: status },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+					alert(data.reason);
+					$(evt).parent().parent().parent().prepend("<tr><td></td>"+
+								"<td>"+act+"</td>"+
+								"<td>"+type+"</td>"+
+								"<td>"+top+"</td>"+
+								"<td>"+ext+"</td>"+
+								"<td>"+status+"</td>"+
+								"<td></td>"+
+							"</tr>");
+					cancelRow(evt);
+				}
+				else{
+				      alert(data.reason);
+				}
+			},
+			error: function (data) {
+			      alert(data.statusText);
+			}
+		});
+  	}
+  	function delRule(evt){
+		var name = $($(evt).parent().parent().find("td").get(1)).html();
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		if(confirm("确定删除策略：“"+ name + "”吗？")){
+			$.ajax({
+				  url: '__APP__/Index/delRule',
+				  dataType: 'json',
+				  data: { id: id },
+				  type: "POST",
+				  success: function (data) {
+					  if (data.result == 1) {
+						alert(data.reason);
+						$(evt).parent().parent().next().empty();
+						cancelRow(evt);
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+  	}
+	function turnRule(evt, status){
+		var name = $($(evt).parent().parent().find("td").get(1)).html();
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		var action = $(evt).html();
+		if(confirm("确定"+action+"策略：“"+ name + "”吗？")){
+			$.ajax({
+				  url: '__APP__/Index/turnRule',
+				  dataType: 'json',
+				  data: { id: id, status: status },
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result >= 1) {
+						alert(data.reason);
+						if(status=="on"){
+							$($(evt).parent().parent().find("td").get(5)).html("on");
+							$($(evt).parent()).html("<a href=\"javascript:void(0);\" onclick=\"turnRule(this,'off');\">停用</a> | <a href=\"javascript:void(0);\" onclick=\"readAction(this);\">查看接收对象</a>");
+						}else{
+							$($(evt).parent().parent().find("td").get(5)).html("off");
+							$($(evt).parent()).html("<a href=\"javascript:void(0);\" onclick=\"turnRule(this,'on');\">启用</a> | <a href=\"javascript:void(0);\" onclick=\"readAction(this);\">查看接收对象</a>");
+						}
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+	
+	function showAddAction(evt,rid){
+		var tb = $(evt).parent().parent().find("table").get(0);
+		if($(tb).html() == "没有找到该策略的接收者信息！"){
+			$(tb).empty();
+		}
+		$(tb).append("<tr style=\"background:#f0f0f0;line-height:22px;height:22px;\">"+
+								"<td style=\"width:140px;\"><input type='text' class='on' style='width:100px;'></td>"+
+								"<td style=\"width:100px;\"><select><option value='sms'>手机短信</option><option value='email'>电子邮件</option></select></td>"+
+								"<td style=\"width:180px;\"><input type='text' class='on' style='width:140px;'></td>"+
+								"<td style=\"width:120px;\"><select><option value='on'>开启</option><option value='off'>关闭</option></select></td>"+
+								"<td style=\"width:108px;\"><a href=\"javascript:void(0);\" onclick=\"addAction(this,'"+rid+"');\">保存</a> | <a href=\"javascript:void(0);\" onclick=\"cancelRow(this);\">取消</a></td>"+
+							"</tr>");
+	}
+	function addAction(evt, rid){
+		//alert(rid);return false;
+		var td0 = $(evt).parent().parent().find("td").get(0);
+		var td1 = $(evt).parent().parent().find("td").get(1);
+		var td2 = $(evt).parent().parent().find("td").get(2);
+		var td3 = $(evt).parent().parent().find("td").get(3);
+		
+		var person = $(td0).children("input[type=text]").val();
+		var way = $(td1).children("select").val();
+		var action = $(td2).children("input[type=text]").val();
+		var status = $(td3).children("select").val();
+		if(!action){
+			alert("错误提示：手机或邮件不能为空！");
+			$(td2).children("input[type=text]").focus();
+			return false;
+		}
+		$.ajax({
+			url: '__APP__/Index/addAction',
+			dataType: 'json',
+			data: { rid: rid, person: person, way: way, action: action, status: status },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+					alert(data.reason);
+					$(evt).parent().parent().parent().append("<tr style=\"background:#f0f0f0;line-height:22px;height:22px;\">"+
+								"<td style=\"width:140px;\">"+person+"</td>"+
+								"<td style=\"width:100px;\">"+way+"</td>"+
+								"<td style=\"width:180px;\">"+action+"</td>"+
+								"<td style=\"width:120px;\">"+status+"</td>"+
+								"<td style=\"width:108px;\"></td>"+
+						"</tr>");
+					cancelRow(evt);
+				}
+				else{
+				      alert(data.reason);
+				}
+			},
+			error: function (data) {
+			      alert(data.statusText);
+			}
+		});
+	}
+	function delAction(evt,id){
+		var name = $($(evt).parent().parent().find("td").get(0)).html();
+		if(confirm("确定删除接收者："+ name + "吗？")){
+			$.ajax({
+				  url: '__APP__/Index/delAction',
+				  dataType: 'json',
+				  data: { id: id },
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result >= 1) {
+						alert(data.reason);
+						cancelRow(evt);
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+	function turnAction(evt,id,status){
+		var name = $($(evt).parent().parent().find("td").get(0)).html();
+		var action = $(evt).html();
+		if(confirm("确定"+action+"接收者："+ name + "吗？")){
+			$.ajax({
+				  url: '__APP__/Index/turnAction',
+				  dataType: 'json',
+				  data: { id: id, status: status },
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result >= 1) {
+						alert(data.reason);
+						if(status=="on"){
+							$($(evt).parent().parent().find("td").get(3)).html("on");
+							$($(evt).parent()).html("<a href=\"javascript:void(0);\" onclick=\"turnAction(this,'"+id+"','off');\">停用</a> | <a href=\"javascript:void(0);\" onclick=\"delAction(this,'"+id+"');\">删除</a>");
+						}else{
+							$($(evt).parent().parent().find("td").get(3)).html("off");
+							$($(evt).parent()).html("<a href=\"javascript:void(0);\" onclick=\"turnAction(this,'"+id+"','on');\">启用</a> | <a href=\"javascript:void(0);\" onclick=\"delAction(this,'"+id+"');\">删除</a>");
+						}
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+	function cancelRow(evt){
+		$(evt).parent().parent().remove();
+	}
+	function readAction(evt){
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		$.ajax({
+			  url: '__APP__/Index/readAction',
+			  dataType: 'json',
+			  data: { id: id },
+			  type: "POST",
+			  success: function (data) {
+				$($(evt).parent().parent().next().find("table").get(0)).empty();
+				if (data && data.length >= 1) {
+					for(var i=0;i<data.length;i++){
+						if(data[i].status == "on"){
+							$($(evt).parent().parent().next().find("table").get(0)).append("<tr style=\"background:#f0f0f0;line-height:22px;height:22px;\">"+
+								"<td style=\"width:140px;\">"+data[i].person+"</td>"+
+								"<td style=\"width:100px;\">"+data[i].way+"</td>"+
+								"<td style=\"width:180px;\">"+data[i].action+"</td>"+
+								"<td style=\"width:120px;\">"+data[i].status+"</td>"+
+								"<td style=\"width:108px;\"><a href=\"javascript:void(0);\" onclick=\"turnAction(this,'"+data[i].id+"','off');\">停用</a> | <a href=\"javascript:void(0);\" onclick=\"delAction(this,'"+data[i].id+"');\">删除</a></td>"+
+							"</tr>");
+						}else{
+							$($(evt).parent().parent().next().find("table").get(0)).append("<tr style=\"background:#f0f0f0;line-height:22px;height:22px;\">"+
+								"<td style=\"width:140px;\">"+data[i].person+"</td>"+
+								"<td style=\"width:100px;\">"+data[i].way+"</td>"+
+								"<td style=\"width:180px;\">"+data[i].action+"</td>"+
+								"<td style=\"width:120px;\">"+data[i].status+"</td>"+
+								"<td style=\"width:108px;\"><a href=\"javascript:void(0);\" onclick=\"turnAction(this,'"+data[i].id+"','on');\">启用</a> | <a href=\"javascript:void(0);\" onclick=\"delAction(this,'"+data[i].id+"');\">删除</a></td>"+
+							"</tr>");
+						}
+					}
+				}
+				else{
+					$($(evt).parent().parent().next().find("table").get(0)).append("没有找到该策略的接收者信息！");
+				}
+			  },
+			  error: function (data) {
+				  alert(data.statusText);
+			  }
+		});
+		if($(evt).html() == "查看接收对象"){
+			$(evt).parent().parent().next().show();
+			$(evt).html("收起接收对象");
+		}else{
+			$(evt).parent().parent().next().hide();
+			$(evt).html("查看接收对象");
+		}
+	}
+	function reSend(evt, id){
+		//alert(id);
+		$.ajax({
+			url: '__APP__/Index/reTask',
+			dataType: 'json',
+			data: { id: id },
+			type: "POST",
+			success: function (data) {
+				if (data && data.result == 1) {
+					alert(data.reason);
+					$(evt).hide();
+				}
+				else{
+					alert(data.reason);
+				}
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}
+	//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+	jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script>
+</body>
+</html>

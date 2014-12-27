@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* CSS Document */
+/* Name:Javie Chan */
+/* Date:2013-08-20 */
+/* Project:webadmin */
+
+*{ margin:0; padding:0;}
+body{
+	font-family:segoe UI,"microsoft yahei",Arial, Helvetica, sans-serif;
+	background-color:#dae2ed;
+	letter-spacing:1px;
+	color:#535353;
+	font-weight:bold;
+}
+li{ 
+	list-style:none;
+	margin-bottom:20px;
+}
+div{
+	background:url(../images/loginbox.jpg) no-repeat;
+	width:518px;
+	height:361px;
+	margin:0 auto;
+	margin-top:150px;
+	position:relative;
+}
+form{
+	position:absolute;
+	top:137px;
+	left:80px;
+}
+label{ padding-right:25px;}
+.iputxt{
+	width:250px;
+	height:37px;
+	border:1px solid #cdcac4;
+	line-height:37px;
+	vertical-align:middle;
+	text-indent:10px;
+}
+.ipubtn{ 
+	background: -webkit-gradient(linear,center top,center bottom,from(#FFFFFF), to(#E9E5ED));
+	background:-moz-linear-gradient( top,#FFFFFF,#E9E5ED);
+	background: -o-linear-gradient(top,#FFFFFF, #E9E5ED);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#FFFFFF',endColorStr='#E9E5ED',gradientType='0'); 
+	border:1px solid #cdcac4;
+	width:100px;
+	height:40px;
+	border-radius:2px;
+	-webkit-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	cursor:pointer;
+	color:#a4a0a0;
+	font-size:18px;
+	margin-left:50px;
+}
+.ipubtn:hover{ 
+	background: -webkit-gradient(linear,center top,center bottom,from(#7ACDDF), to(#3EAEC7));
+	background:-moz-linear-gradient( top,#7ACDDF,#3EAEC7);
+	background: -o-linear-gradient(top,#7ACDDF, #3EAEC7);
+	filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr='#7ACDDF',endColorStr='#3EAEC7',gradientType='0'); 
+	border:1px solid #018fb0;
+	cursor:pointer;
+	color:#fff;
+}
+.mgr{ margin:28px 0 0 110px;}

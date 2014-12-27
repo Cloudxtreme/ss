@@ -958,10 +958,10 @@ static int db_collecter(void *arg)
 
 
     ip_detail = (ip_data *)malloc(DATABASE_MAX_IP * sizeof(ip_data));
-    if(0)
+    if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << (g_reader_num + db->id);
+		mask = mask << (g_reader_num + db->id*2);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 	while(g_run)
@@ -1233,10 +1233,10 @@ static int db_sender(void *arg)
     char buf[32];
     unsigned long time;
 
-    if(0)
+    if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << (g_reader_num + db->id);
+		mask = mask << (g_reader_num + db->id*2 + 1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
     while(g_run)

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="DNSPro">
+<meta name="Description" content="DNSPro DNS 域名解析">
+<title>DNSPro，不仅仅提供域名解析</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/monitors">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- left菜单 S -->
+	<div id="sideMenu" class="side">
+		<div class="hd">
+			<h3>监控类型</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a href="__APP__/Monitor/traffic">流量监控</a></li>
+				<li><a href="__APP__/Monitor/system">系统监控</a></li>
+			</ul>
+		</div>
+		<div class="hd">
+			<h3>监控主机</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a href="__APP__/Monitor/traffic">192.168.22.14</a></li>
+				<li><a href="__APP__/Monitor/traffic">192.168.22.14</a></li>
+				<li><a href="__APP__/Monitor/traffic">192.168.22.14</a></li>
+				<li><a href="__APP__/Monitor/traffic">192.168.22.14</a></li>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">jQuery("#sideMenu").slide({ titCell:".hd", targetCell:".bd", effect:"slideDown", trigger:"click" });</script>
+	<!-- left菜单 E -->
+	
+	<!-- mainContent s -->
+	<div class="mainContent">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="hd">
+				<h1 style="float:left;">www.efly.cc</h1>
+				<ul>
+					<li><a href="#">记录管理</a></li>
+					<li><a href="#">域名设置</a></li>
+					<li><a href="#">解析量统计</a></li>
+					<li><a href="#">自定义路线</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>
+					<div class="memu_bar">
+						<ul>
+							<li><button>添加到监控中心</button></li>
+							<li><button>分组</button></li>
+							<li><button>更多</button></li>
+						</ul>
+					</div>
+					<div class='list-header'>
+						<ul>
+							<li><input type='checkbox' value='none' class='selectAll'/></li>
+							<li style="width:62px;"><a href="javascript:void(0);" title="主机记录">主机记录</a></li>
+							<li style="width:70px;"><a href="javascript:void(0);" title="记录类型">记录类型</a></li>
+							<li style="width:120px;"><a href="javascript:void(0);" title="线路类型">线路类型</a></li>
+							<li style="width:162px;"><a href="javascript:void(0);" title="记录值">记录值</a></li>
+							<li style="width:80px;"><a href="javascript:void(0);" title="MX优先级">MX优先级</a></li>
+							<li style="width:80px;"><a href="javascript:void(0);" title="TTL">TTL</a></li>
+							<li style="width:60px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="editableTable" class="domain-list">
+						<tr>
+							<td class="first"><input type='checkbox' style="wdith:22px;" value='none'/></td>
+							<td style="width:60px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">www</a></td>
+							<td style="width:50px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">A</a></td>
+							<td style="width:100px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">默认</a></td>
+							<td style="width:220px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">f1g1ns2.dnspod.net.</a></td>
+							<td style="width:60px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">-</a></td>
+							<td style="width:60px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">10</a></td>
+							<td style="width:130px;"><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">删除 | 启用</a></td>
+						</tr>
+						<tr>
+							<td class="first"><input type='checkbox' style="wdith:22px;" value='none'/></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">www</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">A</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">默认</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">f1g1ns2.dnspod.net.</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">-</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">10</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">删除 | 启用</a></td>
+						</tr>
+						<tr>
+							<td class="first"><input type='checkbox' style="wdith:22px;" value='none'/></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">www</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">A</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">默认</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">f1g1ns2.dnspod.net.</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">-</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">10</a></td>
+							<td><a href="#" id="username" data-type="text" data-pk="1" data-title="Enter username">删除 | 启用</a></td>
+						</tr>
+					</table>
+				</ul>
+				<ul>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">名师教作文：３妙招巧写高分</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">耶鲁小子：教你备考SAT</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">施强：高端专业语言教学</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">数理化老师竟也看学习资料？</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">【推荐】名校英语方法曝光！</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">2012高考“考点”大曝光!!</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">涨价仍爆棚假日旅游冰火两重天</a></li>
+				</ul>
+				<ul>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">澳大利亚八大名校招生说明会</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">2012世界大学排名新鲜出炉</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">新加坡留学，国际双语课程</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">高考后留学日本名校随你选</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">教育培训行业优势资源推介</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">即刻预约今年最后一场教育展</a></li>
+					<li><span class="date">2011-11-11</span><a href="http://www.SuperSlide2.com" target="_blank">女友坚持警局完婚不抛弃</a></li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<!-- Tab切换 E -->
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				  url: '__APP__/Index/logout',
+				  dataType: 'json',
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result == 1) {
+						  window.top.location = '__APP__/Index/login';
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+
+//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script> 
+</body>
+</html>
