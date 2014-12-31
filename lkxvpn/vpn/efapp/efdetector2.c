@@ -274,10 +274,14 @@ static int control()
                 case READER_FLAG_INBOUND:
                     db->in_pps = tmp_pkg - reader->l_pkg;
                     db->in_bps = tmp_flow - reader->l_flow;
+                    db->in_pkg = tmp_pkg;
+                    db->in_flow = tmp_flow;
                     break;
                 case READER_FLAG_OUTBOUND:
                     db->out_pps = tmp_pkg - reader->l_pkg;
                     db->out_bps = tmp_flow - reader->l_flow;
+                    db->out_pkg = tmp_pkg;
+                    db->out_flow = tmp_flow;
                     break;
                 case READER_FLAG_ALL:
                     break;
@@ -638,7 +642,7 @@ static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int l
             session_stat = session_get(pool, &s, pkg, len);
             if(session_stat & SESSION_TYPE_CREATE)
             {
-                //ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_NEW, 0);
+                ipcount_add_session(ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_NEW, 0);
             }
             if(session_stat & SESSION_TYPE_CONN)
             {
@@ -989,6 +993,15 @@ static int db_collecter(void *arg)
             max_log = max_log / 2;
             db->ip_total = ipcount_get_all_ip(db->ict, ip_detail, DATABASE_MAX_IP);
             i = 0;
+            if(max_log)
+            {
+                char *log_buf = db->ip_log[db->ili].str;
+                snprintf(log_buf, DATABASE_LOG_LENGTH, "%s%s {\"net_info\":[{\"in_pkg\":\"%llu\",\"in_flow\":\"%llu\",\"out_pkg\":\"%llu\",\"out_flow\":\"%llu\"}]}\0",
+                            log_header, db->name, db->in_pkg, db->in_flow, db->out_pkg, db->out_flow);
+                db->ip_log[db->ili].len = strlen(log_buf);
+                db->ili = (db->ili + 1 == DATABASE_MAX_LOG) ? 0 : (db->ili + 1);
+                max_log--;
+            }
             while((i < db->ip_total) && max_log)
             {
                 char *log_buf = db->ip_log[db->ili].str;

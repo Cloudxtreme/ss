@@ -29,11 +29,17 @@ typedef struct _session_slot
     struct _session_slot *prev;
     struct _session_slot *next;
     struct _session_slot *next_alive;
-    unsigned int key;
+    unsigned int key, val;
     unsigned long pkg, flow;
     session *s;
     link_info li;
 }session_slot;
+
+#define SLOT_TABLE_SIZE     100
+typedef struct _slot_table
+{
+    session_slot *slot[SLOT_TABLE_SIZE];
+}slot_table;
 
 struct _session
 {
@@ -68,9 +74,10 @@ struct _session_pool
 {
     pool_source *source;
 	session *session_use_head, *session_use_tail;
-    session_slot **table;
+    //session_slot **table;
+    slot_table *table;
     pthread_t recover;
-	unsigned long source_total, source_alive;
+	unsigned long source_total, source_alive, source_reduce;
     unsigned char stats;
     unsigned char pool_lock;
 	//unsigned char table_lock[SESSION_HASH_SIZE];
@@ -161,7 +168,10 @@ static int get_pkg_info(void *pkg, link_info *li)
     struct iphdr *iph;
 
     if(!IF_IP(pkg))
+    {
+        //fprintf(stderr, "not ip pkg!\n");
         return ret;
+    }
     iph = P_IPP(pkg);
     sip = iph->saddr;
     dip = iph->daddr;
@@ -202,6 +212,10 @@ static int get_pkg_info(void *pkg, link_info *li)
         }
         ret = 1;
     }
+    //else
+    //{
+        //fprintf(stderr, "unknow pkg!\n");
+    //}
     li->sip = sip;
     li->dip = dip;
     li->sport = sport;
@@ -249,6 +263,8 @@ static int reback_source(session_pool *pool, session *s, session_slot *master, s
     source->slot_alive = master;
     source->alives++;
     pool->source_alive++;
+    if(source->alives == POOL_EACH_BUF_SIZE)
+        pool->source_reduce = 1;
     return 1;
 }
 
@@ -256,7 +272,8 @@ static session *build_session_in_pool(session_pool *pool, link_info *li)
 {
     session *s = NULL;
     session_slot *master = NULL, *other = NULL;
-    session_slot *table = NULL;
+    //session_slot *table = NULL;
+    slot_table *table = NULL;
 
     if(!get_source(pool, &s, &master, &other))
         return NULL;
@@ -271,27 +288,43 @@ static session *build_session_in_pool(session_pool *pool, link_info *li)
     //master->key = ((li->sip ^ li->dip) * li->sport) % SESSION_HASH_SIZE;
     //other->key = ((li->sip ^ li->dip) * li->dport) % SESSION_HASH_SIZE;
     master->key = CRC20_key((unsigned char *)&(master->li), sizeof(link_info));
+    master->val = (li->sip ^ li->dip ^ ((li->sport << 16) + li->dport)) % SLOT_TABLE_SIZE;
     other->key = CRC20_key((unsigned char *)&(other->li), sizeof(link_info));
+    other->val = (li->dip ^ li->sip ^ ((li->dport << 16) + li->sport)) % SLOT_TABLE_SIZE;
 
-    if(!pool->table[master->key])
-        pool->table[master->key] = master;
-    else
+    if(!pool->table[master->key].slot[master->val])
     {
-        table = pool->table[master->key];
-        while(table->next)
-            table = table->next;
-        table->next = master;
-        master->prev = table;
+        pool->table[master->key].slot[master->val] = master;
     }
-    if(!pool->table[other->key])
-        pool->table[other->key] = other;
     else
     {
-        table = pool->table[other->key];
-        while(table->next)
-            table = table->next;
-        table->next = other;
-        other->prev = table;
+        table = &pool->table[master->key];
+        //while(table->next)
+        //    table = table->next;
+        //table->next = master;
+        //master->prev = table;
+
+        master->next = table->slot[master->val];
+        table->slot[master->val]->prev = master;
+        //pool->table[master->key] = master;
+        table->slot[master->val] = master;
+    }
+    if(!pool->table[other->key].slot[other->val])
+    {
+        pool->table[other->key].slot[other->val] = other;
+    }
+    else
+    {
+        table = &pool->table[other->key];
+        //while(table->next)
+        //    table = table->next;
+        //table->next = other;
+        //other->prev = table;
+
+        other->next = table->slot[other->val];
+        table->slot[other->val]->prev = other;
+        //pool->table[other->key] = other;
+        table->slot[other->val] = other;
     }
 
     s->master = master;
@@ -324,7 +357,7 @@ static void release_session_in_pool(session_pool *pool, session *s)
     }
     else
     {
-        pool->table[master->key] = master->next;
+        pool->table[master->key].slot[master->val] = master->next;
         if(master->next)
             master->next->prev = NULL;
     }
@@ -336,7 +369,7 @@ static void release_session_in_pool(session_pool *pool, session *s)
     }
     else
     {
-        pool->table[other->key] = other->next;
+        pool->table[other->key].slot[other->val] = other->next;
         if(other->next)
             other->next->prev = NULL;
     }
@@ -366,9 +399,11 @@ static int pool_reduce(session_pool *pool)
 {
     int ret = 0;
     pool_source *source = pool->source;
+    pool_source *next = NULL;
     fprintf(stderr, "session reduce!\n");
-    while(source)
+    while(source && pool->source_alive > (POOL_EACH_BUF_SIZE << 1))
     {
+        next = source->next;
         if(source->alives == POOL_EACH_BUF_SIZE)
         {
             if(pool->source == source)
@@ -384,10 +419,11 @@ static int pool_reduce(session_pool *pool)
             pool->source_total--;
             pool->reduce++;
             ret = 1;
-            break;
+            //break;
         }
-        source = source->next;
+        source = next;
     }
+    pool->source_reduce = 0;
     return ret;
 }
 
@@ -541,7 +577,7 @@ static int pool_recover(void *arg)
                 unlock(&(pool->pool_lock));
 			}
         }
-        else if(pool->source_alive > (POOL_EACH_BUF_SIZE << 1))
+        else if(pool->source_alive > (POOL_EACH_BUF_SIZE << 1) && pool->source_reduce)
         {
             lock(&(pool->pool_lock));
             pool_reduce(pool);
@@ -561,11 +597,13 @@ session_pool *session_pool_init(void *timeout_cbk)
     if(!sp)
         goto err;
     memset(sp, 0, sizeof(session_pool));
-    sp->table = (session_slot **)malloc(SESSION_HASH_SIZE * sizeof(session_slot *));
+    //sp->table = (session_slot **)malloc(SESSION_HASH_SIZE * sizeof(session_slot *));
+    sp->table = (slot_table *)malloc(SESSION_HASH_SIZE * sizeof(slot_table));
     sp->table_lock = (unsigned char *)malloc(SESSION_HASH_SIZE * sizeof(char));
     if(!sp->table || !sp->table_lock)
         goto err;
-    memset(sp->table, 0, SESSION_HASH_SIZE * sizeof(session_slot *));
+    //memset(sp->table, 0, SESSION_HASH_SIZE * sizeof(session_slot *));
+    memset(sp->table, 0, SESSION_HASH_SIZE * sizeof(slot_table));
     memset(sp->table_lock, 0, SESSION_HASH_SIZE * sizeof(char));
     lock(&g_lock);
 	if((source = create_source()))
@@ -648,13 +686,18 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
     unsigned long the_time = base_time;
     if(sp && sp->stats && pkg)
     {
-        unsigned int key;
+        unsigned int key, val;
         link_info pkg_link_info;
         if(!get_pkg_info(pkg, &pkg_link_info))
+        {
+            //fprintf(stderr, "wrong pkg!\n");
             goto done;
+        }
         key = CRC20_key((unsigned char *)&pkg_link_info, sizeof(link_info));
+        val = (pkg_link_info.sip ^ pkg_link_info.dip ^ ((pkg_link_info.sport << 16) + pkg_link_info.dport)) % SLOT_TABLE_SIZE;
+        #if 1
 		lock(&(sp->table_lock[key]));
-        slot = sp->table[key];
+        slot = sp->table[key].slot[val];
         while(slot)
         {
             link_info *li = &slot->li;
@@ -714,6 +757,7 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
 			s->last_active = the_time;
 		}
 		unlock(&(sp->table_lock[key]));
+		#endif
         if(!slot && ( (IF_TCP(pkg) && IF_SYN(pkg)) || !(IF_TCP(pkg)) ) )
         {
             lock(&(sp->pool_lock));
@@ -722,6 +766,7 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
                 s = build_session_in_pool(sp, &pkg_link_info);
                 if(s)
                 {
+                    //fprintf(stderr, "create session!\n");
                     session_stat |= SESSION_TYPE_CREATE;
                     s->create_time = the_time;
                     s->timeout = SESSION_TIMEOUT_CREATE;
@@ -761,8 +806,8 @@ int session_set_detail(session *s, void *detail)
 {
     if(s)
     {
-        if(s->detail)
-            fprintf(stderr, "already has detail!\n");
+        //if(s->detail)
+            //fprintf(stderr, "already has detail!\n");
         s->detail = detail;
         return 1;
     }

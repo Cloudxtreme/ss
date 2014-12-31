@@ -67,7 +67,7 @@ typedef struct _attack_event
 #define DATABASE_MAX_REPORT         1024000
 #define DATABASE_MAX_LOG            102400
 #define DATABASE_LOG_LENGTH         2048
-#define DATABASE_MAX_IP             102400
+#define DATABASE_MAX_IP             500000
 
 #define LOG_MAX_TARGET              16
 #define LOG_NET_TCP                 1
@@ -121,7 +121,7 @@ typedef struct _database
     http_info *hi, **phi;
     report_info *ri, *ri_timeout;
     unsigned int rii, rij, rti, rtj, phi_cur, phi_rec, sli, slj, ili, ilj;
-    unsigned long ip_total, in_pps, out_pps, in_bps, out_bps;
+    unsigned long ip_total, in_pps, out_pps, in_bps, out_bps, in_pkg, in_flow, out_pkg, out_flow;
     unsigned char detail_lock, attack_lock;
     log_content *ip_log;
     log_content *session_log;
