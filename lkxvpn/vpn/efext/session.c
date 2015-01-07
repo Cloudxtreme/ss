@@ -68,7 +68,7 @@ typedef struct _pool_source
     struct _pool_source *prev, *next;
 }pool_source;
 
-#define POOL_EACH_BUF_SIZE		1000000
+#define POOL_EACH_BUF_SIZE		10000000
 #define SESSION_HASH_SIZE		0x100000 //0x10000000
 struct _session_pool
 {
@@ -83,6 +83,7 @@ struct _session_pool
 	//unsigned char table_lock[SESSION_HASH_SIZE];
 	unsigned char *table_lock;
 	unsigned int max_deep, expand, reduce;
+	unsigned int deep_total[1000];
 	void *timeout_cbk;
 };
 
@@ -239,9 +240,9 @@ static int get_source(session_pool *pool, session **s, session_slot **master, se
             source->session_alive = source->session_alive->next_alive;
             source->slot_alive = source->slot_alive->next_alive->next_alive;
             tmp = (*s)->source;
-            memset(*s, 0, sizeof(session));
-            memset(*master, 0, sizeof(session_slot));
-            memset(*other, 0, sizeof(session_slot));
+            //memset(*s, 0, sizeof(session));
+            //memset(*master, 0, sizeof(session_slot));
+            //memset(*other, 0, sizeof(session_slot));
             (*s)->source = tmp;
             source->alives--;
             pool->source_alive--;
@@ -508,6 +509,10 @@ static int pool_recover(void *arg)
     //mprotect(p, ps, PROT_READ|PROT_WRITE);
     while(pool->stats)
     {
+        {
+            sleep(1);
+            continue;
+        }
         pool_source *source = pool->source;
         lock(&(pool->pool_lock));
         while(source)
@@ -569,12 +574,12 @@ static int pool_recover(void *arg)
         }
         if(pool->source_alive < (POOL_EACH_BUF_SIZE >> 1))
         {
-            pool_source *source = create_source();
-            if(source)
+            //pool_source *source = create_source();
+            //if(source)
             {
-                lock(&(pool->pool_lock));
-                pool_expand(pool, source);
-                unlock(&(pool->pool_lock));
+                //lock(&(pool->pool_lock));
+                //pool_expand(pool, source);
+                //unlock(&(pool->pool_lock));
 			}
         }
         else if(pool->source_alive > (POOL_EACH_BUF_SIZE << 1) && pool->source_reduce)
@@ -693,6 +698,7 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
             //fprintf(stderr, "wrong pkg!\n");
             goto done;
         }
+        goto build_session;
         key = CRC20_key((unsigned char *)&pkg_link_info, sizeof(link_info));
         val = (pkg_link_info.sip ^ pkg_link_info.dip ^ ((pkg_link_info.sport << 16) + pkg_link_info.dport)) % SLOT_TABLE_SIZE;
         #if 1
@@ -700,19 +706,25 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
         slot = sp->table[key].slot[val];
         while(slot)
         {
+            break;
             link_info *li = &slot->li;
             if( (li->sip == pkg_link_info.sip) && (li->dip == pkg_link_info.dip)
                 && (li->sport == pkg_link_info.sport) && (li->dport == pkg_link_info.dport)
                 && (li->protocol == pkg_link_info.protocol) )
                 break;
+            slot = NULL;
+            break;
             deep++;
             slot = slot->next;
         }
+        slot = NULL;
         if(deep > sp->max_deep)
             sp->max_deep = deep;
 		if(slot)
 		{
+            sp->deep_total[deep]++;
 			s = slot->s;
+			#if 1
 			if(s->close_time && ( (IF_TCP(pkg) && IF_SYN(pkg)) || !(IF_TCP(pkg)) ) )
 			{
                 session_stat |= SESSION_TYPE_CREATE;
@@ -755,12 +767,14 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
 			s->pkg++;
 			s->flow += len;
 			s->last_active = the_time;
+			#endif
 		}
 		unlock(&(sp->table_lock[key]));
 		#endif
+    build_session:
         if(!slot && ( (IF_TCP(pkg) && IF_SYN(pkg)) || !(IF_TCP(pkg)) ) )
         {
-            lock(&(sp->pool_lock));
+            //lock(&(sp->pool_lock));
             if(sp->source_alive)
             {
                 s = build_session_in_pool(sp, &pkg_link_info);
@@ -773,7 +787,7 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
                     s->last_active = the_time;
                 }
             }
-			unlock(&(sp->pool_lock));
+			//unlock(&(sp->pool_lock));
         }
     }
 done:

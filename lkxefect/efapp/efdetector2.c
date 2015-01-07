@@ -274,10 +274,14 @@ static int control()
                 case READER_FLAG_INBOUND:
                     db->in_pps = tmp_pkg - reader->l_pkg;
                     db->in_bps = tmp_flow - reader->l_flow;
+                    db->in_pkg = tmp_pkg;
+                    db->in_flow = tmp_flow;
                     break;
                 case READER_FLAG_OUTBOUND:
                     db->out_pps = tmp_pkg - reader->l_pkg;
                     db->out_bps = tmp_flow - reader->l_flow;
+                    db->out_pkg = tmp_pkg;
+                    db->out_flow = tmp_flow;
                     break;
                 case READER_FLAG_ALL:
                     break;
@@ -804,7 +808,7 @@ static int db_opera(database *db)
                 opera->result = ipcount_get_top_ip(ict, IPCOUNT_TOP_NEW_HTTP, opera->top, 100);
                 break;
             case OPERA_GET_ALL:
-                opera->result = ipcount_get_all_ip(ict, opera->ip, DATABASE_MAX_IP);
+                opera->result = ipcount_get_all_ip(ict, opera->ip, DATABASE_MAX_IP, 0);
                 break;
             default:;
         }
@@ -840,7 +844,7 @@ static int db_recorder(void *arg)
     while(g_run && db && id && td)
     {
         log_gen = open(file_gen, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
-        log_data = open(file_data, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
+        log_data = -1;//open(file_data, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
         log_top = open(file_top, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
         log_attack = open(file_attack, O_RDWR | O_CREAT, S_IRWXU | S_IRWXG | S_IRWXO);
 
@@ -856,7 +860,7 @@ static int db_recorder(void *arg)
         if(log_data != -1)
         {
             int len = sizeof(ip_data);
-            ip_total = ipcount_get_all_ip(db->ict, id, DATABASE_MAX_IP);
+            ip_total = ipcount_get_all_ip(db->ict, id, DATABASE_MAX_IP, 0);
             flock(log_data, LOCK_EX);
             write(log_data, &ip_total, sizeof(int));
             write(log_data, &len, sizeof(int));
@@ -983,13 +987,25 @@ static int db_collecter(void *arg)
 
         if(now - ip_log_time >= 1000000)
         {
+            int ip_total = 0;
             int i = db->ili;
             int j = db->ilj;
             int max_log = (i >= j) ? (DATABASE_MAX_LOG - i + j - 1) : (j - i - 1);
             max_log = max_log / 2;
-            db->ip_total = ipcount_get_all_ip(db->ict, ip_detail, DATABASE_MAX_IP);
+            ip_total = ipcount_get_all_ip(db->ict, ip_detail, DATABASE_MAX_IP, ip_log_time);
+            db->ip_total = ipcount_get_ip_total(db->ict);
+            ip_log_time = now;
             i = 0;
-            while((i < db->ip_total) && max_log)
+            if(max_log)
+            {
+                char *log_buf = db->ip_log[db->ili].str;
+                snprintf(log_buf, DATABASE_LOG_LENGTH, "%s%s {\"net_info\":[{\"in_pkg\":\"%llu\",\"in_flow\":\"%llu\",\"out_pkg\":\"%llu\",\"out_flow\":\"%llu\"}]}\0",
+                            log_header, db->name, db->in_pkg, db->in_flow, db->out_pkg, db->out_flow);
+                db->ip_log[db->ili].len = strlen(log_buf);
+                db->ili = (db->ili + 1 == DATABASE_MAX_LOG) ? 0 : (db->ili + 1);
+                max_log--;
+            }
+            while((i < ip_total) && max_log)
             {
                 char *log_buf = db->ip_log[db->ili].str;
                 int log_len = 0;
@@ -999,7 +1015,7 @@ static int db_collecter(void *arg)
                 log_buf[log_len++] = ' ';
                 memcpy(&log_buf[log_len], "{\"ip_info\":[", 12); log_len += 12;
                 j = 0;
-                while((log_len < 1000) && (i < db->ip_total))
+                while((log_len < 1000) && (i < ip_total))
                 {
                     if(j)
                         log_buf[log_len++] = ',';
@@ -1094,7 +1110,7 @@ static int db_collecter(void *arg)
                 db->ili = (db->ili + 1 == DATABASE_MAX_LOG) ? 0 : (db->ili + 1);
                 max_log--;
             }
-            ip_log_time = now;
+            fprintf(stderr, "%u %u\n", i, ip_total);
         }
 
         if(1)
@@ -1232,6 +1248,7 @@ static int db_sender(void *arg)
     unsigned int send_total = 0;
     char buf[32];
     unsigned long time;
+    unsigned char send_buf_full = 0;
 
     if(1)
 	{
@@ -1281,7 +1298,8 @@ static int db_sender(void *arg)
                     unsigned int ilj = db->ilj;
                     unsigned char *log_str = NULL;
                     unsigned int log_len = 0;
-                    for(j = 0; (j < max_send) && (target->conn); j++)
+                    send_buf_full = 0;
+                    for(j = 0; (j < max_send) && (target->conn) && (!send_buf_full); j++)
                     {
                         ilj = (ilj + 1 == DATABASE_MAX_LOG) ? 0 : (ilj + 1);
                         log_str = db->ip_log[ilj].str;
@@ -1302,6 +1320,8 @@ static int db_sender(void *arg)
                                     target->conn = 0;
                                     break;
                                 }
+                                usleep(1000);
+                                send_buf_full = 1;
                             }
                             else if(ret == 0)
                             {
@@ -1310,6 +1330,8 @@ static int db_sender(void *arg)
                                     target->conn = 0;
                                     break;
                                 }
+                                usleep(1000);
+                                send_buf_full = 1;
                             }
                         }
                         send_total++;
@@ -1333,7 +1355,8 @@ static int db_sender(void *arg)
                     unsigned int slj = db->slj;
                     unsigned char *log_str = NULL;
                     unsigned int log_len = 0;
-                    for(j = 0; (j < max_send) && (target->conn); j++)
+                    send_buf_full = 0;
+                    for(j = 0; (j < max_send) && (target->conn) && (!send_buf_full); j++)
                     {
                         slj = (slj + 1 == DATABASE_MAX_LOG) ? 0 : (slj + 1);
                         log_str = db->session_log[slj].str;
@@ -1354,6 +1377,8 @@ static int db_sender(void *arg)
                                     target->conn = 0;
                                     break;
                                 }
+                                usleep(1000);
+                                send_buf_full = 1;
                             }
                             else if(ret == 0)
                             {
@@ -1362,6 +1387,8 @@ static int db_sender(void *arg)
                                     target->conn = 0;
                                     break;
                                 }
+                                usleep(1000);
+                                send_buf_full = 1;
                             }
                         }
                         send_total++;

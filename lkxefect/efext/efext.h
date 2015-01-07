@@ -117,7 +117,7 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
 int ipcount_get_ip(ip_count_t *ict, ip_data *id);
 int ipcount_get_ip_total(ip_count_t *ict);
 int ipcount_get_top_ip(ip_count_t *ict, int top_flag, top_data *td, unsigned int total);
-int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total);
+int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total, unsigned long time);
 int ipcount_set_attack_cbk(ip_count_t *ict, void *cbk);
 typedef int (*ipcount_attack_cbk)(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attack_status,
                                     unsigned long pps, unsigned long bps);

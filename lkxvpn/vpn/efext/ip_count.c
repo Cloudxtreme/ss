@@ -56,7 +56,7 @@ typedef struct _ip_info
 {
     unsigned int ip;
     unsigned long attack;
-    unsigned long last_time;
+    unsigned long last_time, modify, ab_time;
     FILE *fd;
     detail_value detail[MAX_DETAIL_VALUE];
     struct _ip_info *prev, *next, *prev_use, *next_use, *next_alive;
@@ -216,7 +216,7 @@ static void count_thread(void *arg)
 
         while(use)
         {
-            if(ict->time - use->last_time >= 1000000)
+            if((ict->time - use->last_time >= 1000000) && ((use->modify > use->last_time) || (use->ab_time)))
             {
                 #if 0
                 if(use->detail[DETAIL_VALUE_PKG].in_ps > ict->top[TOP_PPS_IN][1].val)
@@ -369,7 +369,7 @@ static void count_thread(void *arg)
                                 if(detail->in_avg)
                                     in_scale = (float)(detail->in_ps - detail->in_avg) / (float)(detail->in_avg);
                                 else
-                                    in_scale = (float)(detail->in_ps - detail->out_avg);
+                                    in_scale = (float)(detail->in_ps - detail->in_avg);
                                 if(detail->out_ps > detail->out_avg)
                                 {
                                     if(detail->out_avg)
@@ -398,6 +398,7 @@ static void count_thread(void *arg)
                             if(!(use->attack & check->attack_type))
                             {
                                 detail->ab_time++;
+                                use->ab_time++;
                                 if(detail->ab_time > 10)
                                 {
                                     if(!use->attack && (check->attack_type == IPCOUNT_ATTACK_UDP_FLOOD))
@@ -428,7 +429,10 @@ static void count_thread(void *arg)
                         else
                         {
                             if(detail->ab_time)
+                            {
                                 detail->ab_time--;
+                                use->ab_time--;
+                            }
                         }
                         if(use->attack & check->attack_type)
                         {
@@ -458,7 +462,6 @@ static void count_thread(void *arg)
             else
                 use = use->next_use;
         }
-
         usleep(0);
         //unlock(&(ict->del_lock));
     }
@@ -582,7 +585,7 @@ int ipcount_add_ip(ip_count_t *ict, unsigned int ip)
     if(ict && ict->stats && ip)
     {
         //unsigned int key = ip % IP_HASH_SIZE;
-        unsigned int key = ((ip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
+        unsigned int key = ((ip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
         ip_info *find = NULL, *prev = NULL;
 
         lock(&(ict->table_lock[key]));
@@ -605,6 +608,7 @@ int ipcount_add_ip(ip_count_t *ict, unsigned int ip)
                 ict->cur = ict->cur->next_alive;
                 memset(find, 0, sizeof(ip_info));
                 find->ip = ip;
+                find->modify = ict->time;
                 if(prev)
                 {
                     prev->next = find;
@@ -637,7 +641,7 @@ int ipcount_del_ip(ip_count_t *ict, unsigned int ip)      // think about the dat
     if(0)//ict && ict->stats && ip)
     {
         //unsigned int key = ip % IP_HASH_SIZE;
-        unsigned int key = ((ip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
+        unsigned int key = ((ip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
         ip_info *find = NULL;
 
         lock(&(ict->table_lock[key]));
@@ -710,8 +714,8 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
     finding:
         //skey = sip % IP_HASH_SIZE;
         //dkey = dip % IP_HASH_SIZE;
-        skey = ((sip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
-        dkey = ((dip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
+        skey = ((sip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
+        dkey = ((dip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
         sfind = ict->table[skey];
         dfind = ict->table[dkey];
         if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_SIP)))
@@ -722,6 +726,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 if(sfind->ip == sip)
                 {
                     find = sfind;
+                    find->modify = ict->time;
                     find->detail[DETAIL_VALUE_PKG].out++;
                     find->detail[DETAIL_VALUE_FLOW].out += len;
                     if(IF_TCP(pkg))
@@ -754,6 +759,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 if(dfind->ip == dip)
                 {
                     find = dfind;
+                    find->modify = ict->time;
                     find->detail[DETAIL_VALUE_PKG].in++;
                     find->detail[DETAIL_VALUE_FLOW].in += len;
                     if(IF_TCP(pkg))
@@ -761,6 +767,8 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                         find->detail[DETAIL_VALUE_TCP].in += len;
                         if(IF_ACK(pkg))
                             find->detail[DETAIL_VALUE_ACK].in++;
+                        else if(IF_SYN(pkg))
+                            find->detail[DETAIL_VALUE_CONN].in++;
                     }
                     else if(IF_UDP(pkg))
                     {
@@ -809,8 +817,8 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
         unsigned int skey, dkey;
         ip_info *sfind = NULL, *dfind = NULL, *find = NULL;
     finding:
-        skey = ((sip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
-        dkey = ((dip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
+        skey = ((sip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
+        dkey = ((dip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
         sfind = ict->table[skey];
         dfind = ict->table[dkey];
         lock(&(ict->table_lock[skey]));
@@ -819,6 +827,7 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(sfind->ip == sip)
             {
                 find = sfind;
+                find->modify = ict->time;
                 switch(session_type)
                 {
                     case IPCOUNT_SESSION_TYPE_NEW:
@@ -845,10 +854,10 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(dfind->ip == dip)
             {
                 find = dfind;
+                find->modify = ict->time;
                 switch(session_type)
                 {
                     case IPCOUNT_SESSION_TYPE_NEW:
-                        find->detail[DETAIL_VALUE_CONN].in++;
                         break;
                     case IPCOUNT_SESSION_TYPE_CONN:
                         find->detail[DETAIL_VALUE_CONN].out++;
@@ -884,7 +893,7 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
     int ret = 0;
     if(ict && ict->stats && id && id->ip)
     {
-        unsigned int key = ((id->ip & 0x0fffffff) >> 4) % IP_HASH_SIZE;
+        unsigned int key = ((id->ip & 0x0fffffff) >> 4);// % IP_HASH_SIZE;
         ip_info *find = NULL;
         lock(&(ict->table_lock[key]));
         find = ict->table[key];
@@ -964,7 +973,7 @@ int ipcount_get_top_ip(ip_count_t *ict, int top_flag, top_data *td, unsigned int
     return ret - total;
 }
 
-int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total)
+int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total, unsigned long time)
 {
     unsigned int ret = total;
     if(ict && ict->stats && id && total)
@@ -978,18 +987,21 @@ int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total)
         //lock(&(ict->del_lock));
         while(use && total)
         {
-            id->ip = use->ip;
-            id->recv = use->detail[DETAIL_VALUE_PKG].in;
-            id->send = use->detail[DETAIL_VALUE_PKG].out;
-            id->inflow = use->detail[DETAIL_VALUE_FLOW].in;
-            id->outflow = use->detail[DETAIL_VALUE_FLOW].out;
-            id->tcp_flow = use->detail[DETAIL_VALUE_TCP].in + use->detail[DETAIL_VALUE_TCP].out;
-            id->udp_flow = use->detail[DETAIL_VALUE_UDP].in + use->detail[DETAIL_VALUE_UDP].out;
-            id->icmp_flow = use->detail[DETAIL_VALUE_ICMP].in + use->detail[DETAIL_VALUE_ICMP].out;
-            id->session_total = use->detail[DETAIL_VALUE_SESSION].in + use->detail[DETAIL_VALUE_HTTP].out;
-            id->http_session = use->detail[DETAIL_VALUE_HTTP].in + use->detail[DETAIL_VALUE_HTTP].out;
-            id++;
-            total--;
+            if(!time || (use->modify > time))
+            {
+                id->ip = use->ip;
+                id->recv = use->detail[DETAIL_VALUE_PKG].in;
+                id->send = use->detail[DETAIL_VALUE_PKG].out;
+                id->inflow = use->detail[DETAIL_VALUE_FLOW].in;
+                id->outflow = use->detail[DETAIL_VALUE_FLOW].out;
+                id->tcp_flow = use->detail[DETAIL_VALUE_TCP].in + use->detail[DETAIL_VALUE_TCP].out;
+                id->udp_flow = use->detail[DETAIL_VALUE_UDP].in + use->detail[DETAIL_VALUE_UDP].out;
+                id->icmp_flow = use->detail[DETAIL_VALUE_ICMP].in + use->detail[DETAIL_VALUE_ICMP].out;
+                id->session_total = use->detail[DETAIL_VALUE_SESSION].in + use->detail[DETAIL_VALUE_HTTP].out;
+                id->http_session = use->detail[DETAIL_VALUE_HTTP].in + use->detail[DETAIL_VALUE_HTTP].out;
+                id++;
+                total--;
+            }
             if(use == tail)
                 break;
             else

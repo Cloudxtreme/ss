@@ -1,7 +1,7 @@
 
-CFLAGS = -g -O2 -Wall -Wextra -I./ -I../inc -fstack-protector-all
+CFLAGS = -g -O2 -Wall -Wextra -I./ -I../inc
 LDFLAGS = -L../lib -L../efio -L../efnet -L../efext -L/usr/local/lib
-LDFLAGS+= -lefext -lefio -lefnet -lpthread -lpfring -lpcap
+LDFLAGS+= -lefext -lefio -lefnet -lpthread -lcrypto -ldl -lpfring -lpcap
 #LDFLAGS+= ../lib/libpfring.a ../lib/libpcap.a
 
 io_gen:
@@ -15,8 +15,6 @@ server_conf:
 
 efproxy:
 	gcc -o efproxy efproxy.c conf.c $(CFLAGS) $(LDFLAGS)
-eftest:
-	gcc -o eftest eftest.c $(CFLAGS) $(LDFLAGS)
 
 all:
 	#gcc -o efvpnd efvpnd.c conf.c $(CFLAGS) $(LDFLAGS)
@@ -24,7 +22,6 @@ all:
 	#gcc -o server_conf server_conf.c conf.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o eftrackd eftrackd.c conf.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o eftrack eftrack.c conf.c $(CFLAGS) $(LDFLAGS)
-	#gcc -o eftest eftest.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o efproxy efproxy.c conf.c $(CFLAGS) $(LDFLAGS)
 	#gcc -o efdetectd efdetector.c conf.c $(CFLAGS) $(LDFLAGS)
 	gcc -o efdetectd2 efdetector2.c conf.c $(CFLAGS) $(LDFLAGS)
