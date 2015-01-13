@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/popup_layer.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/popup_layer.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="content" style="width:720px;"><!-- 内容 -->
+	<!-- main s -->
+	<div class="main" style="width:720px;">
+		<input type="hidden" value="{$sid}" id="sid"/> 
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class='list-header'>
+				<ul>
+					<li style="width:40px;"><a href="javascript:void(0);" title="编号">编号</a></li>
+					<li style="width:280px;"><a href="javascript:void(0);" title="策略名称">策略名称</a></li>
+					<li style="width:80px;"><a href="javascript:void(0);" title="策略级别">策略级别</a></li>
+					<li style="width:80px;"><a href="javascript:void(0);" title="报警间隔">报警间隔</a></li>
+					<li style="width:80px;"><a href="javascript:void(0);" title="开启状态">开启状态</a></li>
+					<li style="width:120px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>	<select id="rule_list" style="display:none;"><volist name="rlist" id="r"><option value="{$r.id}">{$r.rule}</option></volist></select>
+					<table id="rule-list" class="domain-list">
+						<volist name="alarmlist" id="alarm">
+						<tr id="{$alarm.id}">
+							<td style="width:26px;">{$alarm.id}</td>
+							<td style="width:208px;">{$alarm.rule}</td>
+							<td style="width:58px;">{$alarm.level}</td>
+							<td style="width:58px;">{$alarm.timespan} 分钟</td>
+							<td style="width:58px;">{$alarm.status}<!--input type="checkbox" checked /--></td>
+							<if condition="$alarm.status eq 'on'">
+								<td style="width:100px;"><a href="javascript:void(0);" onclick="delAlarm(this);">删除</a> | <a href="javascript:void(0);" onclick="offAlarm(this);">停用</a></td>
+								<else/><td style="width:100px;"><a href="javascript:void(0);" onclick="delAlarm(this);">删除</a> | <a href="javascript:void(0);" onclick="onAlarm(this);">启用</a></td>
+							</if>
+							
+						</tr>
+						<tr style="background:#fff;display:none;">
+							<td colspan="5" style="text-align:left">
+							</td>
+						</tr>
+						</volist>
+					</table>
+					<div class="memu_bar">
+						<ul>
+							<li><button onclick="showAdd();">添加CPU策略</button></li>
+						</ul>
+					</div>
+					<div class="memu_bar" style="float:right;">
+						{$page}
+						<!--ul>
+							<li><a href="javascript:void(0);">1</a></li>
+							<li><a href="javascript:void(0);">2</a></li>
+						</ul-->
+					</div>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				url: '__APP__/Index/logout',
+				dataType: 'json',
+				type: "POST",
+				success: function (data) {
+					if (data && data.result == 1) {
+						window.top.location = '__APP__/Index/login';
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+
+	function showAdd(){
+		var str = $("#rule_list").html();
+		$("#rule-list").append("<tr class='add'>"+
+		"<td></td>"+
+		"<td><select style='width:90%;'>"+str+"</select></td>"+
+		"<td><select><option selected>警告</option><option>严重</option><option>紧急</option></select></td>"+
+		"<td><input type='text' class='tc on' style='width:60px;' placeholder='分钟' /></td>"+
+		"<td><select><option value=\"on\" selected>开启</option><option value=\"off\">关闭</option></select></td>"+
+		"<td><button onclick=\"addAlarm(this)\">保存</button> <button onclick=\"cancelNode(this)\">取消</button></td>"+
+		"</tr>");
+	}
+	
+	function cancelNode(evt){
+		$(evt).parent().parent().remove();
+	}
+	
+	function addAlarm(evt){
+		var td1 = $(evt).parent().parent().find("td").get(1);
+		var td2 = $(evt).parent().parent().find("td").get(2);
+		var td3 = $(evt).parent().parent().find("td").get(3);
+		var td4 = $(evt).parent().parent().find("td").get(4);
+		
+		var sid = $("#sid").val();
+		var rid = $(td1).children("select").val();
+		var level = $(td2).children("select").val();
+		var span = $(td3).children("input[type=text]").val();
+		var status = $(td4).children("select").val();
+		if(!span){
+			alert("错误提示：请输入报警时间间隔！");
+			$(td3).children("input[type=text]").focus();
+			return false;
+		}
+		//alert(sid+","+rid+","+level+","+span+","+status);
+		//return false;
+		$.ajax({
+			url: '__APP__/Alarm/addAlarm',
+			dataType: 'json',
+			data: { sid: sid, rid: rid, level: level, span: span, status: status },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+				      alert(data.reason);  // + data.id
+				      window.loction.reload();
+				}
+				else{
+				      alert(data.reason);
+				}
+			},
+			error: function (data) {
+			      alert(data.statusText);
+			}
+		});
+	}
+
+	function delAlarm(evt){
+		var name = $($(evt).parent().parent().find("td").get(1)).html();
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		if(confirm("确定删除报警：“"+ name + "”吗？")){
+			$.ajax({
+				  url: '__APP__/Alarm/delAlarm',
+				  dataType: 'json',
+				  data: { id: id },
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result >= 1) {
+						  alert(data.reason);
+						  $(evt).parent().parent().remove();
+					  }
+					  else{
+					      alert(data.reason);
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+
+	function offAlarm(evt){
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		$.ajax({
+			url: '__APP__/Alarm/turnAlarm',
+			dataType: 'json',
+			data: { id: id, status: "off" },
+			type: "POST",
+			success: function (data) {
+				if (data && data.result == 1) {
+					alert(data.reason);
+					window.location.reload();
+				}
+				else{
+					alert(data.reason);
+				}
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}
+	function onAlarm(evt){
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		$.ajax({
+			url: '__APP__/Alarm/turnAlarm',
+			dataType: 'json',
+			data: { id: id, status: "on" },
+			type: "POST",
+			success: function (data) {
+				if (data && data.result == 1) {
+					alert(data.reason);
+					window.location.reload();
+				}
+				else{
+					alert(data.reason);
+				}
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}
+</script>
+</body>
+</html>

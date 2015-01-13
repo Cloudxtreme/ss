@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>睿江科技-webadmin系统管理平台</title>
+<link rel="stylesheet" href="./content/css/main.css" />
+<link rel="stylesheet" href="./content/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<style>
+#wrapper {
+	ZOOM: 1; OVERFLOW: auto
+}
+.side {
+	WIDTH: 284px; padding-left:0px; FLOAT: left;
+}
+.content-box {
+	 POSITION: relative; PADDING-BOTTOM: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px; BACKGROUND: #fff; _position: inherit; _left: 0; _margin-left: -1px; _float: left
+}
+.no-scroll {
+	OVERFLOW-X: hidden; OVERFLOW-Y: hidden; _overflow-y: hidden
+}
+.x-scroll {
+	OVERFLOW-X: auto;  OVERFLOW-Y: hidden;
+}
+.y-scroll {
+	OVERFLOW-X: hidden; OVERFLOW-Y: auto;
+}
+</style>
+<script type="text/javascript" src="./content/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="./content/js/jquery.ztree.core-3.5.min.js"></script>
+<script type="text/javascript" src="./content/js/memu.js"></script>
+<script type="text/javascript" >
+  <!--
+	var zTree;
+	var Iframe;
+
+	var setting = {
+		view: {
+			dblClickExpand: false,
+			showLine: true,
+			selectedMulti: false
+		},
+		data: {
+			simpleData: {
+				enable: true,
+				idKey: "id",
+				pIdKey: "pId",
+				rootPId: ""
+			}
+		},
+		callback: {
+			beforeClick: function(treeId, treeNode) {
+				var zTree = $.fn.zTree.getZTreeObj("tree");
+				if (treeNode.isParent) {
+					zTree.expandNode(treeNode);
+					return false;
+				} else {
+					Iframe.attr("src",treeNode.file + ".html");
+					return true;
+				}
+			}
+		}
+	};
+
+	$(document).ready(function(){
+		var t = $("#tree");
+		t = $.fn.zTree.init(t, setting, treeNodes);
+		Iframe = $("#content");
+		zTree = $.fn.zTree.getZTreeObj("tree");
+		zTree.selectNode(zTree.getNodeByParam("id", 1));
+		
+		//重置元素大小
+		var _doms = [
+				{ selector: '#side' },
+				{ selector: '#groupBox' },
+				{ selector: '#contentBox' }
+			];
+		windowResize(_doms);
+		var _window = $(window);
+		_window.resize(function () {
+			windowResize(_doms);
+		});
+	});
+
+//设置自适应大小
+var windowResize = function(dom) {
+	var $window = $(window),
+		$contentBox = $('#contentBox'),
+		$width = $window.width() - 284;
+	/*if( $width < 720){
+		$width = 720;
+		$('body').addClass('x-scroll');
+	}else{
+		$('body').removeClass('x-scroll');
+	}*/
+	if($.browser.version == '6.0'){
+		$contentBox.width( $width );
+	}
+	$.each(dom,function(i,n){
+		setDomHeight(n);
+	})
+};
+//设置自适应高度
+function setDomHeight(n){
+	var selector = n.selector,
+		callback = n.callback,
+		_s = $(selector);
+	if(_s.is(':hidden')) return;
+	_h = $(window).height() - _s.offset().top;
+	_s.height(_h);
+	if(callback){
+		callback();
+	}
+}
+
+var count=0; 
+var lastName; 
+function searchTree(){ 
+	if(count==0){ 
+		lastName=document.getElementById("skey").value; 
+	} 
+	if(lastName!=document.getElementById("skey").value){ 
+		count=0; 
+		lastName=document.getElementById("skey").value; 
+	} 
+	var treeObj = $.fn.zTree.getZTreeObj("tree"); 
+	//通过名称模糊搜索，也可通过Id查找 
+	var nodes = treeObj.transformToArray(treeObj.getNodesByParamFuzzy("name", lastName, null)); 
+	for(i = count; i < nodes.length; i++) { 
+		count++; 
+		if(count>=nodes.length){ 
+			count=0; 
+		} 
+		if(nodes[i].name.indexOf(lastName)!=-1){ 
+			treeObj.selectNode(nodes[i]); 
+			if(nodes[i].pId==0){ 
+				//打开组
+				treeObj.expandNode(nodes[i]); 
+			}else{ 
+				//alert(nodes[i].file + ".html");
+				Iframe.attr("src",nodes[i].file + ".html");
+			}
+			return; 
+		} 
+	}
+	alert("没有找到您搜索的内容，请核对后再试！");
+}
+function showLog(){
+	//alert(window.frames["content"].setting.logid);
+	Iframe.attr("src", window.frames["content"].setting.logurl + ".html");
+	zTree.selectNode(zTree.getNodeByParam("id", window.frames["content"].setting.logid));
+}
+function showsysinfo(){
+	Iframe.attr("src", "./base-sysmgr/system_info.html");
+	zTree.selectNode(zTree.getNodeByParam("id", 1));
+}
+function logout(){
+	if (!confirm('确定退出系统吗？')) return;
+	window.top.location = './login.html';
+}
+  //-->
+  </SCRIPT>
+</head>
+<body>
+<div id="wrapper">
+
+	<div class="topbox">
+    	<div>webadmin</div>
+        <ul>
+        	<li><a href="#" class="v4" onclick="logout();">安全退出</a></li>
+            <li><a href="#" class="v3" onclick="window.frames['content'].location.reload();">刷新模块</a></li>
+            <li><a href="#" class="v2" onclick="showsysinfo();">系统信息</a></li>
+            <li><a href="#" class="v1" onclick="showLog();">查看模块日志</a></li>
+            <li class="v5">欢迎您 : <span>admin</span></li>
+        </ul>
+    </div>
+    <div class="clear"></div>
+	
+    <div id="side" class="side leftbox no-scroll">
+		<div class="searchbox" style="float:none;">	
+            <div class="padg18">	
+            	<div class="bodr_black">
+            		<input type="text" id="skey" /> <a href="#" onclick="searchTree();">search</a>
+            	</div>
+            </div>
+        </div>
+		<div class="divider"></div>
+		<div id="groupBox" class="y-scroll">
+			<div style="padding-left:40px;padding-right:30px;"><ul id="tree" class="ztree"></ul></div>
+		</div>
+    </div>
+	
+	<div id="contentBox" class="content-box no-scroll">
+		<iframe id="content" name="content" frameborder="0" height="100%" width="100%" scrolling="AUTO" SRC="./base-sysmgr/system_info.html"></iframe>
+	</div>
+
+</div>
+</body>
+</html>

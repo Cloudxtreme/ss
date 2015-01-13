@@ -99,10 +99,15 @@ typedef struct _log_target
 {
     unsigned char net_type;
     unsigned char log_type;
-    unsigned char conn;
-    unsigned long last_reply;
     struct sockaddr_in target;
 }log_target;
+
+typedef struct _log_handle
+{
+    unsigned int fd;
+    unsigned char conn;
+    unsigned long last_reply;
+}log_handle;
 
 typedef struct _log_content
 {
@@ -115,7 +120,7 @@ typedef struct _database
 {
     int id;
     ip_count_t *ict;
-    session_pool *pool;
+    //session_pool *pool;
     detect_opera *opera;
     attack_event *attack_head, *attack_tail;
     http_info *hi, **phi;
@@ -125,7 +130,7 @@ typedef struct _database
     unsigned char detail_lock, attack_lock;
     log_content *ip_log;
     log_content *session_log;
-    unsigned int log_fd[LOG_MAX_TARGET];
+    log_handle log_hd[LOG_MAX_TARGET];
     unsigned char name[256];
     pthread_t collecter, sender, recorder;
 }database;

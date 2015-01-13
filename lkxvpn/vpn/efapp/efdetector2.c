@@ -20,7 +20,7 @@ extern unsigned long base_time;
 
 unsigned long no_process_detail = 0;
 
-static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int len);
+static int pkg_process(database *db, reader_t *reader, session_pool *pool, void *pkg, unsigned int len);
 static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attacking,
                             unsigned long pps, unsigned long bps);
 static int timeout_process(session_pool *pool, session *s);
@@ -80,8 +80,8 @@ static int free_database(database *db)
     {
         if(db->ict)
             ipcount_tini(db->ict);
-        if(db->pool)
-            session_pool_tini(db->pool);
+        //if(db->pool)
+            //session_pool_tini(db->pool);
         if(db->opera)
             release_opera(db->opera);
         while(db->attack_head)
@@ -104,8 +104,8 @@ static int free_database(database *db)
             free(db->session_log);
         for(i = 0; i < g_log_target_num; i++)
         {
-            if(db->log_fd[i])
-                close(db->log_fd[i]);
+            if(db->log_hd[i].fd)
+                close(db->log_hd[i].fd);
         }
         free(db);
     }
@@ -123,7 +123,7 @@ static database *init_database(unsigned int id, unsigned char *name)
     db->id = id;
     db->ict = ipcount_init();
     ipcount_set_attack_cbk(db->ict, attack_process);
-    db->pool = session_pool_init(timeout_process);
+    //db->pool = session_pool_init(timeout_process);
     db->opera = get_opera(name);
     db->hi = (http_info *)malloc(DATABASE_MAX_HTTP * sizeof(http_info));
     db->phi = (http_info **)malloc(DATABASE_MAX_HTTP * sizeof(http_info *));
@@ -148,10 +148,11 @@ static database *init_database(unsigned int id, unsigned char *name)
     {
         if(g_log_target[j]->net_type == LOG_NET_UDP)
         {
-            db->log_fd[j] = socket(AF_INET, SOCK_DGRAM, 0);
-            if(-1 == db->log_fd[j])
+            db->log_hd[j].fd = socket(AF_INET, SOCK_DGRAM, 0);
+            db->log_hd[j].conn = 1;
+            if(-1 == db->log_hd[j].fd)
                 goto err;
-            if(-1 == fcntl(db->log_fd[j], F_SETFL, O_NONBLOCK))
+            if(-1 == fcntl(db->log_hd[j].fd, F_SETFL, O_NONBLOCK))
                 goto err;
         }
     }
@@ -179,10 +180,7 @@ static log_target *init_logger(char *net, char *ip, unsigned short port, unsigne
         if(!memcmp(net, "tcp", 3))
             lt->net_type = LOG_NET_TCP;
         else
-        {
             lt->net_type = LOG_NET_UDP;
-            lt->conn = 1;
-        }
         lt->log_type = type;
         return lt;
     }
@@ -247,6 +245,7 @@ static int control()
     int i, j;
     while(g_run)
     {
+        unsigned long total_pps = 0, total_bps = 0;
         #if 0
         for(i = 0; i < DATABASE_MAX_HTTP - 1; i++)
         {
@@ -290,12 +289,16 @@ static int control()
             reader->l_pkg = tmp_pkg;
             reader->l_flow = tmp_flow;
         }
-        fprintf(stderr, "database:");
+        fprintf(stderr, "database:\n");
         for(i = 0; i < g_database_num; i++)
-            fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu|", g_db[i]->in_pps + g_db[i]->out_pps, (g_db[i]->in_bps + g_db[i]->out_bps) * 8,
+        {
+            total_pps += g_db[i]->in_pps + g_db[i]->out_pps;
+            total_bps += g_db[i]->in_bps + g_db[i]->out_bps;
+            fprintf(stderr, "%lu pps %lu bps |%u %u %u %u %u %u %u %u %llu\n", g_db[i]->in_pps + g_db[i]->out_pps, (g_db[i]->in_bps + g_db[i]->out_bps) * 8,
                         g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj,
                         g_db[i]->phi_cur, g_db[i]->phi_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
-        fprintf(stderr, "\n");
+        }
+        fprintf(stderr, "total : %lu pps %lu bps\n", total_pps, total_bps);
         fprintf(stderr, "\n------------------------------------------------------------------------\n");
         sleep(1);
     }
@@ -307,7 +310,10 @@ static int work(void *arg)
     worker_t *worker = (worker_t *)arg;
     reader_t *reader = worker->reader;
 	database *db = reader->db;
+	session_pool *pool = NULL;
     fprintf(stderr, "reader %d 's worker %d begin!\n", worker->reader->id, worker->id);
+    if(worker->id && (reader->flag & (READER_FLAG_INBOUND)))
+        pool = session_pool_init(db->id, timeout_process);
     while(g_run)
     {
         if(worker->finish < worker->total)
@@ -323,7 +329,7 @@ static int work(void *arg)
                 if(worker->id)
                 {
                 	if(reader->flag & (READER_FLAG_INBOUND))
-                    	pkg_process(db, reader, slot->pbuf, slot->plen);
+                    	pkg_process(db, reader, pool, slot->pbuf, slot->plen);
                 }
                 else
                     ipcount_add_pkg(db->ict, slot->pbuf, slot->plen, reader->flag, 0);
@@ -335,12 +341,13 @@ static int work(void *arg)
         else
             usleep(0);
     }
+    session_pool_tini(pool);
 }
 
 static int read(void *arg)
 {
     reader_t *reader = (reader_t *)arg;
-    worker_t *ip_worker[2], *session_worker[2];
+    worker_t *ip_worker[3], *session_worker[3];
     fprintf(stderr, "reader %s begin!\n", reader->dev);
     if(1)
 	{
@@ -350,12 +357,16 @@ static int read(void *arg)
 	}
 	ip_worker[0] = init_worker(reader, 0);
 	ip_worker[1] = init_worker(reader, 0);
+	ip_worker[2] = init_worker(reader, 0);
 	session_worker[0] = init_worker(reader, 1);
 	session_worker[1] = init_worker(reader, 2);
+	session_worker[2] = init_worker(reader, 3);
     pthread_create(&(ip_worker[0]->thread), NULL, work, (void *)(ip_worker[0]));
     pthread_create(&(ip_worker[1]->thread), NULL, work, (void *)(ip_worker[1]));
+    pthread_create(&(ip_worker[2]->thread), NULL, work, (void *)(ip_worker[2]));
     pthread_create(&(session_worker[0]->thread), NULL, work, (void *)(session_worker[0]));
     pthread_create(&(session_worker[1]->thread), NULL, work, (void *)(session_worker[1]));
+    pthread_create(&(session_worker[2]->thread), NULL, work, (void *)(session_worker[2]));
 	while(g_run)
 	{
         int i, ret;
@@ -367,8 +378,8 @@ static int read(void *arg)
             usleep(0);
             continue;
         }
-		ip_worker[0]->get = ip_worker[1]->get = 0;
-		session_worker[0]->get = session_worker[1]->get = 0;
+		ip_worker[0]->get = ip_worker[1]->get = ip_worker[2]->get = 0;
+		session_worker[0]->get = session_worker[1]->get = session_worker[2]->get = 0;
         reads = efio_read(reader->fd, reader->slot, READER_MAX_SLOT, 0);
         reader->pkg += reads;
         for(i = 0; i < reads; i++)
@@ -387,12 +398,12 @@ static int read(void *arg)
                 unsigned int sip = GET_IP_SIP(pkg);
                 unsigned int dip = GET_IP_DIP(pkg);
                 if(reader->flag == READER_FLAG_INBOUND)
-                    key1 = dip % 2;
+                    key1 = dip % 3;
                 else if(reader->flag == READER_FLAG_OUTBOUND)
-                    key1 = sip % 2;
+                    key1 = sip % 3;
                 else
-                    key1 = (sip ^ dip) % 2;
-                key2 = (sip ^ dip) % 2;
+                    key1 = (sip ^ dip) % 3;
+                key2 = (sip ^ dip) % 3;
             }
             w1 = ip_worker[key1];
             w2 = session_worker[key2];
@@ -406,12 +417,16 @@ static int read(void *arg)
 		#if 1
 		ip_worker[0]->total += ip_worker[0]->get;
 		ip_worker[1]->total += ip_worker[1]->get;
+		ip_worker[2]->total += ip_worker[2]->get;
 		session_worker[0]->total += session_worker[0]->get;
 		session_worker[1]->total += session_worker[1]->get;
+		session_worker[2]->total += session_worker[2]->get;
         while((ip_worker[0]->finish < ip_worker[0]->total)
 				|| (ip_worker[1]->finish < ip_worker[1]->total)
+				|| (ip_worker[2]->finish < ip_worker[2]->total)
 				|| (session_worker[0]->finish < session_worker[0]->total)
-				|| (session_worker[1]->finish < session_worker[1]->total))
+				|| (session_worker[1]->finish < session_worker[1]->total)
+				|| (session_worker[2]->finish < session_worker[2]->total))
         {
             if(!g_run)
                 break;
@@ -421,12 +436,16 @@ static int read(void *arg)
 	}
 	pthread_join(ip_worker[0]->thread, NULL);
 	pthread_join(ip_worker[1]->thread, NULL);
+	pthread_join(ip_worker[2]->thread, NULL);
 	pthread_join(session_worker[0]->thread, NULL);
 	pthread_join(session_worker[1]->thread, NULL);
+	pthread_join(session_worker[2]->thread, NULL);
 	free(ip_worker[0]);
 	free(ip_worker[1]);
+	free(ip_worker[2]);
 	free(session_worker[0]);
 	free(session_worker[1]);
+	free(session_worker[2]);
 }
 
 static http_info *get_http_detail(database *db)
@@ -436,11 +455,12 @@ static http_info *get_http_detail(database *db)
     if(!db->phi[db->phi_cur]->use)
     {
         detail = db->phi[db->phi_cur];
-        memset(detail, 0, sizeof(http_info));
         detail->use = 1;
         db->phi_cur = (db->phi_cur + 1 == DATABASE_MAX_HTTP) ? 0 : (db->phi_cur + 1);
     }
     unlock(&db->detail_lock);
+    if(detail)
+        memset(detail, 0, sizeof(http_info));
     return detail;
 }
 
@@ -477,6 +497,8 @@ static int create_report(database *db, session *s, unsigned int stats)
             db->rii = tmp;
         }
     }
+	#endif
+    unlock(&db->detail_lock);
     if(report)
     {
         report->stats = stats;
@@ -496,9 +518,7 @@ static int create_report(database *db, session *s, unsigned int stats)
         report->type = session_get_type(s);
         report->detail = session_get_detail(s);
     }
-	#endif
-    unlock(&db->detail_lock);
-    if(!report && session_get_detail(s))
+    else if(session_get_detail(s))
     {
         rec_http_detail(db, session_get_detail(s));
         no_process_detail++;
@@ -507,19 +527,14 @@ static int create_report(database *db, session *s, unsigned int stats)
 
 static int timeout_process(session_pool *pool, session *s)
 {
+    #if 1
     if(session_get_conn_time(s))
     {
-        int i;
-        for(i = 0; i < g_database_num; i++)
-        {
-            if(g_db[i]->pool == pool)
-            {
-                create_report(g_db[i], s, 0);
-                ipcount_add_session(g_db[i]->ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_TIMEOUT, session_get_flow(s));
-                break;
-            }
-        }
+        unsigned int id = session_pool_id(pool);
+        create_report(g_db[id], s, 0);
+        ipcount_add_session(g_db[id]->ict, session_get_sip(s), session_get_dip(s), IPCOUNT_SESSION_TYPE_TIMEOUT, session_get_flow(s));
     }
+    #endif
 	return 0;
 }
 
@@ -624,9 +639,8 @@ done:
 }
 
 #define STR_OVERFLOW(pkg, len, str) ((str < pkg) || (str > pkg + len))
-static int pkg_process(database *db, reader_t *reader, void *pkg, unsigned int len)
+static int pkg_process(database *db, reader_t *reader, session_pool *pool, void *pkg, unsigned int len)
 {
-    session_pool *pool = db->pool;
     session *s;
     int session_stat = 0;
     ip_count_t *ict = db->ict;
@@ -1265,21 +1279,21 @@ static int db_sender(void *arg)
 
         for(i = 0; i < g_log_target_num; i++)
         {
-            if(g_log_target[i]->log_type && (g_log_target[i]->net_type == LOG_NET_TCP) && !g_log_target[i]->conn && (time - g_log_target[i]->last_reply > LOG_NET_TIMEOUT))
+            if(g_log_target[i]->log_type && (g_log_target[i]->net_type == LOG_NET_TCP) && !db->log_hd[i].conn && (time - db->log_hd[i].last_reply > LOG_NET_TIMEOUT))
             {
-                if(db->log_fd[i] > 0)
-                    close(db->log_fd[i]);
-                db->log_fd[i] = socket(AF_INET, SOCK_STREAM, 0);
-                if(-1 != db->log_fd[i])
+                if(db->log_hd[i].fd > 0)
+                    close(db->log_hd[i].fd);
+                db->log_hd[i].fd = socket(AF_INET, SOCK_STREAM, 0);
+                if(-1 != db->log_hd[i].fd)
                 {
-                    if(-1 != fcntl(db->log_fd[i], F_SETFL, O_NONBLOCK))
+                    if(-1 != fcntl(db->log_hd[i].fd, F_SETFL, O_NONBLOCK))
                     {
-                        connect(db->log_fd[i], (void *)&g_log_target[i]->target, sizeof(g_log_target[i]->target));
-                        g_log_target[i]->conn = 1;
-                        g_log_target[i]->last_reply = time;
+                        connect(db->log_hd[i].fd, (void *)&g_log_target[i]->target, sizeof(g_log_target[i]->target));
+                        db->log_hd[i].conn = 1;
+                        db->log_hd[i].last_reply = time;
                     }
                     else
-                        close(db->log_fd[i]);
+                        close(db->log_hd[i].fd);
                 }
             }
         }
@@ -1299,7 +1313,7 @@ static int db_sender(void *arg)
                     unsigned char *log_str = NULL;
                     unsigned int log_len = 0;
                     send_buf_full = 0;
-                    for(j = 0; (j < max_send) && (target->conn) && (!send_buf_full); j++)
+                    for(j = 0; (j < max_send) && (db->log_hd[i].conn) && (!send_buf_full); j++)
                     {
                         ilj = (ilj + 1 == DATABASE_MAX_LOG) ? 0 : (ilj + 1);
                         log_str = db->ip_log[ilj].str;
@@ -1308,16 +1322,16 @@ static int db_sender(void *arg)
                         while(send_len < log_len)
                         {
                             if(target->net_type == LOG_NET_TCP)
-                                ret = send(db->log_fd[i], &(log_str[send_len]), log_len - send_len, 0);
+                                ret = send(db->log_hd[i].fd, &(log_str[send_len]), log_len - send_len, 0);
                             else
-                                ret = sendto(db->log_fd[i], &(log_str[send_len]), log_len - send_len, 0, &(target->target), sizeof(struct sockaddr_in));
+                                ret = sendto(db->log_hd[i].fd, &(log_str[send_len]), log_len - send_len, 0, &(target->target), sizeof(struct sockaddr_in));
                             if(ret > 0)
                                 send_len += ret;
                             else if(ret < 0)
                             {
                                 if((target->net_type == LOG_NET_TCP) && (errno != EAGAIN) && (errno != EINTR))
                                 {
-                                    target->conn = 0;
+                                    db->log_hd[i].conn = 0;
                                     break;
                                 }
                                 usleep(1000);
@@ -1327,7 +1341,7 @@ static int db_sender(void *arg)
                             {
                                 if(target->net_type == LOG_NET_TCP)
                                 {
-                                    target->conn = 0;
+                                    db->log_hd[i].conn = 0;
                                     break;
                                 }
                                 usleep(1000);
@@ -1356,7 +1370,7 @@ static int db_sender(void *arg)
                     unsigned char *log_str = NULL;
                     unsigned int log_len = 0;
                     send_buf_full = 0;
-                    for(j = 0; (j < max_send) && (target->conn) && (!send_buf_full); j++)
+                    for(j = 0; (j < max_send) && (db->log_hd[i].conn) && (!send_buf_full); j++)
                     {
                         slj = (slj + 1 == DATABASE_MAX_LOG) ? 0 : (slj + 1);
                         log_str = db->session_log[slj].str;
@@ -1365,16 +1379,16 @@ static int db_sender(void *arg)
                         while(send_len < log_len)
                         {
                             if(target->net_type == LOG_NET_TCP)
-                                ret = send(db->log_fd[i], &(log_str[send_len]), log_len - send_len, 0);
+                                ret = send(db->log_hd[i].fd, &(log_str[send_len]), log_len - send_len, 0);
                             else
-                                ret = sendto(db->log_fd[i], &(log_str[send_len]), log_len - send_len, 0, &(target->target), sizeof(struct sockaddr_in));
+                                ret = sendto(db->log_hd[i].fd, &(log_str[send_len]), log_len - send_len, 0, &(target->target), sizeof(struct sockaddr_in));
                             if(ret > 0)
                                 send_len += ret;
                             else if(ret < 0)
                             {
                                 if((target->net_type == LOG_NET_TCP) && (errno != EAGAIN) && (errno != EINTR))
                                 {
-                                    target->conn = 0;
+                                    db->log_hd[i].conn = 0;
                                     break;
                                 }
                                 usleep(1000);
@@ -1384,7 +1398,7 @@ static int db_sender(void *arg)
                             {
                                 if(target->net_type == LOG_NET_TCP)
                                 {
-                                    target->conn = 0;
+                                    db->log_hd[i].conn = 0;
                                     break;
                                 }
                                 usleep(1000);
@@ -1401,17 +1415,17 @@ static int db_sender(void *arg)
 
         for(i = 0; i < g_log_target_num; i++)
         {
-            if(g_log_target[i]->log_type && (g_log_target[i]->net_type == LOG_NET_TCP) && g_log_target[i]->conn)
+            if(g_log_target[i]->log_type && (g_log_target[i]->net_type == LOG_NET_TCP) && db->log_hd[i].conn)
             {
-                ret = recv(db->log_fd[i], buf, sizeof(buf), 0);
+                ret = recv(db->log_hd[i].fd, buf, sizeof(buf), 0);
                 if((ret > 0) && !memcmp(buf, "ok", 2))
                 {
                     buf[0] = buf[1] = buf[2] = 0;
-                    g_log_target[i]->last_reply = time;
+                    db->log_hd[i].last_reply = time;
                 }
-                else if(time - g_log_target[i]->last_reply > LOG_NET_TIMEOUT)
+                else if(time - db->log_hd[i].last_reply > LOG_NET_TIMEOUT)
                 {
-                    g_log_target[i]->conn = 0;
+                    db->log_hd[i].conn = 0;
                 }
             }
         }

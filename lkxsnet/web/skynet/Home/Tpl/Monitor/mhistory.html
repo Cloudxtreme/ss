@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="SkyNet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/highcharts.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/highcharts-more.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/mhistory.js"></script>
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+<script type="text/javascript">
+
+var charArray = [];
+var ipArray = [];
+var dataArray = [];
+var begin = "", end = "";
+
+$(function() {
+	var strHref = window.location.href;
+	if(strHref.getQuery("b") && strHref.getQuery("e")){
+		begin = strHref.getQuery("b");
+		end = strHref.getQuery("e");
+		$("#start_time").val(begin);
+		$("#end_time").val(end);
+	}
+	if(strHref.getQuery("g")){
+		var group = strHref.getQuery("g");
+		$("#group_list").val(group);
+	}
+	
+	// Create the chart and init data
+	$("#id_list option").each(function(){
+		var id = $(this).val();
+		var sid = $(this).text();
+
+		ipArray.push([id, sid]);
+		dataArray.push([id, null, null]);
+		
+		var chart = createChart('container_'+id, '', []);
+		//chart.showLoading();
+		
+		charArray.push([id, chart]);
+	}); 
+
+	InitData();
+	window.setInterval(InitData, 500);
+});
+
+	//create Data
+	function InitData(){
+		for(var row in dataArray){
+			var id = dataArray[row][0];
+			var sid = ipArray[row][1];
+			if(!dataArray[row][1]){
+				getData(id, sid, row);
+			}
+			if(charArray[row][1].series[0].data.length == 0){
+				//drawChart(row);
+				charArray[row][1].series[0].setData(dataArray[row][1], true);
+				charArray[row][1].series[1].setData(dataArray[row][2], true);
+				//charArray[row][1].hideLoading();
+			}
+		}
+	}
+	
+	//Public method
+	function getData(id, sid, index) {
+		$.ajax({
+			url: '__APP__/Monitor/mhistoryInit',
+			dataType: 'json',
+			data: { sid: sid, begin: begin, end: end },
+			type: "GET",
+			success: function (rslt) {
+				if (rslt && rslt.length >= 1) {
+					var uper_data = [], super_data = [], i;
+					for(i = 0; i < rslt.length; i++) {
+						var t = Date.parse(rslt[i]["timestamp"].replace(/-/g,"/"));
+						uper_data.push( [t, parseInt(rslt[i]["uper"])] );
+						super_data.push( [t, parseInt(rslt[i]["super"])] );
+					}
+					dataArray[index][1] = uper_data;
+					dataArray[index][2] = super_data;
+				}
+			},
+			error: function (data) {}
+		});
+	}
+	
+	function gohistory(){
+		var start = $("#start_time").val();
+		var end = $("#end_time").val();
+		var group = $("#group_list").val();
+		var zone = $("#area_list").val();
+		if(!start){
+			alert("请选择开始时间！"); 
+			$("#start_time").focus();
+			return false;
+		}
+		if(!end){
+			alert("请选择结束时间！"); 
+			$("#end_time").focus();
+			return false;
+		}
+		var diff = Date.parse(end) - Date.parse(start);
+		var span = Math.floor(diff / (1000 * 60 * 60 * 24));
+		if(span < 0){alert("请选择正确的时间范围！"); return false;}
+		if(span > 7){alert("选择的时间范围不能大于7天！"); return false;}
+		window.top.location.href = '__APP__/Monitor/mhistory?b='+start+'&e='+end+'&g='+group+'&z='+zone;
+	}
+	
+	function selGroup(){
+		var group = $("#group_list").val();
+		window.top.location.href = '__APP__/Monitor/mhistory?b='+begin+'&e='+end+'&g='+group;
+	}
+	function selArea(){
+		var group = $("#group_list").val();
+		var zone = $("#area_list").val();
+		window.top.location.href = '__APP__/Monitor/mhistory?b='+begin+'&e='+end+'&g='+group+'&z='+zone;
+	}
+	
+	function goHistory(type){
+		var group = $("#group_list").val();
+		var strHref = window.location.href;
+		if(strHref.getQuery("z")){
+			var zone = strHref.getQuery("z");
+			window.top.location.href = '__APP__/Monitor/'+type+'?b='+begin+'&e='+end+'&g='+group+'&z='+zone;
+		}else{
+			window.top.location.href = '__APP__/Monitor/'+type+'?b='+begin+'&e='+end+'&g='+group;
+		}
+	}
+	
+	function returnMonitor(){
+		var group = $("#group_list").val();
+		var strHref = window.location.href;
+		if(strHref.getQuery("z")){
+			var zone = strHref.getQuery("z");
+			window.top.location.href = '__APP__/Monitor/memory?g='+group+'&z='+zone;
+		}else{
+			window.top.location.href = '__APP__/Monitor/memory?g='+group;
+		}
+	}
+</script>
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/monitors">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- left菜单 S -->
+	<div id="sideMenu" class="side">
+		<div class="hd">
+			<h3>按监控类型查看</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a href="javascript:void(0);" onclick="goHistory('thistory');">流量监控</a></li>
+				<li><a href="javascript:void(0);" onclick="goHistory('shistory');">CPU监控</a></li>
+				<li><a style="color:#3CADED; text-decoration:underline;" href="javascript:void(0);" onclick="goHistory('mhistory');">内存监控</a></li>
+				<li><a href="javascript:void(0);" onclick="goHistory('dhistory');">磁盘监控</a></li>
+			</ul>
+		</div>
+		<div class="hd">
+			<h3>按监控主机查看</h3>
+		</div>
+		<div class="bd" style="padding-left:0px;text-align:center;">
+			<ul>
+				<volist name="tlist" id="node">
+					<li><a style="font-size:12px;" href="__APP__/Monitor/host?nid={$node.id}">{$node.wanip}[{$node.desc}]</a></li>
+				</volist>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">jQuery("#sideMenu").slide({ titCell:".hd", targetCell:".bd", effect:"slideDown", trigger:"click" });</script>
+	<!-- left菜单 E -->
+	
+	<!-- mainContent s -->
+	<div class="mainContent">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<!--div class="hd">
+				<h1 style="float:left;">流量监控</h1>
+			</div-->
+			<select id="id_list" style="display:none;"><volist name="tlist" id="t"><option value="{$t.id}">{$t.sid}</option></volist></select>
+			<div class="bd">
+				<ul id="chart_list">
+					<div class="memu_bar">
+						<ul style="margin-left:10px;margin-top:-20px;">
+							<li>选择组：</li>
+							<li>    <select id="group_list" style="min-width:90px;" onchange="selGroup();">
+									<volist name="grouplist" id="g">
+										<option>{$g.type}</option>
+									</volist>
+								</select>
+							</li>
+							<li style="margin-left:10px;">选择子类：
+								<select id="area_list" style="min-width:90px;" onchange="selArea();">
+									<volist name="zonelist" id="a">
+									<if condition="$a.subtype eq $subtype">
+										<option selected>{$a.subtype}</option>
+										<else/><option>{$a.subtype}</option>
+									</if>
+									</volist>
+									<if condition="$subtype eq '全部'">
+										<option selected>全部</option>
+										<else/><option>全部</option>
+									</if>
+								</select>
+							</li>
+							<li style="margin-left:10px;">选择时间段：</li>
+							<li><input type="text" style="width:80px;" class="on Wdate" id="start_time" onClick="WdatePicker({maxDate:'%y-%M-%d'})"/></li>
+							<li>～</li>
+							<li><input type="text" style="width:80px;" class="on Wdate" id="end_time" onClick="WdatePicker({maxDate:'%y-%M-%d'})"/></li>
+							<li style="margin-left:10px;"><button onclick="gohistory();" style="height:32px;">查询</button></li>
+							<li style="margin-left:10px;"><a href="javascript:void(0);" onclick="returnMonitor();">返回监控</a></li>
+						</ul>
+					</div>
+					<volist name="tlist" id="item">
+					<div class="chart">
+						<div id="ip_{$item.id}" style="margin-left:250px;margin-bottom:8px;z-index:1;position:relative;font-size:16px;color:#000;fill:#000;">
+							{$item.wanip} [{$item.desc}]
+						</div>
+						<div id="container_{$item.id}" style="width:100%;height:250px;margin:0 auto;"></div>
+					</div>
+					</volist>
+				</ul>
+			</div>
+		</div>
+		<!-- script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<Tab切换 E -->
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				  url: '__APP__/Index/logout',
+				  dataType: 'json',
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result == 1) {
+						  window.top.location = '__APP__/Index/login';
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+
+//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script> 
+</body>
+</html>

@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/layer/layer.min.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Monitor/traffic">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+	
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- main s -->
+	<div class="main">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="hd">
+				<span style="float:left;">搜索设备：<input type="text" class="on" style="width:120px;" placeholder="输入设备编号" /></span>
+				<ul>
+					<li><a href="javascript:void(0);">设备列表</a></li>
+				</ul>
+			</div>
+			<div class="bd">
+				<ul>
+					<!--div class="memu_bar">
+						<ul>
+							<li><button onclick="showAddDevice();">登记设备</button></li>
+						</ul>
+					</div-->
+					<div class='list-header'>
+						<ul>
+							<li style="width:60px;"><a href="javascript:void(0);" title="编号">编号</a></li>
+							<li style="width:330px;"><a href="javascript:void(0);" title="设备编号">设备编号</a></li>
+							<li style="width:120px;"><a href="javascript:void(0);" title="所属项目">所属项目</a></li>
+							<!--li style="width:63px;"><a href="javascript:void(0);" title="CPU">CPU</a></li>
+							<li style="width:63px;"><a href="javascript:void(0);" title="内存">内存</a></li>
+							<li style="width:63px;"><a href="javascript:void(0);" title="磁盘信息">磁盘信息</a></li>
+							<li style="width:63px;"><a href="javascript:void(0);" title="网卡">网卡</a></li>
+							<li style="width:150px;"><a href="javascript:void(0);" title="mac地址">mac地址</a></li-->
+							<li style="width:180px;"><a href="javascript:void(0);" title="ip地址">ip地址</a></li>
+							<li style="width:156px;"><a href="javascript:void(0);" title="授权操作">授权操作</a></li>
+							<li style="width:128px;"><a href="javascript:void(0);" title="操作">操作</a></li>
+						</ul>
+					</div>
+					<table id="task-list" class="domain-list">
+						<volist name="devicelist" id="device">
+						<tr id="{$device.id}">
+							<td style="width:35px;">{$device.id}</td>
+							<td style="width:170px;">{$device.sid}</td>
+							<td style="width:70px;">{$device.type}</td>
+							<!--td style="width:50px;">{$device.cpuinfo}</td>
+							<td style="width:50px;">{$device.meminfo} s</td>
+							<td style="width:50px;">{$device.diskinfo}</td>
+							<td style="width:50px;">{$device.netcard}</td>
+							<td style="width:120px;">{$device.mac}</td-->
+							<td style="width:120px;">{$device.ip}</td>
+							<td style="width:90px;"><a href="javascript:void(0);" onclick="downLicense('{$device.sid}');">下载</a> | <a href="javascript:void(0);" onclick="createLicense('{$device.sid}');">授权</a></td>
+							<td style="width:108px;"><a href="javascript:void(0);" onclick="readDevice(this);">查看其他信息</a></td>
+						</tr>
+						<tr style="background:#fff;display:none;">
+							<td colspan="6" style="text-align:left">
+							</td>
+						</tr>
+						</volist>
+					</table>
+					<div class="memu_bar" style="float:right;">
+						{$page}
+					</div>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<!-- Tab切换 E -->
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				url: '__APP__/Index/logout',
+				dataType: 'json',
+				type: "POST",
+				success: function (data) {
+					if (data && data.result == 1) {
+						window.top.location = '__APP__/Index/login';
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+	function createLicense(sid){
+		$.layer({
+			type: 2,
+			title: '生成设备授权文件',
+			iframe: { src : '__APP__/Index/createLicence?sid='+sid },
+			area: ['640px' , '286px'],
+			offset: ['100px','']
+		});
+	}
+	function downLicense(sid){
+		$.layer({
+			type: 2,
+			title: '下载设备授权文件',
+			iframe: { src : '__APP__/Index/downLicence?sid='+sid },
+			area: ['800px' , '180px'],
+			offset: ['100px','']
+		});
+	}
+	function delDev(evt){
+		var name = $($(evt).parent().parent().find("td").get(1)).html();
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		if(confirm("确定删除设备："+ name + "吗？")){
+			$.ajax({
+				url: '__APP__/Index/delDevice',
+				dataType: 'json',
+				data: { id: id },
+				type: "POST",
+				success: function (data) {
+					if (data && data.result >= 1) {
+						alert(data.reason);
+						$($(evt).parent().parent().next().find("td").get(0)).empty();
+						$(evt).parent().parent().remove();
+					}
+					else{
+						alert(data.reason);
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+	function readDevice(evt){
+		var id = $($(evt).parent().parent().find("td").get(0)).html();
+		$.ajax({
+			  url: '__APP__/Index/readDevice',
+			  dataType: 'json',
+			  data: { id: id },
+			  type: "POST",
+			  success: function (data) {
+				$($(evt).parent().parent().next().find("td").get(0)).empty();
+				if (data) {
+					$($(evt).parent().parent().next().find("td").get(0)).append("<div class='mycss'>"+
+						"<span style='float:left;font-weight:bold;color:#3CADED'>cpu信息 ：</span><input onFocus='inFocus(this);' type='text' style='width:280px;' value='"+data.cpuinfo+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+id+"\",\"cpuinfo\", this);'>保存</a><br/>"+
+						"<span style='float:left;font-weight:bold;color:#3CADED'>内存信息 ：</span><input onFocus='inFocus(this);' type='text' style='width:200px;' value='"+data.meminfo+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+id+"\",\"meminfo\", this);'>保存</a><br/>"+
+						"<span style='float:left;font-weight:bold;color:#3CADED'>磁盘信息 ：</span><input onFocus='inFocus(this);' type='text' style='width:200px;' value='"+data.diskinfo+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+id+"\",\"diskinfo\", this);'>保存</a><br/>"+
+						"<span style='float:left;font-weight:bold;color:#3CADED'>网卡信息 ：</span><input onFocus='inFocus(this);' type='text' style='width:200px;' value='"+data.netcard+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+id+"\",\"netcard\", this);'>保存</a><br/>"+
+						"<span style='float:left;font-weight:bold;color:#3CADED'>mac地址 ：</span><input onFocus='inFocus(this);' type='text' style='width:360px;' value='"+data.mac+"'/> <a style='display:none;' href='javascript:void(0);' onclick='saveSet(\""+id+"\",\"mac\", this);'>保存</a><br/>");
+				}
+				else{
+					$($(evt).parent().parent().next().find("td").get(0)).append("<div>没有找到该任务的返回信息！</div>");
+				}
+			  },
+			  error: function (data) {
+				  alert(data.statusText);
+			  }
+		});
+		if($(evt).html() == "查看其他信息"){
+			$(evt).parent().parent().next().show();
+			$(evt).html("收起其他信息");
+			//alert($(evt).parent().parent().next().html());
+		}else{
+			$(evt).parent().parent().next().hide();
+			$(evt).html("查看其他信息");
+		}
+	}
+	
+	/*function inFocus(evt){
+		$(evt).addClass("on");
+		$(evt).next().show();
+	}
+	function saveSet(id, key, evt){
+		var val = $(evt).prev().val();
+		//alert(id + key + val);
+		if(!val){
+			alert("必须输入设置值！");
+			$(evt).prev().focus();
+			return false;
+		}
+		$.ajax({
+			url: '__APP__/Index/setDevice',
+			dataType: 'json',
+			data: { id: id, key: key, value: val },
+			type: "POST",
+			success: function (data) {
+				if (data.result == 1) {
+					alert(data.reason);
+				}
+				else{
+					alert(data.reason);
+				}
+			},
+			error: function (data) {
+				alert(data.statusText);
+			}
+		});
+	}*/
+
+	//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+	jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script>
+</body>
+</html>

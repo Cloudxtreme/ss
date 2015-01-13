@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="skynet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/layer/layer.min.js"></script>
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+</head>
+<body>
+
+<div class="content" style="width:600px;"><!-- 内容 -->
+	<!-- main s -->
+	<div class="main">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="bd">
+				<ul>
+					<table id="task-list">
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">设备编号：</td>
+							<td nowrap="nowrap" style="width:180px;"><input class="on" id="dev_id" type="text" style="width:160px;"> *</td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">IP地址：</td>
+							<td style="width:200px;"><input class="on" id="dev_ip" type="text" style="width:160px;"></td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">所属项目组：</td>
+							<td nowrap="nowrap" style="width:200px;">
+							 <?php
+							      if($_SESSION['zone'] == "all"){
+							 ?>
+							<input class="on" id="dev_type" type="text" placeholder="例如：cdn, vdl" style="width:160px;"> *</td>
+							<?php
+							      }else{        
+							?>
+							<input class="on" id="dev_type" type="text" readonly value="{$_SESSION['zone']}" style="width:160px;"> *</td>
+							 <?php 
+							      }
+							 ?>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">项目子类：</td>
+							<td nowrap="nowrap" style="width:200px;"><input class="on" id="dev_subtype" type="text" placeholder="例如：web, db" style="width:160px;"> *</td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">所在大区：</td>
+							<td style="width:200px;"><input class="on" id="dev_zone" type="text" placeholder="例如：广东省" style="width:160px;"></td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">所在小区：</td>
+							<td style="width:200px;"><input class="on" id="dev_local" type="text" placeholder="例如：中山市" style="width:160px;"></td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">可用状态：</td>
+							<td style="width:180px;"><select id="dev_status"><option value="true">可用</option><option value="false">不可用</option></select></td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">备注信息：</td>
+							<td style="width:180px;"><input class="on" id="dev_desc" type="text" style="width:160px;"></td>
+						</tr>
+						<tr style="height:36px;">
+							<td style="width:235px;" align="right">需要授权：</td>
+							<td style="width:180px;"><input class="on" id="dev_license" type="checkbox" ></td>
+						</tr>
+					</table>
+					<div class="memu_bar">
+						<ul style="margin-left:250px;">
+							<li><button onclick="addDevice();">添加</button></li>
+						</ul>
+					</div>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				url: '__APP__/Index/logout',
+				dataType: 'json',
+				type: "POST",
+				success: function (data) {
+					if (data && data.result == 1) {
+						window.top.location = '__APP__/Index/login';
+					}
+				},
+				error: function (data) {
+					alert(data.statusText);
+				}
+			});
+		}
+	}
+</script>
+<script type="text/javascript">
+	function addDevice(){
+		var sid = $("#dev_id").val();
+		var ip = $("#dev_ip").val();
+		var type = $("#dev_type").val();
+		var subtype = $("#dev_subtype").val();
+		var zone = $("#dev_zone").val();
+		var local = $("#dev_local").val();
+		var status = $("#dev_status").val();
+		var desc = $("#dev_desc").val();
+		var license = $("#dev_license").val() == "on"?"yes":"on";
+		if(!sid){
+			alert("错误提示：设备编号不能为空！");
+			$("#dev_id").focus();
+			return false;
+		}
+		if(!type){
+			alert("错误提示：所属项目组不能为空！");
+			$("#dev_type").focus();
+			return false;
+		}
+		if(!subtype){
+			alert("错误提示：所属子类不能为空！");
+			$("#dev_subtype").focus();
+			return false;
+		}
+		var loadi = layer.load(0);
+		$.ajax({
+			  url: '__APP__/Index/addDevice',
+			  dataType: 'json',
+			  data: { sid: sid, ip: ip, type: type, subtype: subtype, zone: zone, local: local, status: status, desc: desc, license: license },
+			  type: "POST",
+			  success: function (data) {
+				layer.close(loadi);
+				if (data.result == 1) {
+					alert(data.reason);
+				}
+				else{
+					alert("添加失败！");
+				}
+			  },
+			  error: function (data) {
+				  layer.close(loadi);
+				  alert(data.statusText);
+			  }
+		});
+	}
+</script>
+</body>
+</html>

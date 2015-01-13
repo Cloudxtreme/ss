@@ -49,9 +49,9 @@
 		$record = fgets($fd);
 		$arr = explode(" ", $record);
 		$gen["每秒总流入报文"] = number_format(trim($arr[0]));
-		$gen["每秒总流入流量"] = number_format(trim($arr[1]) * 8) . " bps";
+		$gen["每秒总流入流量"] = flow_format(trim($arr[1]));//number_format(trim($arr[1]) * 8) . " bps";
 		$gen["每秒总流出报文"] = number_format(trim($arr[2]));
-                $gen["每秒总流出流量"] = number_format(trim($arr[3]) * 8) . " bps";
+                $gen["每秒总流出流量"] = flow_format(trim($arr[3]));//number_format(trim($arr[3]) * 8) . " bps";
 		$gen["出口总ip数"] = number_format(trim($arr[4]));
 		flock($fd, LOCK_UN);
                 fclose($fd);
@@ -79,9 +79,9 @@
                                 $attack["攻击状态"] = "已结束";
                                 $attack["攻击类型"] = $attack_type[trim($arr[1])];
                                 $attack["当前包数"] = 0;
-                                $attack["当前流量"] = 0 . " bps";
+                                $attack["当前流量"] = 0;// . " bps";
                                 $attack["峰值包数"] = number_format(trim($arr[4]));
-                                $attack["峰值流量"] = number_format(trim($arr[5]) * 8) . " bps";
+                                $attack["峰值流量"] = flow_format(trim($arr[5]));//number_format(trim($arr[5]) * 8) . " bps";
                                 $attack["攻击时间"] = trim($arr[6]) . " " . trim($arr[7]);
                                 $attack["持续时间"] = trim($arr[8]) . " 秒";
 
@@ -101,9 +101,9 @@
 			$attack["攻击状态"] = "正在进行";
 			$attack["攻击类型"] = $attack_type[trim($arr[1])];
 			$attack["当前包数"] = number_format(trim($arr[2]));
-			$attack["当前流量"] = number_format(trim($arr[3]) * 8) . " bps";
+			$attack["当前流量"] = flow_format(trim($arr[3]));//number_format(trim($arr[3]) * 8) . " bps";
 			$attack["峰值包数"] = number_format(trim($arr[4]));
-			$attack["峰值流量"] = number_format(trim($arr[5]) * 8) . " bps";
+			$attack["峰值流量"] = flow_format(trim($arr[5]));//number_format(trim($arr[5]) * 8) . " bps";
 			$attack["攻击时间"] = trim($arr[6]) . " " . trim($arr[7]);
 			$attack["持续时间"] = trim($arr[8]) . " 秒";
 			

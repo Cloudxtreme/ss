@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-CN">
+<meta name="Keywords" content="SkyNet">
+<meta name="Description" content="SkyNet服务器管理平台">
+<title>SkyNet服务器管理平台</title>
+<link type="text/css" rel="stylesheet" href="__ROOT__/Public/css/style.css">
+<script type="text/javascript" src="__ROOT__/Public/js/jquery-1.8.1.min.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/jquery.SuperSlide.2.1.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/highcharts.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/highcharts-more.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/js/util.js"></script>
+<script type="text/javascript" src="__ROOT__/Public/highchart/create-chart.js"></script>
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+    <script src="__ROOT__/Public/js/html5.js"></script>
+<![endif]-->
+<script type="text/javascript">
+var node_id;
+var charArray = [];
+var ipArray = [];
+var dataArray = [];
+var begin = "", end = "";
+
+$(function() {
+	var strHref = window.location.href;
+	if(strHref.getQuery("b") && strHref.getQuery("e")){
+		begin = strHref.getQuery("b");
+		end = strHref.getQuery("e");
+		$("#start_time").val(begin);
+		$("#end_time").val(end);
+	}
+	if(strHref.getQuery("nid")){
+		node_id = strHref.getQuery("nid");
+	}
+	// Create the chart and init data
+	chart_traffic = createTrafficChart('cnt_traffic', 'Byte/s', myseries.traffic);
+	chart_cpu = createChart('cnt_cpu', '%', myseries.cpu);
+	chart_memory = createChart('cnt_memory', '%', myseries.memory);
+	chart_disk = createChart('cnt_disk', '%',  myseries.disk);
+
+	InitData();
+});
+
+	//create Data
+	function InitData(){
+		var sid = $("#node_sid").val();
+		var dev = $("#sel_dev").val();
+		var disk = $("#sel_disk").val();
+		$.ajax({
+			url: '__APP__/Monitor/hhistoryInit',
+			dataType: 'json',
+			data: { sid: sid, dev: dev, disk: disk, begin: begin, end: end },
+			type: "GET",
+			success: function (rslt) {
+				if (rslt) {
+					var in_data = [], out_data = [], cpu_data = [], uper_data = [], super_data = [], disk_data = [], i;
+					//alert(rslt["net"].length);
+					for(i = 0; i < rslt.net.length; i++) {
+						var t = Date.parse(rslt.net[i]["timestamp"].replace(/-/g,"/"));
+						in_data.push( [t, parseInt(rslt.net[i]["in"])] );
+						out_data.push( [t, parseInt(rslt.net[i]["out"])] );
+					}
+					for(i = 0; i < rslt.cpu.length; i++) {
+						var t = Date.parse(rslt.cpu[i]["timestamp"].replace(/-/g,"/"));
+						cpu_data.push( [t, parseInt(rslt.cpu[i]["uper"])] );
+					}
+					for(i = 0; i < rslt.mem.length; i++) {
+						var t = Date.parse(rslt.mem[i]["timestamp"].replace(/-/g,"/"));
+						uper_data.push( [t, parseInt(rslt.mem[i]["uper"])] );
+						super_data.push( [t, parseInt(rslt.mem[i]["super"])] );
+					}
+					for(i = 0; i < rslt.disk.length; i++) {
+						var t = Date.parse(rslt.disk[i]["timestamp"].replace(/-/g,"/"));
+						disk_data.push( [t, parseInt(rslt.disk[i]["uper"])] );
+					}
+					//画图
+					chart_traffic.series[0].setData(in_data);
+					chart_traffic.series[1].setData(out_data);
+					$("#max_in_time").html("时间：" + rslt.maxin["timestamp"]);
+					setMax("in", rslt.maxin["in"]);
+					$("#max_out_time").html("时间：" + rslt.maxout["timestamp"]);
+					setMax("out", rslt.maxout["out"]);
+					
+					chart_cpu.series[0].setData(cpu_data);
+					chart_memory.series[0].setData(uper_data);
+					chart_memory.series[1].setData(super_data);
+					chart_disk.series[0].setData(disk_data);
+					//更新最新时间
+					time_traffic = rslt.net[rslt.net.length-1]["timestamp"];
+					time_cpu = rslt.cpu[rslt.cpu.length-1]["timestamp"];
+					time_memory = rslt.mem[rslt.mem.length-1]["timestamp"];
+					time_disk = rslt.disk[rslt.disk.length-1]["timestamp"];
+				}
+			},
+			error: function (data) {}
+		});
+	}
+	
+	function selectDev(evt, id, sid){
+		var dev = $(evt).val();
+		$.ajax({
+			url: '__APP__/Monitor/hhistoryDev',
+			dataType: 'json',
+			data: { dev: dev, sid: sid, begin: begin, end: end },
+			type: "GET",
+			success: function (rslt) {
+				if (rslt && rslt.result) {
+					var indata = [], outdata = [], i;
+					for(i = 0; i < rslt.result.length; i++) {
+						//var dd = dataArray[index][0];
+						var t = Date.parse(rslt.result[i]["timestamp"].replace(/-/g,"/"));
+						indata.push( [t, parseInt(rslt.result[i]["in"])] );
+						outdata.push( [t, parseInt(rslt.result[i]["out"])] );
+					}
+					//更新报表
+					chart_traffic.series[0].setData(indata, true);
+					chart_traffic.series[1].setData(outdata, true);
+					///
+					$("#max_in_time").html("时间：" + rslt.maxin["timestamp"]);
+					setMax("in", rslt.maxin["in"]);
+					$("#max_out_time").html("时间：" + rslt.maxout["timestamp"]);
+					setMax("out", rslt.maxout["out"]);
+					//更新时间
+					time_traffic = rslt.result[rslt.result.length-1]["timestamp"];
+				}else{
+					alert("没有查询到该接口的流量数据！");
+				}
+			},
+			error: function (data) {}
+		});
+	}
+	
+	function setMax(type, val){
+		var num = parseInt(val);
+		if(num <= 1024){
+			if(type=="in"){
+				$("#max_in_value").html("流入最大值：" + val + " bps");
+			}else{
+				$("#max_out_value").html("流出最大值：" + val + " bps");
+			}
+		}
+		if(num > 1024 && (num / 1024) < 1024){
+			if(type=="in"){
+				$("#max_in_value").html("流入最大值：" + (num / 1024).toFixed(2) + " kbps");
+			}else{
+				$("#max_out_value").html("流出最大值：" + (num / 1024).toFixed(2) + " kbps");
+			}
+		}
+		if((num / 1024) >= 1024){
+			if(type=="in"){
+				$("#max_in_value").html("流入最大值：" + (num / 1024 / 1024).toFixed(2) + " mbps");
+			}else{
+				$("#max_out_value").html("流出最大值：" + (num / 1024 / 1024).toFixed(2) + " mbps");
+			}
+		}
+	}
+	
+	function selectDisk(evt, id, sid){
+		var dev = $(evt).val();
+		$.ajax({
+			url: '__APP__/Monitor/hhistoryDisk',
+			dataType: 'json',
+			data: { dev: dev, sid: sid, begin: begin, end: end },
+			type: "GET",
+			success: function (rslt) {
+				if (rslt && rslt.length >= 1) {
+					var data = [], i;
+					for(i = 0; i < rslt.length; i++) {
+						var t = Date.parse(rslt[i]["timestamp"].replace(/-/g,"/"));
+						data.push( [t, parseInt(rslt[i]["uper"])] );
+					}
+					//更新报表
+					chart_disk.series[0].setData(data, true);
+					chart_disk.redraw();
+					//更新时间
+					time_disk = rslt[rslt.length-1]["timestamp"];
+				}else{
+					alert("没有查询到该磁盘的使用量数据！");
+				}
+			},
+			error: function (data) {}
+		});
+	}
+	
+	function gohistory(){
+		var start = $("#start_time").val();
+		var end = $("#end_time").val();
+		if(!start){
+			alert("请选择开始时间！"); 
+			$("#start_time").focus();
+			return false;
+		}
+		if(!end){
+			alert("请选择结束时间！"); 
+			$("#end_time").focus();
+			return false;
+		}
+		var diff = Date.parse(end) - Date.parse(start);
+		var span = Math.floor(diff / (1000 * 60 * 60 * 24));
+		if(span < 0){alert("请选择正确的时间范围！"); return false;}
+		if(span > 7){alert("选择的时间范围不能大于7天！"); return false;}
+		window.top.location.href = '__APP__/Monitor/hhistory?nid='+node_id+'&b='+start+'&e='+end;
+	}
+	
+	function returnMonitor(){
+		window.top.location.href = '__APP__/Monitor/host?nid='+node_id;
+	}
+</script>
+</head>
+<body>
+<!-- 头部 S -->
+<div id="header">
+	<div class="logoBar">
+		<h1>SkyNet</h1><h2>服务器管理平台</h2>
+	</div>
+
+	<!-- navBar -->
+	<div class="navBar">
+		<ul class="nav clearfix">
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/index">设备管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/tasks">任务列表</a></h3>
+			</li>
+			<li class="s">|</li>
+			<?php
+			    }
+			?>
+			<li class="m on">
+				<h3><a target="_self" href="__APP__/Index/monitors">设备监控</a></h3>
+			</li>
+			<?php
+			    if($_SESSION['type'] == "admin"){
+			?>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/license">授权管理</a></h3>
+			</li>
+			<li class="s">|</li>
+			<li class="m">
+				<h3><a target="_self" href="__APP__/Index/system">系统管理</a></h3>
+			</li>
+			<?php
+			    }
+			?>
+			<div>
+				<span class='name'>{$_SESSION['user']}</span>
+				<span class='notification'>|</span>
+				<a class='account' href="javascript:void(0);" onclick="logout();"><span>退出</span></a>
+			</div>
+		</ul>
+	</div>
+</div><!-- 头部 e --><div class="clear"></div>
+
+<div class="content"><!-- 内容 -->
+	<!-- left菜单 S -->
+	<div id="sideMenu" class="side">
+		<div class="hd">
+			<h3>按监控类型查看</h3>
+		</div>
+		<div class="bd">
+			<ul>
+				<li><a href="__APP__/Monitor/traffic">流量监控</a></li>
+				<li><a href="__APP__/Monitor/system">CPU监控</a></li>
+				<li><a href="__APP__/Monitor/memory">内存监控</a></li>
+				<li><a href="__APP__/Monitor/disk">磁盘监控</a></li>
+			</ul>
+		</div>
+		<div class="hd on">
+			<h3>按监控主机查看</h3>
+		</div>
+		<div class="bd" style="padding-left:0px;text-align:center;">
+			<ul>
+				<volist name="tlist" id="n">
+					<li><a style="font-size:12px;" href="__APP__/Monitor/hhistory?nid={$n.id}&b={$begin}&e={$end}">{$n.wanip}[{$n.desc}]</a></li>
+				</volist>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">jQuery("#sideMenu").slide({ titCell:".hd", targetCell:".bd", effect:"slideDown", trigger:"click" });</script>
+	<!-- left菜单 E -->
+	
+	<!-- mainContent s -->
+	<div class="mainContent">
+		
+		<!-- Tab切换 S -->
+		<div class="slideTxtBox">
+			<div class="hd" style="display:block;">
+				<h1 style="float:left;">{$node.wanip} [{$node.desc}]</h1>
+				<ul style="margin-left:40px;float:left;padding-bottom:8px;">
+					<li>选择时间段：</li>
+					<li><input type="text" style="width:80px;" class="on Wdate" id="start_time" onClick="WdatePicker({maxDate:'%y-%M-%d'})"/></li>
+					<li>～</li>
+					<li><input type="text" style="width:80px;" class="on Wdate" id="end_time" onClick="WdatePicker({maxDate:'%y-%M-%d'})"/></li>
+					<li style="margin-left:10px;"><button onclick="gohistory();" style="height:32px;">查询</button></li>
+					<li style="margin-left:10px;"><a href="javascript:void(0);" onclick="returnMonitor();">返回监控</a></li>
+				</ul>
+			</div>
+			<input id="node_sid" type="hidden" value="{$node.sid}" />
+			<div class="bd">
+				<ul id="chart_list">
+					<ul id="chart_list">
+					<div class="chart">
+						<div style="margin-left:640px;margin-bottom:-28px;z-index:2;position:relative;">
+							接口： <select id="sel_dev" style="width:100px;height:24px;" onchange="selectDev(this, '{$node.id}', '{$node.sid}');">
+								      <?php
+									  $arr = explode(" ", $node['dev']);
+									  foreach ($arr as $dev) { 
+								      ?>
+									      <option>{$dev}</option>
+								      <?php
+									  }
+								      ?>
+							       </select>
+						</div>
+						<div style="margin-left:320px;margin-bottom:8px;z-index:1;position:relative;font-size:16px;color:#000;fill:#000;">流量监控</div>
+						<div id="cnt_traffic" style="width:100%;height:250px;margin:0 auto;"></div>
+						<div style="padding-left:68px;line-height:30px;margin-top:-8px;"><span id="max_out_value"></span> <span id="max_out_time"></span> <span id="max_in_value" style="margin-left:60px;"></span> <span id="max_in_time"></span></div>
+					</div>
+					
+					<div class="chart">
+						<div style="margin-left:320px;margin-bottom:8px;z-index:1;position:relative;font-size:16px;color:#000;fill:#000;">cpu监控</div>
+						<div id="cnt_cpu" style="width:100%;height:250px;margin:0 auto;"></div>
+					</div>
+					
+					<div class="chart">
+						<div style="margin-left:320px;margin-bottom:8px;z-index:1;position:relative;font-size:16px;color:#000;fill:#000;">内存监控</div>
+						<div id="cnt_memory" style="width:100%;height:250px;margin:0 auto;"></div>
+					</div>
+					
+					<div class="chart">
+						<div style="margin-left:640px;margin-bottom:-28px;z-index:2;position:relative;">
+							磁盘： <select id="sel_disk" style="width:100px;height:24px;" onchange="selectDisk(this, '{$node.id}', '{$node.sid}');">
+								      <?php
+									  $arr = explode(" ", $node['disk']);
+									  foreach ($arr as $dev) { 
+								      ?>
+									      <option>{$dev}</option>
+								      <?php
+									  }
+								      ?>
+							       </select>
+						</div>
+						<div style="margin-left:320px;margin-bottom:8px;z-index:1;position:relative;font-size:16px;color:#000;fill:#000;">磁盘监控</div>
+						<div id="cnt_disk" style="width:100%;height:250px;margin:0 auto;"></div>
+					</div>
+				</ul>
+			</div>
+		</div>
+		<!-- script type="text/javascript">jQuery(".slideTxtBox").slide();</script>
+		<Tab切换 E -->
+	</div>
+	
+</div>
+<script type="text/javascript">
+	//退出系统
+	function logout(){
+		if(confirm("确定退出系统吗？")){
+			$.ajax({
+				  url: '__APP__/Index/logout',
+				  dataType: 'json',
+				  type: "POST",
+				  success: function (data) {
+					  if (data && data.result == 1) {
+						  window.top.location = '__APP__/Index/login';
+					  }
+				  },
+				  error: function (data) {
+					  alert(data.statusText);
+				  }
+			});
+		}
+	}
+
+//这种导航效果相当于Tab切换，用titCell和mainCell 处理
+jQuery(".navBar").slide({ 
+		titCell:".nav .m", // 鼠标触发对象
+		mainCell:".subNav", // 切换对象包裹层
+		delayTime:0, // 效果时间
+		triggerTime:0, //鼠标延迟触发时间
+		returnDefault:true  //返回默认状态
+	});
+</script> 
+</body>
+</html>

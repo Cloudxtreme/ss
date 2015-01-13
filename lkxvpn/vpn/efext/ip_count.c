@@ -19,18 +19,20 @@
 #define CHECK_TYPE_FLOW     1
 #define CHECK_TYPE_SOURCE   2
 
-#define TOP_N                   10
-#define MAX_DETAIL_VALUE        10
-#define DETAIL_VALUE_PKG        0
-#define DETAIL_VALUE_FLOW       1
-#define DETAIL_VALUE_TCP        2
-#define DETAIL_VALUE_UDP        3
-#define DETAIL_VALUE_ICMP       4
-#define DETAIL_VALUE_HTTP       5
-#define DETAIL_VALUE_SESSION    6
-#define DETAIL_VALUE_CONN       7
-#define DETAIL_VALUE_ACK        8
-#define DETAIL_VALUE_DNS        9
+#define TOP_N                           10
+#define MAX_DETAIL_VALUE                12
+#define DETAIL_VALUE_PKG                0
+#define DETAIL_VALUE_FLOW               1
+#define DETAIL_VALUE_TCP                2
+#define DETAIL_VALUE_UDP                3
+#define DETAIL_VALUE_ICMP               4
+#define DETAIL_VALUE_HTTP               5
+#define DETAIL_VALUE_SESSION            6
+#define DETAIL_VALUE_SESSION_CLOSE      7
+#define DETAIL_VALUE_SESSION_TIMEOUT    8
+#define DETAIL_VALUE_CONN               9
+#define DETAIL_VALUE_ACK                10
+#define DETAIL_VALUE_DNS                11
 
 typedef struct _detail_value
 {
@@ -85,6 +87,7 @@ struct _ip_count_t
     check_info ip_chk[MAX_DETAIL_VALUE];
     pthread_t counter;
     pthread_t timer;
+    unsigned long deep_stat[100];
 };
 
 int max_level = 0;
@@ -206,6 +209,7 @@ static void count_thread(void *arg)
 
     while(ict->stats)
     {
+        unsigned int check_num = 0;
         lock(&(ict->add_lock));
         head = ict->use_head;
         tail = ict->use_tail;
@@ -216,6 +220,11 @@ static void count_thread(void *arg)
 
         while(use)
         {
+            if(check_num++ > 100)
+            {
+                usleep(0);
+                check_num = 0;
+            }
             if((ict->time - use->last_time >= 1000000) && ((use->modify > use->last_time) || (use->ab_time)))
             {
                 #if 0
@@ -805,6 +814,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
             if(add_ip_flag & (IPCOUNT_ADD_FLAG_DIP))
                 ipcount_add_ip(ict, dip);
         }
+        ict->deep_stat[find_level]++;
     }
     return ret;
 }
@@ -865,10 +875,12 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
                         find->detail[DETAIL_VALUE_HTTP].out++;
                         break;
                     case IPCOUNT_SESSION_TYPE_CLOSE:
+                        find->detail[DETAIL_VALUE_SESSION_CLOSE].in++;
                         //find->detail[DETAIL_VALUE_HTTP].out++;
                         find->detail[DETAIL_VALUE_SESSION].out += session_flow;
                         break;
                     case IPCOUNT_SESSION_TYPE_TIMEOUT:
+                        find->detail[DETAIL_VALUE_SESSION_TIMEOUT].in++;
                         find->detail[DETAIL_VALUE_SESSION].out += session_flow;
                         break;
                     case IPCOUNT_SESSION_TYPE_HTTP:
@@ -913,8 +925,10 @@ int ipcount_get_ip(ip_count_t *ict, ip_data *id)
             id->tcp_flow = find->detail[DETAIL_VALUE_TCP].in + find->detail[DETAIL_VALUE_TCP].out;
             id->udp_flow = find->detail[DETAIL_VALUE_UDP].in + find->detail[DETAIL_VALUE_UDP].out;
             id->icmp_flow = find->detail[DETAIL_VALUE_ICMP].in + find->detail[DETAIL_VALUE_ICMP].out;
-            id->session_total = find->detail[DETAIL_VALUE_SESSION].in + find->detail[DETAIL_VALUE_HTTP].out;
-            id->http_session = find->detail[DETAIL_VALUE_HTTP].in + find->detail[DETAIL_VALUE_HTTP].out;
+            id->session_total = find->detail[DETAIL_VALUE_SESSION].in;
+            id->session_close = find->detail[DETAIL_VALUE_SESSION_CLOSE].in;
+            id->session_timeout = find->detail[DETAIL_VALUE_SESSION_TIMEOUT].in;
+            id->http_session = find->detail[DETAIL_VALUE_HTTP].in;
             ret = 1;
         }
     }
@@ -997,8 +1011,10 @@ int ipcount_get_all_ip(ip_count_t *ict, ip_data *id, unsigned int total, unsigne
                 id->tcp_flow = use->detail[DETAIL_VALUE_TCP].in + use->detail[DETAIL_VALUE_TCP].out;
                 id->udp_flow = use->detail[DETAIL_VALUE_UDP].in + use->detail[DETAIL_VALUE_UDP].out;
                 id->icmp_flow = use->detail[DETAIL_VALUE_ICMP].in + use->detail[DETAIL_VALUE_ICMP].out;
-                id->session_total = use->detail[DETAIL_VALUE_SESSION].in + use->detail[DETAIL_VALUE_HTTP].out;
-                id->http_session = use->detail[DETAIL_VALUE_HTTP].in + use->detail[DETAIL_VALUE_HTTP].out;
+                id->session_total = use->detail[DETAIL_VALUE_SESSION].in;
+                id->session_close = use->detail[DETAIL_VALUE_SESSION_CLOSE].in;
+                id->session_timeout = use->detail[DETAIL_VALUE_SESSION_TIMEOUT].in;
+                id->http_session = use->detail[DETAIL_VALUE_HTTP].in;
                 id++;
                 total--;
             }

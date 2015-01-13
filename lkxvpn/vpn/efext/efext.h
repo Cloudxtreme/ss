@@ -45,7 +45,7 @@ typedef struct _session_pool session_pool;
 typedef struct _session session;
 typedef int (*session_timeout_cbk)(session_pool *pool, session *s);
 
-session_pool *session_pool_init(void *timeout_cbk);
+session_pool *session_pool_init(unsigned int id, void *timeout_cbk);
 int session_pool_tini(session_pool *sp);
 int session_get(session_pool *sp, session **s, void *pkg, int flow);
 int session_close(session *s);
@@ -62,6 +62,7 @@ unsigned long session_get_create_time(session *s);
 unsigned long session_get_conn_time(session *s);
 unsigned long session_get_close_time(session *s);
 unsigned long session_get_flow(session *s);
+unsigned int session_pool_id(session_pool *pool);
 
 
 
