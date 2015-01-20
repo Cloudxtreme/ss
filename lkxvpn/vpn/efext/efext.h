@@ -45,7 +45,7 @@ typedef struct _session_pool session_pool;
 typedef struct _session session;
 typedef int (*session_timeout_cbk)(session_pool *pool, session *s);
 
-session_pool *session_pool_init(unsigned int id, void *timeout_cbk);
+session_pool *session_pool_init(unsigned int id, unsigned int cpu, void *timeout_cbk);
 int session_pool_tini(session_pool *sp);
 int session_get(session_pool *sp, session **s, void *pkg, int flow);
 int session_close(session *s);
@@ -109,7 +109,7 @@ typedef struct _ip_data
 
 int ipcount_lock(ip_count_t *ict);
 int ipcount_unlock(ip_count_t *ict);
-ip_count_t *ipcount_init();
+ip_count_t *ipcount_init(unsigned int cpu);
 int ipcount_tini(ip_count_t *ict);
 int ipcount_add_ip(ip_count_t *ict, unsigned int ip);
 int ipcount_del_ip(ip_count_t *ict, unsigned int ip);

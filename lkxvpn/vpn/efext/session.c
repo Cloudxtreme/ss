@@ -27,16 +27,16 @@ typedef struct _link_info
 
 typedef struct _session_slot
 {
+    link_info li;
+    session *s;
     struct _session_slot *prev;
     struct _session_slot *next;
     struct _session_slot *next_alive;
-    unsigned int key, val;
     unsigned long pkg, flow;
-    session *s;
-    link_info li;
+    unsigned int key, val;
 }session_slot;
 
-#define SLOT_TABLE_SIZE     11
+#define SLOT_TABLE_SIZE     16
 typedef struct _slot_table
 {
     session_slot *slot[SLOT_TABLE_SIZE];
@@ -44,19 +44,16 @@ typedef struct _slot_table
 
 struct _session
 {
-    void *source;
+    unsigned long   create_time, conn_time, close_time;
+    unsigned long   pkg, flow;
+	unsigned long   timeout, last_active;
     struct _session *prev;
 	struct _session *next;
 	struct _session *next_alive;
     session_slot *master;
     session_slot *other;
-
+    void *source;
 	unsigned char   lock;
-	unsigned long   pkg, flow;
-	unsigned long   timeout, last_active;
-
-	unsigned long   create_time, conn_time, close_time;
-
     unsigned int type;
 	void *detail;
 };
@@ -73,15 +70,15 @@ typedef struct _pool_source
 #define SESSION_HASH_SIZE		0x100000 //0x10000000
 struct _session_pool
 {
-    unsigned int id;
-    pool_source *source;
-	session *session_use_head, *session_use_tail;
+    unsigned char stats;
+    unsigned int id, cpu;
     slot_table *table;
+    unsigned char *table_lock;
+	session *session_use_head, *session_use_tail;
+    pool_source *source;
     pthread_t recover;
 	unsigned long source_total, source_alive, source_reduce;
-    unsigned char stats;
     unsigned char pool_lock;
-	unsigned char *table_lock;
 	unsigned int max_deep, expand, reduce;
 	void *timeout_cbk;
 };
@@ -322,10 +319,10 @@ static session *build_session_in_pool(session_pool *pool, link_info *li)
     //other->key = (li->sip ^ li->dip ^ ((li->dport << 16) + li->sport)) % SESSION_HASH_SIZE;
     //master->key = ((li->sip ^ li->dip) * li->sport) % SESSION_HASH_SIZE;
     //other->key = ((li->sip ^ li->dip) * li->dport) % SESSION_HASH_SIZE;
-    master->key = crc32cHardware64(0, &(master->li), sizeof(link_info)) % SESSION_HASH_SIZE;//*/CRC20_key((unsigned char *)&(master->li), sizeof(link_info));
-    master->val = /*crc32cHardware64(11, &(master->li), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(li->sip ^ li->dip ^ ((li->sport << 16) + li->dport)) % SLOT_TABLE_SIZE;
-    other->key = crc32cHardware64(0, &(other->li), sizeof(link_info)) % SESSION_HASH_SIZE;//*/CRC20_key((unsigned char *)&(other->li), sizeof(link_info));
-    other->val = /*crc32cHardware64(11, &(other->li), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(li->dip ^ li->sip ^ ((li->dport << 16) + li->sport)) % SLOT_TABLE_SIZE;
+    master->key = crc32cHardware64(0, &(master->li), sizeof(link_info)) & (SESSION_HASH_SIZE - 1);//*/CRC20_key((unsigned char *)&(master->li), sizeof(link_info));
+    master->val = /*crc32cHardware64(11, &(master->li), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(li->sip ^ li->dip ^ ((li->sport << 16) + li->dport)) & (SLOT_TABLE_SIZE - 1);
+    other->key = crc32cHardware64(0, &(other->li), sizeof(link_info)) & (SESSION_HASH_SIZE - 1);//*/CRC20_key((unsigned char *)&(other->li), sizeof(link_info));
+    other->val = /*crc32cHardware64(11, &(other->li), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(li->dip ^ li->sip ^ ((li->dport << 16) + li->sport)) & (SLOT_TABLE_SIZE - 1);
 
     #if 1
     if(likely(!pool->table[master->key].slot[master->val]))
@@ -531,6 +528,13 @@ static int pool_recover(void *arg)
 
     //mprotect(p, ps, PROT_READ);
     //mprotect(p, ps, PROT_READ|PROT_WRITE);
+    if(1)
+	{
+        unsigned long mask = 1;
+		mask = mask << (pool->cpu);
+		fprintf(stderr, "pool cpu : %u\n", pool->cpu);
+		sched_setaffinity(0, sizeof(mask), &mask);
+	}
     while(pool->stats)
     {
         unsigned int check_num = 0;
@@ -613,7 +617,7 @@ static int pool_recover(void *arg)
     }
 }
 
-session_pool *session_pool_init(unsigned int id, void *timeout_cbk)
+session_pool *session_pool_init(unsigned int id, unsigned int cpu, void *timeout_cbk)
 {
     session_pool *sp = NULL;
     pool_source *source;
@@ -623,6 +627,7 @@ session_pool *session_pool_init(unsigned int id, void *timeout_cbk)
         goto err;
     memset(sp, 0, sizeof(session_pool));
     sp->id = id;
+    sp->cpu = cpu;
     sp->table = (slot_table *)malloc(SESSION_HASH_SIZE * sizeof(slot_table));
     sp->table_lock = (unsigned char *)malloc(SESSION_HASH_SIZE * sizeof(char));
     if(!sp->table || !sp->table_lock)
@@ -706,8 +711,8 @@ int session_get(session_pool *sp, session **rs, void *pkg, int len)
             //fprintf(stderr, "wrong pkg!\n");
             goto done;
         }
-        key = crc32cHardware64(0, &(pkg_link_info), sizeof(link_info)) % SESSION_HASH_SIZE;//*/CRC20_key((unsigned char *)&pkg_link_info, sizeof(link_info));
-        val = /*crc32cHardware64(11, &(pkg_link_info), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(pkg_link_info.sip ^ pkg_link_info.dip ^ ((pkg_link_info.sport << 16) + pkg_link_info.dport)) % SLOT_TABLE_SIZE;
+        key = crc32cHardware64(0, &(pkg_link_info), sizeof(link_info)) & (SESSION_HASH_SIZE - 1);//*/CRC20_key((unsigned char *)&pkg_link_info, sizeof(link_info));
+        val = /*crc32cHardware64(11, &(pkg_link_info), sizeof(link_info)) % SLOT_TABLE_SIZE;//*/(pkg_link_info.sip ^ pkg_link_info.dip ^ ((pkg_link_info.sport << 16) + pkg_link_info.dport)) & (SLOT_TABLE_SIZE - 1);
         //goto build_session;
         #if 1
 		lock(&(sp->table_lock[key]));

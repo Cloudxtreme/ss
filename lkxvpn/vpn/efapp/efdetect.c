@@ -196,10 +196,10 @@ int main(int argc, char *argv[])
                 if(save_ip)
                     fprintf(output, "%s\n", ip_str);
                 else
-                    fprintf(output, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
-                        ip_str, data->recv, data->send, data->inflow, data->outflow,
-                        data->tcp_flow, data->udp_flow, data->icmp_flow, data->http_flow,
-                        data->session_total, data->session_close, data->session_timeout, data->http_session);
+                    fprintf(output, "%s\n",//%lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu\n",
+                        ip_str);//, data->recv, data->send, data->inflow, data->outflow,
+                        //data->tcp_flow, data->udp_flow, data->icmp_flow, data->http_flow,
+                        //data->session_total, data->session_close, data->session_timeout, data->http_session);
             }
         }
         if(top_ip)

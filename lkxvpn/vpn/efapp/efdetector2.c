@@ -78,10 +78,13 @@ static int free_database(database *db)
     int i;
     if(db)
     {
+        for(i = 0; i < READER_WORKER_NUM; i++)
+        {
+            if(db->pool[i])
+                session_pool_tini(db->pool[i]);
+        }
         if(db->ict)
             ipcount_tini(db->ict);
-        //if(db->pool)
-            //session_pool_tini(db->pool);
         if(db->opera)
             release_opera(db->opera);
         while(db->attack_head)
@@ -121,9 +124,6 @@ static database *init_database(unsigned int id, unsigned char *name)
         goto err;
     memset(db, 0, sizeof(database));
     db->id = id;
-    db->ict = ipcount_init();
-    ipcount_set_attack_cbk(db->ict, attack_process);
-    //db->pool = session_pool_init(timeout_process);
     db->opera = get_opera(name);
     db->hi = (http_info *)malloc(DATABASE_MAX_HTTP * sizeof(http_info));
     db->phi = (http_info **)malloc(DATABASE_MAX_HTTP * sizeof(http_info *));
@@ -213,13 +213,14 @@ static free_worker(worker_t *worker)
     return 1;
 }
 
-static worker_t *init_worker(reader_t *reader, int id)
+static worker_t *init_worker(reader_t *reader, int id, int flag)
 {
     worker_t *worker = (worker_t *)malloc(sizeof(worker_t));
     if(!worker)
         goto err;
     memset(worker, 0, sizeof(worker_t));
     worker->id = id;
+    worker->flag = flag;
     worker->reader = reader;
     return worker;
 err:
@@ -243,6 +244,9 @@ int detail_tmp1 = 0, detail_tmp2 = 0;
 static int control()
 {
     int i, j;
+    static struct tm *date = NULL;
+    static time_t lt;
+    char date_str[128];
     while(g_run)
     {
         unsigned long total_pps = 0, total_bps = 0;
@@ -261,6 +265,10 @@ static int control()
             }
         }
         #endif
+        lt = time(NULL);
+        date = localtime(&lt);
+        snprintf(date_str, sizeof(date_str), "%d-%02d-%02d %02d:%02d:%02d",
+                date->tm_year+1900, date->tm_mon+1, date->tm_mday, date->tm_hour, date->tm_min, date->tm_sec);
         for(i = 0; i < g_reader_num; i++)
         {
             unsigned long tmp_pkg, tmp_flow;
@@ -289,7 +297,7 @@ static int control()
             reader->l_pkg = tmp_pkg;
             reader->l_flow = tmp_flow;
         }
-        fprintf(stderr, "database:\n");
+        fprintf(stderr, "%s database:\n", date_str);
         for(i = 0; i < g_database_num; i++)
         {
             total_pps += g_db[i]->in_pps + g_db[i]->out_pps;
@@ -298,7 +306,7 @@ static int control()
                         g_db[i]->rii, g_db[i]->rij, g_db[i]->rti, g_db[i]->rtj,
                         g_db[i]->phi_cur, g_db[i]->phi_rec, g_db[i]->sli, g_db[i]->slj, g_db[i]->ip_total);
         }
-        fprintf(stderr, "total : %lu pps %lu bps\n", total_pps, total_bps);
+        fprintf(stderr, "total : %lu pps %lu bps\n", total_pps, total_bps * 8);
         fprintf(stderr, "\n------------------------------------------------------------------------\n");
         sleep(1);
     }
@@ -310,10 +318,20 @@ static int work(void *arg)
     worker_t *worker = (worker_t *)arg;
     reader_t *reader = worker->reader;
 	database *db = reader->db;
-	session_pool *pool = NULL;
+	ip_count_t *ict = db->ict;
+	session_pool *pool = db->pool[worker->id];
+	if(1)
+	{
+        unsigned long mask = 1;
+        if(worker->flag == WORKER_FLAG_IP)
+            mask = mask << (g_reader_num + db->id * READER_WORKER_NUM * 2 + worker->id);
+        else
+            mask = mask << (g_reader_num + db->id * READER_WORKER_NUM * 2 + READER_WORKER_NUM + worker->id);
+		sched_setaffinity(0, sizeof(mask), &mask);
+	}
     fprintf(stderr, "reader %d 's worker %d begin!\n", worker->reader->id, worker->id);
-    if(worker->id && (reader->flag & (READER_FLAG_INBOUND)))
-        pool = session_pool_init(db->id, timeout_process);
+    if((worker->flag == WORKER_FLAG_SESSION) && (reader->flag == READER_FLAG_OUTBOUND))
+        goto over;
     while(g_run)
     {
         if(worker->finish < worker->total)
@@ -326,13 +344,13 @@ static int work(void *arg)
             while(finish < total)
             {
             	slot = worker->slot[worker->j];
-                if(worker->id)
+                if(worker->flag == WORKER_FLAG_SESSION)
                 {
                 	if(reader->flag & (READER_FLAG_INBOUND))
                     	pkg_process(db, reader, pool, slot->pbuf, slot->plen);
                 }
                 else
-                    ipcount_add_pkg(db->ict, slot->pbuf, slot->plen, reader->flag, 0);
+                    ipcount_add_pkg(ict, slot->pbuf, slot->plen, reader->flag, 0);
                 worker->j = (worker->j + 1 == READER_MAX_SLOT) ? 0 : (worker->j + 1);
                 finish++;
             }
@@ -341,20 +359,30 @@ static int work(void *arg)
         else
             usleep(0);
     }
-    session_pool_tini(pool);
+over:
+    return 0;
 }
 
 static int read(void *arg)
 {
+    int i;
     reader_t *reader = (reader_t *)arg;
-    worker_t *ip_worker[3], *session_worker[3];
-    fprintf(stderr, "reader %s begin!\n", reader->dev);
+    //worker_t *ip_worker[3], *session_worker[3];
     if(1)
 	{
         unsigned long mask = 1;
 		mask = mask << reader->id;
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
+	fprintf(stderr, "reader %s begin!\n", reader->dev);
+	for(i = 0; i < READER_WORKER_NUM; i++)
+	{
+        reader->ip_worker[i] = init_worker(reader, i, WORKER_FLAG_IP);
+        reader->session_worker[i] = init_worker(reader, i, WORKER_FLAG_SESSION);
+        pthread_create(&(reader->ip_worker[i]->thread), NULL, work, (void *)(reader->ip_worker[i]));
+        pthread_create(&(reader->session_worker[i]->thread), NULL, work, (void *)(reader->session_worker[i]));
+	}
+	#if 0
 	ip_worker[0] = init_worker(reader, 0);
 	ip_worker[1] = init_worker(reader, 0);
 	ip_worker[2] = init_worker(reader, 0);
@@ -367,6 +395,7 @@ static int read(void *arg)
     pthread_create(&(session_worker[0]->thread), NULL, work, (void *)(session_worker[0]));
     pthread_create(&(session_worker[1]->thread), NULL, work, (void *)(session_worker[1]));
     pthread_create(&(session_worker[2]->thread), NULL, work, (void *)(session_worker[2]));
+    #endif
 	while(g_run)
 	{
         int i, ret;
@@ -378,8 +407,12 @@ static int read(void *arg)
             usleep(0);
             continue;
         }
-		ip_worker[0]->get = ip_worker[1]->get = ip_worker[2]->get = 0;
-		session_worker[0]->get = session_worker[1]->get = session_worker[2]->get = 0;
+        for(i = 0; i < READER_WORKER_NUM; i++)
+        {
+            reader->ip_worker[i]->get = reader->session_worker[i]->get = 0;
+        }
+		///ip_worker[0]->get = ip_worker[1]->get = ip_worker[2]->get = 0;
+		///session_worker[0]->get = session_worker[1]->get = session_worker[2]->get = 0;
         reads = efio_read(reader->fd, reader->slot, READER_MAX_SLOT, 0);
         reader->pkg += reads;
         for(i = 0; i < reads; i++)
@@ -398,35 +431,44 @@ static int read(void *arg)
                 unsigned int sip = GET_IP_SIP(pkg);
                 unsigned int dip = GET_IP_DIP(pkg);
                 if(reader->flag == READER_FLAG_INBOUND)
-                    key1 = dip % 3;
+                    key1 = dip & (READER_WORKER_NUM - 1);
                 else if(reader->flag == READER_FLAG_OUTBOUND)
-                    key1 = sip % 3;
+                    key1 = sip & (READER_WORKER_NUM - 1);
                 else
-                    key1 = (sip ^ dip) % 3;
-                key2 = (sip ^ dip) % 3;
+                    key1 = (sip ^ dip) & (READER_WORKER_NUM - 1);
+                key2 = (sip ^ dip) & (READER_WORKER_NUM - 1);
             }
-            w1 = ip_worker[key1];
-            w2 = session_worker[key2];
+            w1 = reader->ip_worker[key1];
+            w2 = reader->session_worker[key2];
             w1->slot[w1->i] = &reader->slot[i];
-            w2->slot[w2->i] = &reader->slot[i];
             w1->i = (w1->i + 1 == READER_MAX_SLOT) ? 0 : (w1->i + 1);
-            w2->i = (w2->i + 1 == READER_MAX_SLOT) ? 0 : (w2->i + 1);
-			w1->get++; w2->get++;
+            w1->get++;
+            if(reader->flag & READER_FLAG_INBOUND)
+            {
+                w2->slot[w2->i] = &reader->slot[i];
+                w2->i = (w2->i + 1 == READER_MAX_SLOT) ? 0 : (w2->i + 1);
+                w2->get++;
+            }
 			#endif
         }
 		#if 1
-		ip_worker[0]->total += ip_worker[0]->get;
-		ip_worker[1]->total += ip_worker[1]->get;
-		ip_worker[2]->total += ip_worker[2]->get;
-		session_worker[0]->total += session_worker[0]->get;
-		session_worker[1]->total += session_worker[1]->get;
-		session_worker[2]->total += session_worker[2]->get;
-        while((ip_worker[0]->finish < ip_worker[0]->total)
-				|| (ip_worker[1]->finish < ip_worker[1]->total)
-				|| (ip_worker[2]->finish < ip_worker[2]->total)
-				|| (session_worker[0]->finish < session_worker[0]->total)
-				|| (session_worker[1]->finish < session_worker[1]->total)
-				|| (session_worker[2]->finish < session_worker[2]->total))
+		for(i = 0; i < READER_WORKER_NUM; i++)
+		{
+            reader->ip_worker[i]->total += reader->ip_worker[i]->get;
+            reader->session_worker[i]->total += reader->session_worker[i]->get;
+		}
+		///ip_worker[0]->total += ip_worker[0]->get;
+		///ip_worker[1]->total += ip_worker[1]->get;
+		///ip_worker[2]->total += ip_worker[2]->get;
+		///session_worker[0]->total += session_worker[0]->get;
+		///session_worker[1]->total += session_worker[1]->get;
+		///session_worker[2]->total += session_worker[2]->get;
+        while((reader->ip_worker[0]->finish < reader->ip_worker[0]->total)
+				|| (reader->ip_worker[1]->finish < reader->ip_worker[1]->total)
+				/*|| (reader->ip_worker[2]->finish < reader->ip_worker[2]->total)*/
+				|| (reader->session_worker[0]->finish < reader->session_worker[0]->total)
+				|| (reader->session_worker[1]->finish < reader->session_worker[1]->total)
+				/*|| (reader->session_worker[2]->finish < reader->session_worker[2]->total)*/)
         {
             if(!g_run)
                 break;
@@ -434,18 +476,25 @@ static int read(void *arg)
         }
 		#endif
 	}
-	pthread_join(ip_worker[0]->thread, NULL);
-	pthread_join(ip_worker[1]->thread, NULL);
-	pthread_join(ip_worker[2]->thread, NULL);
-	pthread_join(session_worker[0]->thread, NULL);
-	pthread_join(session_worker[1]->thread, NULL);
-	pthread_join(session_worker[2]->thread, NULL);
-	free(ip_worker[0]);
-	free(ip_worker[1]);
-	free(ip_worker[2]);
-	free(session_worker[0]);
-	free(session_worker[1]);
-	free(session_worker[2]);
+	for(i = 0; i < READER_WORKER_NUM; i++)
+	{
+        pthread_join(reader->ip_worker[i]->thread, NULL);
+        pthread_join(reader->session_worker[i]->thread, NULL);
+        free_worker(reader->ip_worker[i]);
+        free_worker(reader->session_worker[i]);
+	}
+	///pthread_join(ip_worker[0]->thread, NULL);
+	///pthread_join(ip_worker[1]->thread, NULL);
+	///pthread_join(ip_worker[2]->thread, NULL);
+	///pthread_join(session_worker[0]->thread, NULL);
+	///pthread_join(session_worker[1]->thread, NULL);
+	///pthread_join(session_worker[2]->thread, NULL);
+	///free(ip_worker[0]);
+	///free(ip_worker[1]);
+	///free(ip_worker[2]);
+	///free(session_worker[0]);
+	///free(session_worker[1]);
+	///free(session_worker[2]);
 }
 
 static http_info *get_http_detail(database *db)
@@ -477,7 +526,7 @@ static int rec_http_detail(database *db, http_info *detail)
 static int create_report(database *db, session *s, unsigned int stats)
 {
     report_info *report = NULL;
-    lock(&db->detail_lock);
+    lock(&db->report_lock);
 	#if 1
     if(!stats)
     {
@@ -497,8 +546,6 @@ static int create_report(database *db, session *s, unsigned int stats)
             db->rii = tmp;
         }
     }
-	#endif
-    unlock(&db->detail_lock);
     if(report)
     {
         report->stats = stats;
@@ -518,7 +565,10 @@ static int create_report(database *db, session *s, unsigned int stats)
         report->type = session_get_type(s);
         report->detail = session_get_detail(s);
     }
-    else if(session_get_detail(s))
+	#endif
+    unlock(&db->report_lock);
+
+    if(!report && session_get_detail(s))
     {
         rec_http_detail(db, session_get_detail(s));
         no_process_detail++;
@@ -541,7 +591,7 @@ static int timeout_process(session_pool *pool, session *s)
 static int attack_process(ip_count_t *ict, unsigned int ip, unsigned int attack_type, unsigned char attack_status,
                             unsigned long pps, unsigned long bps)
 {
-    int i;
+    int i, j;
     int ret = 0;
     int find = 0;
     database *db = NULL;
@@ -775,6 +825,7 @@ static int db_opera(database *db)
     detect_opera *opera = db->opera;
     if(opera && opera->code)
     {
+        #if 1
         ip_count_t *ict = db->ict;
         opera->result = 0;
         switch(opera->code)
@@ -827,6 +878,7 @@ static int db_opera(database *db)
             default:;
         }
         opera->code = 0;
+        #endif
     }
 }
 
@@ -976,7 +1028,7 @@ static int db_collecter(void *arg)
 
 
     ip_detail = (ip_data *)malloc(DATABASE_MAX_IP * sizeof(ip_data));
-    if(1)
+    if(0)
 	{
         unsigned long mask = 1;
 		mask = mask << (g_reader_num + db->id*2);
@@ -1264,7 +1316,7 @@ static int db_sender(void *arg)
     unsigned long time;
     unsigned char send_buf_full = 0;
 
-    if(1)
+    if(0)
 	{
         unsigned long mask = 1;
 		mask = mask << (g_reader_num + db->id*2 + 1);
@@ -1602,6 +1654,19 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "please check conf file!\n");
             goto over;
+        }
+        else
+        {
+            for(i = 0; i < g_database_num; i++)
+            {
+                database *db = g_db[i];
+                db->ict = ipcount_init(g_reader_num + g_database_num * 4 + db->id);
+                ipcount_set_attack_cbk(db->ict, attack_process);
+                for(j = 0; j < READER_WORKER_NUM; j++)
+                {
+                    db->pool[j] = session_pool_init(db->id, g_reader_num + g_database_num * 5 + db->id, timeout_process);
+                }
+            }
         }
         num_init();
         signal(SIGINT, sigint_h);

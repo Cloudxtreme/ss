@@ -115,47 +115,55 @@ typedef struct _log_content
     unsigned int len;
 }log_content;
 
+#define READER_WORKER_NUM       2
+#define WORKER_FLAG_IP          1
+#define WORKER_FLAG_SESSION     2
+typedef struct _database database;
+typedef struct _reader reader_t;
+typedef struct _worker worker_t;
 
-typedef struct _database
+struct _database
 {
     int id;
     ip_count_t *ict;
-    //session_pool *pool;
+    session_pool *pool[READER_WORKER_NUM];
     detect_opera *opera;
     attack_event *attack_head, *attack_tail;
     http_info *hi, **phi;
     report_info *ri, *ri_timeout;
-    unsigned int rii, rij, rti, rtj, phi_cur, phi_rec, sli, slj, ili, ilj;
+    volatile unsigned int rii, rij, rti, rtj, phi_cur, phi_rec, sli, slj, ili, ilj;
     unsigned long ip_total, in_pps, out_pps, in_bps, out_bps, in_pkg, in_flow, out_pkg, out_flow;
-    unsigned char detail_lock, attack_lock;
+    unsigned char report_lock, detail_lock, attack_lock;
     log_content *ip_log;
     log_content *session_log;
     log_handle log_hd[LOG_MAX_TARGET];
     unsigned char name[256];
     pthread_t collecter, sender, recorder;
-}database;
+};
 
-typedef struct _reader
+struct _reader
 {
     int id;
     int fd;
     int flag;//    inbound outbound or in&out
+    worker_t *ip_worker[READER_WORKER_NUM];
+    worker_t *session_worker[READER_WORKER_NUM];
     ef_slot slot[READER_MAX_SLOT];
     unsigned long pkg, flow, l_pkg, l_flow;
     database *db;
     unsigned char dev[64];
     pthread_t thread;
-}reader_t;
+};
 
-typedef struct _worker
+struct _worker
 {
-    int id;
+    int id, flag;
     reader_t *reader;
+    volatile int i, j, get;
+    volatile unsigned long total, finish;
     ef_slot *slot[READER_MAX_SLOT];
-    int i, j, get;
-    unsigned long total, finish;
     pthread_t thread;
-}worker_t;
+};
 
 
 #endif

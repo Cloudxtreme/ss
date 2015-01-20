@@ -22,10 +22,10 @@
 #pragma pack(push, 8)
 typedef struct _ef_slot
 {
-	unsigned char	buf[MAX_SLOT_LEN];
-	unsigned short 	len;
 	unsigned char	*pbuf;
 	unsigned short	plen;
+	unsigned char	buf[MAX_SLOT_LEN];
+	unsigned short 	len;
 	unsigned char	in;
 	unsigned char	out;
 	unsigned long	time;

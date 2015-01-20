@@ -4,6 +4,7 @@
 	{
 		$flow_level = 0;
 		$flow = $flow * 8;
+		return $flow;
 		while($flow > 1024)
 		{
 			$flow = $flow / 1024;
@@ -48,23 +49,30 @@
                 flock($fd, LOCK_EX);
 		$record = fgets($fd);
 		$arr = explode(" ", $record);
-		$gen["每秒总流入报文"] = number_format(trim($arr[0]));
+		$gen["每秒总流入报文"] = /*number_format*/(trim($arr[0]));
 		$gen["每秒总流入流量"] = flow_format(trim($arr[1]));//number_format(trim($arr[1]) * 8) . " bps";
-		$gen["每秒总流出报文"] = number_format(trim($arr[2]));
+		$gen["每秒总流出报文"] = /*number_format*/(trim($arr[2]));
                 $gen["每秒总流出流量"] = flow_format(trim($arr[3]));//number_format(trim($arr[3]) * 8) . " bps";
-		$gen["出口总ip数"] = number_format(trim($arr[4]));
+		$gen["出口总ip数"] = /*number_format*/(trim($arr[4]));
 		flock($fd, LOCK_UN);
                 fclose($fd);
 		echo json_encode($gen);
 	}
 	else if($type == "attack")
 	{
+		$arg_date = trim($_GET['date']);
+		$arg_time = trim($_GET['time']);
+		$datetime = 0;
 		$attack_type = array("syn"=>"SYN流量异常", "tcp"=>"TCP连接异常", "udp"=>"UDP流量异常", "icmp"=>"ICMP流量异常", "http"=>"HTTP请求异常", "ack"=>"ACK流量异常", "dns"=>"DNS请求异常");
 		$ret = array();
 		$history = fopen("/var/log/attack_history_$name", "r");
 		$fd = fopen("/dev/shm/attack_$name", "r");
-		$today = date("Y-m-d");
-		if($history)
+		if(strlen($arg_date) && strlen($arg_time))
+		{
+			$strtime = "$arg_date $arg_time";
+			$datetime = strtotime($strtime);
+		}
+		if($history && $datetime)
                 {
                         while(!feof($history))
                         {
@@ -73,14 +81,17 @@
                                 if(!strlen($str))
                                         break;
                                 $arr = explode(" ", $str);
-				if(trim($arr[6]) != $today)
+				$attack_time = trim($arr[6]) . " " . trim($arr[7]);
+				$attack_second = trim($arr[8]);
+				$attack_over = strtotime($attack_time) + $attack_second;
+				if($attack_over < $datetime)
 					continue;
                                 $attack["ip"] = trim($arr[0]);
                                 $attack["攻击状态"] = "已结束";
                                 $attack["攻击类型"] = $attack_type[trim($arr[1])];
                                 $attack["当前包数"] = 0;
                                 $attack["当前流量"] = 0;// . " bps";
-                                $attack["峰值包数"] = number_format(trim($arr[4]));
+                                $attack["峰值包数"] = /*number_format*/(trim($arr[4]));
                                 $attack["峰值流量"] = flow_format(trim($arr[5]));//number_format(trim($arr[5]) * 8) . " bps";
                                 $attack["攻击时间"] = trim($arr[6]) . " " . trim($arr[7]);
                                 $attack["持续时间"] = trim($arr[8]) . " 秒";
@@ -100,9 +111,9 @@
                         $attack["ip"] = trim($arr[0]);
 			$attack["攻击状态"] = "正在进行";
 			$attack["攻击类型"] = $attack_type[trim($arr[1])];
-			$attack["当前包数"] = number_format(trim($arr[2]));
+			$attack["当前包数"] = /*number_format*/(trim($arr[2]));
 			$attack["当前流量"] = flow_format(trim($arr[3]));//number_format(trim($arr[3]) * 8) . " bps";
-			$attack["峰值包数"] = number_format(trim($arr[4]));
+			$attack["峰值包数"] = /*number_format*/(trim($arr[4]));
 			$attack["峰值流量"] = flow_format(trim($arr[5]));//number_format(trim($arr[5]) * 8) . " bps";
 			$attack["攻击时间"] = trim($arr[6]) . " " . trim($arr[7]);
 			$attack["持续时间"] = trim($arr[8]) . " 秒";
@@ -142,8 +153,8 @@
 			$record = fread($fd, $record_len);
 			$info = unpack("N2ip/L2recv/L2send/L2inflow/L2outflow/L2tcp/L2udp/L12other", $record);
 			$line['ip'] = long2ip($info["ip1"]);
-			$line['recv'] = number_format($info["recv2"] << 32 | $info["recv1"]);
-			$line['send'] = number_format($info["send2"] << 32 | $info["send1"]);
+			$line['recv'] = /*number_format*/($info["recv2"] << 32 | $info["recv1"]);
+			$line['send'] = /*number_format*/($info["send2"] << 32 | $info["send1"]);
 			$line['inflow'] = flow_format($info["inflow2"] << 32 | $info["inflow1"]);
 			$line['outflow'] = flow_format($info["outflow2"] << 32 | $info["outflow1"]);
 			$line['tcpflow'] = flow_format($info["tcp2"] << 32 | $info["tcp1"]);
@@ -190,7 +201,7 @@
 				if(strstr($column, "流量"))
 					$keyval[$ip] = flow_format($val);
 				else
-					$keyval[$ip] = number_format($val);
+					$keyval[$ip] = /*number_format*/($val);
 			}
 			$data[$column] = $keyval;
 		}
