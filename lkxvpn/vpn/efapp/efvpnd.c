@@ -182,6 +182,20 @@ static int vpn_restore(ef_slot *cur_slot, int num)
 			}
 		}
 
+		if(unlikely(!IF_IP(pkg) || (len < VPN_DATA_LEN)))
+		{
+            if(cur_slot->flag == EF_FROM_HOST)
+            {
+                cur_slot->out = kvpnd->vpn_outbound_fd;
+            }
+            else
+            {
+                cur_slot->flag = EF_TO_HOST;
+                cur_slot->out = kvpnd->vpn_outbound_fd;
+            }
+            goto next;
+		}
+
 		flag = *(unsigned int *)(pkg + VPN_POSITION_FLAG);
 		//if((GET_IP_SIP(pkg) == str_2_ip("192.168.200.1")) && (GET_IP_DIP(pkg) == str_2_ip("192.168.200.2")))
 		//{

@@ -79,7 +79,7 @@ struct _ip_count_t
     ip_info *cur, *alive, *use_head, *use_tail, *max;
     ip_info *buf[MAX_COUNT_BUF];
     top_info top[MAX_DETAIL_VALUE * 2][TOP_N + 1];
-    unsigned int buf_total, use_total, max_level;
+    unsigned int buf_total, use_total;
     unsigned char lock, add_lock, del_lock, top_lock;
     unsigned char *table_lock;
     unsigned long time;
@@ -90,8 +90,6 @@ struct _ip_count_t
     pthread_t timer;
     unsigned long deep_stat[100];
 };
-
-int max_level = 0;
 
 extern unsigned long base_time;
 
@@ -759,7 +757,7 @@ static int ipcount_change_hash(ip_count_t *ict, unsigned int key, ip_info *x, ip
 
 #define IP_PS(ip)   (ip->detail[DETAIL_VALUE_PKG].in_ps + ip->detail[DETAIL_VALUE_PKG].out_ps)
 #define IP_PKG(ip)   (ip->detail[DETAIL_VALUE_PKG].in + ip->detail[DETAIL_VALUE_PKG].out)
-int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag, unsigned int session_type)
+int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag)
 {
     int ret = 0;
     int find_level = 0;
@@ -812,8 +810,6 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
             }
             unlock(&(ict->table_lock[skey]));
         }
-        if(find_level > ict->max_level)
-            ict->max_level = find_level;
         if(!add_ip_flag || (add_ip_flag & (IPCOUNT_ADD_FLAG_DIP)))
         {
             lock(&(ict->table_lock[dkey]));
@@ -852,8 +848,6 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
             }
             unlock(&(ict->table_lock[dkey]));
         }
-        if(find_level > ict->max_level)
-            ict->max_level = find_level;
         if(0)//find && find->attack && find->fd)
         {
             unsigned long cap_time = ict->time;
@@ -868,6 +862,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 //ipcount_add_ip(ict, sip);
             if(add_ip_flag & (IPCOUNT_ADD_FLAG_DIP))
                 ipcount_add_ip(ict, dip);
+            ret = ipcount_add_pkg(ict, pkg, len, add_ip_flag);
         }
         ict->deep_stat[find_level]++;
     }

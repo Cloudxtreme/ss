@@ -113,7 +113,7 @@ ip_count_t *ipcount_init(unsigned int cpu);
 int ipcount_tini(ip_count_t *ict);
 int ipcount_add_ip(ip_count_t *ict, unsigned int ip);
 int ipcount_del_ip(ip_count_t *ict, unsigned int ip);
-int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag, unsigned int session_type);
+int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char add_ip_flag);
 int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, unsigned int session_type, unsigned int session_flow);
 int ipcount_get_ip(ip_count_t *ict, ip_data *id);
 int ipcount_get_ip_total(ip_count_t *ict);
