@@ -1,7 +1,0 @@
-netmap 20131019更新
-1、在作数据同步时加入retry机制减少系统调用进出而带来性能提升
-2、使用nm_kr_tryget, nm_kr_put来控制队列状态来确保当前只有一个线程操作该队列
-3、netmap_fwd 此forword模式强制netmap在网卡和协议栈之间转发数据
-4、netmap更新是否有解决类似于410上程序绑定在不同物理cpu性能不同的问题，还是这个问题只是410本身cpu的特性？
-5、ifp->if_transmit = netmap_transmit;注册内核数据报文发送接口
-6、细化锁的粒度，每个kring都自带有锁，减少锁的冲突，也省去正常kring和用于host stack的swring之间无谓的锁竞争
