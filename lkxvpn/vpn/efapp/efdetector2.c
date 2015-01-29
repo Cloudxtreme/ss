@@ -14,9 +14,7 @@ static unsigned int g_log_target_num = 0;
 static database *g_db[MAX_DATABASE] = {0};
 static reader_t *g_reader[MAX_READER] = {0};
 static log_target *g_log_target[LOG_MAX_TARGET] = {0};
-static volatile int g_run = 0;
-
-extern unsigned long base_time;
+static volatile int g_run = 0, break_point = 0;
 
 unsigned long no_process_detail = 0;
 
@@ -247,6 +245,7 @@ static int control()
     static struct tm date;
     static time_t lt;
     char date_str[128];
+    int break_time = 0;
     while(g_run)
     {
         unsigned long total_pps = 0, total_bps = 0;
@@ -309,6 +308,8 @@ static int control()
         fprintf(stderr, "total : %lu pps %lu bps\n", total_pps, total_bps * 8);
         fprintf(stderr, "\n------------------------------------------------------------------------\n");
         sleep(1);
+        //if(break_time++ > 100)
+            //g_run = 0;
     }
 }
 
@@ -321,7 +322,7 @@ static int ip_work_process(void *arg)
 	if(1)
 	{
         unsigned long mask = 1;
-        mask = mask << (g_reader_num + db->id * READER_WORKER_NUM * 2 + worker->id);
+        mask = mask << ((g_reader_num + db->id * READER_WORKER_NUM * 2 + worker->id)/1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
     fprintf(stderr, "reader %d 's worker %d begin!\n", worker->reader->id, worker->id);
@@ -359,7 +360,7 @@ static int session_work_process(void *arg)
 	if(1)
 	{
         unsigned long mask = 1;
-        mask = mask << (g_reader_num + db->id * READER_WORKER_NUM * 2 + READER_WORKER_NUM + worker->id);
+        mask = mask << ((g_reader_num + db->id * READER_WORKER_NUM * 2 + READER_WORKER_NUM + worker->id)/1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
     fprintf(stderr, "reader %d 's worker %d begin!\n", worker->reader->id, worker->id);
@@ -398,7 +399,7 @@ static int read_inbound(void *arg)
     if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << reader->id;
+		mask = mask << (reader->db->id * 2);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 	fprintf(stderr, "reader %s begin!\n", reader->dev);
@@ -524,7 +525,7 @@ static int read_outbound(void *arg)
     if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << reader->id;
+		mask = mask << (reader->db->id * 2 + 1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 	fprintf(stderr, "reader %s begin!\n", reader->dev);
@@ -647,7 +648,7 @@ static int read_inout(void *arg)
     if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << reader->id;
+		mask = mask << (reader->id / 1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 	fprintf(stderr, "reader %s begin!\n", reader->dev);
@@ -1299,7 +1300,7 @@ static int db_collecter(void *arg)
     if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << (g_reader_num + g_database_num * 4 + db->id);
+		mask = mask << ((g_reader_num + g_database_num * 4 + db->id)/1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
 	while(g_run)
@@ -1587,7 +1588,7 @@ static int db_sender(void *arg)
     if(1)
 	{
         unsigned long mask = 1;
-		mask = mask << (g_reader_num + g_database_num * 4 + db->id);
+		mask = mask << ((g_reader_num + g_database_num * 4 + db->id)/1);
 		sched_setaffinity(0, sizeof(mask), &mask);
 	}
     while(g_run)
@@ -1918,6 +1919,11 @@ int main(int argc, char *argv[])
     }
     //if(daemon(1, 1) >= 0)
     {
+        num_init();
+        signal(SIGINT, sigint_h);
+        signal(SIGTERM, sigint_h);
+        signal(SIGKILL, sigint_h);
+        signal(SIGPIPE, SIG_IGN);
         if(!config(conf_file))
         {
             fprintf(stderr, "please check conf file!\n");
@@ -1936,12 +1942,8 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        num_init();
-        signal(SIGINT, sigint_h);
-        signal(SIGTERM, sigint_h);
-        signal(SIGKILL, sigint_h);
-        signal(SIGPIPE, SIG_IGN);
         g_run = 1;
+        break_point = 1;
         for(i = 0; i < g_reader_num; i++)
         {
             if(g_reader[i]->flag == READER_FLAG_INBOUND)

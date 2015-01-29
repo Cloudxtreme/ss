@@ -52,7 +52,7 @@ int efio_bdg_stop(int fd1, int fd2);
 
 int efio_mbdg_insert(ef_slot *slot, int num);
 
-int efio_mbdg_start(void *_handle, int num, ...);
+int efio_mbdg_start(void *_handle, void *_pollback, int num, ...);
 
 int efio_mbdg_stop();
 

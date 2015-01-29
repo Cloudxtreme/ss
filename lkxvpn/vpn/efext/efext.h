@@ -2,6 +2,8 @@
 #define _EFEXT_
 
 
+extern volatile unsigned long base_time;
+
 /* ARP API */
 int dev_if_up(char *nic_name);
 int dev_if_run(char *nic_name);
@@ -67,8 +69,8 @@ unsigned int session_pool_id(session_pool *pool);
 
 
 /* count api */
-#define IPCOUNT_ADD_FLAG_SIP            1 << 0
-#define IPCOUNT_ADD_FLAG_DIP            1 << 1
+#define IPCOUNT_ADD_FLAG_SIP            (1 << 0)
+#define IPCOUNT_ADD_FLAG_DIP            (1 << 1)
 #define IPCOUNT_SESSION_TYPE_NEW        1
 #define IPCOUNT_SESSION_TYPE_CONN       2
 #define IPCOUNT_SESSION_TYPE_CLOSE      3

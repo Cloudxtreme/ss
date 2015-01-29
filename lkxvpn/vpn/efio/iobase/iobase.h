@@ -51,7 +51,7 @@ int ef_netmap_flush(void *_fd, int flush_type, int flush_wait);
 
 int ef_netmap_bdg_start(int n0, int n1, void *_fd0, void *_fd1, void *_handle);
 int ef_netmap_bdg_stop();
-int ef_netmap_mbdg_start(int *n, void **_fd, int num, void *_handle);
+int ef_netmap_mbdg_start(int *n, void **_fd, int num, void *_handle, void *_pollback);
 int ef_netmap_mbdg_stop();
 
 /********						 **********/

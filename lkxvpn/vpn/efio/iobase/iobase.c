@@ -56,10 +56,11 @@ typedef struct _ef_netmap
 typedef pfring ef_pfring;
 
 typedef int (*io_handle)(int n, io_slot *slot, int num);
+typedef int (*poll_back)();
 
 static int time_start = 0;
 static unsigned long cur_time;
-unsigned long base_time;
+volatile unsigned long base_time;
 static pthread_t time_thread;
 
 static void *iobase_get_time()
@@ -856,10 +857,11 @@ int ef_netmap_mbdg_stop()
 	return 0;
 }
 
-int ef_netmap_mbdg_start(int *n, void **_fd, int num, void *_handle)
+int ef_netmap_mbdg_start(int *n, void **_fd, int num, void *_handle, void *_pollback)
 {
 	ef_netmap **fd = (ef_netmap **)_fd;
 	struct pollfd fds[32];
+	poll_back pollbk = _pollback;
 	int ret, i;
 	int nrev[32] = {-1};
 	int move[32] = {0};
@@ -906,6 +908,8 @@ int ef_netmap_mbdg_start(int *n, void **_fd, int num, void *_handle)
 			}
 			mbdg_slot_finish = finish_point;
 		}
+		if(pollbk)
+            pollbk();
 		ret = poll(fds, num, 2500);
 		if (ret < 0)
 		{

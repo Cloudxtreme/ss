@@ -146,10 +146,12 @@ struct _reader
     int id;
     int fd;
     int flag;//    inbound outbound or in&out
+    unsigned char lock;
     worker_t *ip_worker[READER_WORKER_NUM];
     worker_t *session_worker[READER_WORKER_NUM];
     ef_slot slot[READER_MAX_SLOT];
     unsigned long pkg, flow, l_pkg, l_flow;
+    volatile unsigned long total, finish;
     database *db;
     unsigned char dev[64];
     pthread_t thread;
@@ -161,6 +163,8 @@ struct _worker
     reader_t *reader;
     volatile int i, j, get;
     volatile unsigned long total, finish;
+    unsigned char *pkg_buf[READER_MAX_SLOT];
+    unsigned int pkg_len[READER_MAX_SLOT];
     ef_slot *slot[READER_MAX_SLOT];
     pthread_t thread;
 };

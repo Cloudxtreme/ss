@@ -83,8 +83,6 @@ struct _session_pool
 	void *timeout_cbk;
 };
 
-extern unsigned long base_time;
-
 
 static void lock(char *lock)
 {
@@ -906,7 +904,7 @@ unsigned long session_get_flow(session *s)
 
 unsigned int session_pool_id(session_pool *pool)
 {
-    if(pool && pool->stats)
+    if(pool)
         return pool->id;
     return 0;
 }

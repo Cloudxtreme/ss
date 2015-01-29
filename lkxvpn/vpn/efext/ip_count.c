@@ -91,8 +91,6 @@ struct _ip_count_t
     unsigned long deep_stat[100];
 };
 
-extern unsigned long base_time;
-
 
 
 static void lock(char *lock)
@@ -231,52 +229,9 @@ static void count_thread(void *arg)
                 usleep(0);
                 check_num = 0;
             }
-            if((ict->time - use->last_time >= 1000000) && ((use->modify > use->last_time) || (use->ab_time)))
+            if(unlikely(ict->time - use->last_time >= 1000000) && ((use->modify > use->last_time) || (use->ab_time)))
             {
-                #if 0
-                if(use->detail[DETAIL_VALUE_PKG].in_ps > ict->top[TOP_PPS_IN][1].val)
-                {
-                    detail->in_top = ict->time;
-                    ict->top[TOP_PPS_IN][1].ip = use->ip;
-                    ict->top[TOP_PPS_IN][1].val = use->detail[DETAIL_VALUE_PKG].in_ps;
-                    top_repeat(ict->top[TOP_PPS_IN]);
-                }
-                if(use->detail[DETAIL_VALUE_PKG].out_ps > ict->top[TOP_PPS_OUT][1].val)
-                {
-                    use->in_top[TOP_PPS_OUT] = ict->time;
-                    ict->top[TOP_PPS_OUT][1].ip = use->ip;
-                    ict->top[TOP_PPS_OUT][1].val = use->detail[DETAIL_VALUE_PKG].out_ps;
-                    top_repeat(ict->top[TOP_PPS_OUT]);
-                }
-                if(use->detail[DETAIL_VALUE_FLOW].in_ps > ict->top[TOP_BPS_IN][1].val)
-                {
-                    use->in_top[TOP_BPS_IN] = ict->time;
-                    ict->top[TOP_BPS_IN][1].ip = use->ip;
-                    ict->top[TOP_BPS_IN][1].val = use->detail[DETAIL_VALUE_FLOW].in_ps;
-                    top_repeat(ict->top[TOP_BPS_IN]);
-                }
-                if(use->detail[DETAIL_VALUE_FLOW].out_ps > ict->top[TOP_BPS_OUT][1].val)
-                {
-                    use->in_top[TOP_BPS_OUT] = 1;
-                    ict->top[TOP_BPS_OUT][1].ip = use->ip;
-                    ict->top[TOP_BPS_OUT][1].val = use->detail[DETAIL_VALUE_FLOW].out_ps;
-                    top_repeat(ict->top[TOP_BPS_OUT]);
-                }
-                if(use->detail[DETAIL_VALUE_SESSION].in_ps > ict->top[TOP_NEW_SESSION][1].val)
-                {
-                    use->in_top[TOP_NEW_SESSION] = 1;
-                    ict->top[TOP_NEW_SESSION][1].ip = use->ip;
-                    ict->top[TOP_NEW_SESSION][1].val = use->detail[DETAIL_VALUE_SESSION].in_ps;
-                    top_repeat(ict->top[TOP_NEW_SESSION]);
-                }
-                if(use->detail[DETAIL_VALUE_HTTP].in_ps > ict->top[TOP_NEW_HTTP][1].val)
-                {
-                    use->in_top[TOP_NEW_HTTP] = 1;
-                    ict->top[TOP_NEW_HTTP][1].ip = use->ip;
-                    ict->top[TOP_NEW_HTTP][1].val = use->detail[DETAIL_VALUE_HTTP].in_ps;
-                    top_repeat(ict->top[TOP_NEW_HTTP]);
-                }
-                #endif
+
                 for(i = 0; i < MAX_DETAIL_VALUE; i++)
                 {
                     detail = &use->detail[i];
@@ -363,7 +318,7 @@ static void count_thread(void *arg)
                     {
                         unsigned char new_attack = 0;
                         abnormal = 0;
-                        if((detail->hold_time < 30) || (detail->in_ps && (detail->in_avg << 2) > detail->in_ps))
+                        if(likely(detail->in_ps && (detail->in_avg << 2) > detail->in_ps) || (detail->hold_time < 30))
                         {
                             detail->hold_time++;
                             detail->in_normal += detail->in_ps;
@@ -623,7 +578,7 @@ int ipcount_add_ip(ip_count_t *ict, unsigned int ip)
                 ict->cur = ict->cur->next_alive;
                 memset(find, 0, sizeof(ip_info));
                 find->ip = ip;
-                find->modify = ict->time;
+                find->modify = base_time;
 
                 if(ict->table[key])
                 {
@@ -787,7 +742,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 {
                     struct iphdr *iph = P_IPP(pkg);
                     find = sfind;
-                    find->modify = ict->time;
+                    find->modify = base_time;
                     find->detail[DETAIL_VALUE_PKG].out++;
                     find->detail[DETAIL_VALUE_FLOW].out += len;
                     if(iph->protocol == PKT_TYPE_TCP)
@@ -819,7 +774,7 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
                 {
                     struct iphdr *iph = P_IPP(pkg);
                     find = dfind;
-                    find->modify = ict->time;
+                    find->modify = base_time;
                     find->detail[DETAIL_VALUE_PKG].in++;
                     find->detail[DETAIL_VALUE_FLOW].in += len;
                     if(iph->protocol == PKT_TYPE_TCP)
@@ -858,11 +813,16 @@ int ipcount_add_pkg(ip_count_t *ict, void *pkg, unsigned int len, unsigned char 
         }
         if(!find && add_ip_flag)
         {
-            //if(add_ip_flag & (IPCOUNT_ADD_FLAG_SIP))
-                //ipcount_add_ip(ict, sip);
-            if(add_ip_flag & (IPCOUNT_ADD_FLAG_DIP))
+            ///if((add_ip_flag & (IPCOUNT_ADD_FLAG_SIP)) && sip)
+            {
+                ///ipcount_add_ip(ict, sip);
+                ///ret = ipcount_add_pkg(ict, pkg, len, add_ip_flag);
+            }
+            if((add_ip_flag & (IPCOUNT_ADD_FLAG_DIP)) && dip)
+            {
                 ipcount_add_ip(ict, dip);
-            ret = ipcount_add_pkg(ict, pkg, len, add_ip_flag);
+                ret = ipcount_add_pkg(ict, pkg, len, add_ip_flag);
+            }
         }
         ict->deep_stat[find_level]++;
     }
@@ -889,7 +849,7 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(sfind->ip == sip)
             {
                 find = sfind;
-                find->modify = ict->time;
+                find->modify = base_time;
                 switch(session_type)
                 {
                     case IPCOUNT_SESSION_TYPE_NEW:
@@ -916,7 +876,7 @@ int ipcount_add_session(ip_count_t *ict, unsigned int sip, unsigned int dip, uns
             if(dfind->ip == dip)
             {
                 find = dfind;
-                find->modify = ict->time;
+                find->modify = base_time;
                 switch(session_type)
                 {
                     case IPCOUNT_SESSION_TYPE_NEW:

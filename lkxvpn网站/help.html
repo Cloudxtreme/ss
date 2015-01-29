@@ -1,0 +1,266 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>
+睿江VPN-专业的网络服务提供商,提供云主机,CDN,DNS等服务</title>
+<meta name="description" content="" />
+<meta name="keywords" content="云主机,CDN,DNS" />
+<meta name="author" content="" />
+<link href="css/layout2.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/global2.css" rel="stylesheet" type="text/css" media="all" />
+<link rel="shortcut icon" href="/ico/favicon.ico" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-dialog.css" />
+<link rel='stylesheet' rev='stylesheet' type='text/css' media='all' href='css/zi.css' />
+<link rel="stylesheet" href="css/index.css">
+<link href="css/parallax_classic_withoutparallaxeffect.css" rel="stylesheet" type="text/css">
+<link rel='stylesheet' rev='stylesheet' type='text/css' media='all' href='css/tipped.css' />
+<link type="text/css" href="css/vps_new.css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery.min.js"></script> 
+<script type="text/javascript" src="js/common.min.js" async="false"></script>
+<script type='text/javascript' src='js/tipped_min.js'></script>
+<script charset="utf-8" src="js/wpa.js"></script>
+<style type="text/css">
+dl.oldm{display:none}
+.modal-dialog {margin: 70px auto;width: 600px;}
+.ltsl  {width:1183px;height:300px;text-align:left;margin:0 auto;}
+.ltsl > .td-text {margin-left:320px; text-align:left;}
+.ltsl h1 {text-align:left;}
+.ltsl > div {border: 1px solid #D9D9D9;width:288px;float:left;padding:3px;}
+</style>
+<script type="text/javascript">
+
+function updateOrderformCount(num){
+    var count_span = jq('#global_orderform_count');
+    count_span.html(count_span.html() - 0 + num);
+}
+
+
+
+function GetQueryString(name)
+{
+     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+     var r = window.location.search.substr(1).match(reg);
+     if(r!=null)return  unescape(r[2]); return null;
+}
+
+
+jQuery(function(){
+	jQuery(".banner1 .content a.btn").click(function(){
+		jQuery("#help").load(jQuery(this).attr('url'));
+	});
+
+	var num = GetQueryString('num');
+	//console.log(num);
+	if(!num){
+		num = 0;
+	}
+
+	jQuery(".banner1 .content a.btn").eq(num).click();
+});
+
+
+</script>
+</head>
+<body>
+<div id="header_container">
+	<div class="header">
+	  <div id="J_Headerwrap" class="header-inner" data-spm="2">
+	    <nav id="J_Nav" class="topnav">
+	      <div class="w-1200">
+	        <div class='logo logo_normal'><a href='#'></a></div>
+	        <ul id="J_Menu">
+		    <li class="nav-1 hassub">
+		      <h2><a href="index.html">首页</a></h2>
+		    </li>
+		    <li class="nav-2 hassub">
+		      <h2><a href="good.html">产品优势</a></h2>
+		    </li>
+		    <li class="nav-3 hassub">
+		      <h2><a href="help.html">使用帮助</a></h2>
+		    </li>
+		    <!--li class="nav-4 hassub">
+		      <h2><a href="">客户案例</a></h2>
+		    </li-->
+		  　<li class="nav-5 hassub" style="padding-top:13px;">
+		      <a href="http://gift.efly.cc/" target="_blank" id="needatip"><img src="images/gift.png" alt="" align="absmiddle" /></a>
+		    </li>
+	        </ul>
+	        <div class="nav_right">
+		  　<a class='btn btn-primary' target="_blank" href='http://wpa.qq.com/msgrd?v=3&amp;uin=800062276&amp;site=qq&amp;menu=yes'>在线咨询</a>
+	        </div>
+	      </div>
+		  <div class="clear"></div>
+	    </nav>
+	  </div>
+	</div>
+</div>
+
+<div class="clear"></div>
+
+<div id="page">
+
+	<!-- banner slider -->
+	<style type="text/css">
+		.banner1 {
+			margin-top: 69px;
+			color: #757575;
+			background-color: #f1f1f1;
+			padding: 2em;
+
+			font-size: 1.25em;
+			font-family: "AvenirNextRoundedW01-Md", sans-serif;
+			font-weight: normal;
+		}
+
+		.banner1 a {
+			text-decoration: none;
+		}
+
+		.banner1_inner {
+			margin: auto;
+			/*max-width: 65em;*/
+			max-width: 1138px;
+		}
+
+		.heading {
+			font-size: 3.3em;
+			letter-spacing: -0.01em;
+			line-height: 1.1;
+			margin: 0.6em 0 0.4em 0;
+		}
+
+		.banner1 .heading {
+			color: #454545;
+		}
+
+		.banner1 p {
+			height: 44px;
+			line-height: 44px;
+			margin: 1em 0;
+		}
+
+		/*.btn1 {
+			font-size: 0.85em;
+			line-height: 1;
+			padding: 0.8em 1em;
+			-webkit-border-radius: 0.5em;
+			-moz-border-radius: 0.5em;
+			border-radius: 0.5em;
+			background-clip: padding-box;
+			background-color: #fff;
+			color: #666;
+			text-decoration: none;
+			letter-spacing: 0;
+			margin-right: 0.8em;
+		}
+
+		.banner1 .btn1 {
+			background: #91c444;
+			color: #fff;
+			margin-bottom: 0.8em;
+		}
+
+		.banner1 .btn1:hover {
+			background-color:#b3d67e;
+		}*/
+
+		.banner1 .btn {
+			margin: 0.2em;
+		}
+	</style>
+
+	<div class="banner1">
+		<div class="banner1_inner">
+			<div class="content">
+				<h1 class="heading">VPN使用帮助</h1>
+
+				<p>请选择您要查看的帮助</p>
+
+				<p>
+					<a class="btn btn-primary" href="javascript:;" url="helper/Box.html">国际互联盒子使用指引</a>
+					<a class="btn btn-primary" href="javascript:;" url="helper/WindowsXP.html">WinXp设置</a> 
+					<a class="btn btn-primary" href="javascript:;" url="helper/Windows7.html">Win7设置</a> 
+					<a class="btn btn-primary" href="javascript:;" url="helper/Ios.html">Iphone/Ipad设置</a> 
+					<a class="btn btn-primary" href="javascript:;" url="helper/Android.html">Android设置</a> 
+				</p>
+			</div>
+		</div>
+	</div>
+
+	
+	<!-- help doc content -->
+	<style>
+		.help_wrapper {
+			margin-top: 20px;
+			padding: 2em;
+		}
+
+		#help {
+			margin: auto;
+			max-width: 1138px;
+		}
+
+		#help h1,#help h2,#help h3,#help h4,#help h5,#help h6{ 
+			/*text-align:center;*/
+			margin-bottom: 10px;
+		}
+
+		#help .w_help {
+			/*width:960px;*/
+			/*margin: 0 auto;*/
+		}
+
+		#help .w_help p {
+			padding: 0.2em;
+		}
+	</style>
+	<div class="help_wrapper">
+		<div id="help"></div>
+	</div>
+    
+    
+	<div class="partners">
+	    <div class="w-1200">
+			<div class="reference-box">
+				<div class="agent-title-new"><h4>友情链接</h4></div>
+				  <ul class="yq-link">
+					 <li><a href="http://www.efly.cc/" target="_blank">广东睿江科技</a></li>
+					 <li><a href="http://www.bjefly.cc" target="_blank" title="北京分公司">北京服务器托管</a></li>
+					 <li><a href="http://www.shefly.cc" target="_blank" title="上海分公司">上海服务器托管</a></li>
+					 <li><a href="http://www.eflyidc.com" target="_blank" title="广州分公司">广州服务器托管</a></li>
+					 <li><a href="http://www.rjidc.cn/" target="_blank" title="深圳分公司">深圳服务器托管</a></li>
+					 <li><a href="http://cloud.efly.cc/" target="_blank" title="睿江云">睿江云</a></li>
+					 <li><a href="http://www.eflydns.com" target="_blank">EflyDNS</a></li>
+				  </ul>
+			</div>
+		</div>
+	</div>
+  
+</div>
+
+
+</div>
+<!-- /#page -->
+
+<div class="clear"></div>
+<!--footer------------------------------->
+<div class="footer">
+  <div class="w-1200">
+
+  <div class="footer_bottom">
+    <div class="toplink"><a class="top-link" href="#">回到顶部 <i class="glyphicon glyphicon-chevron-up"></i></a></div>
+    <div class="subfooter">
+      <div class="w-1200 p-l-r-30">
+        <p style="width:735px;">Copyright &copy; 2015 EFLY.CC 睿江科技</p>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+
+
+</body>
+
+</html>

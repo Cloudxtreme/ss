@@ -287,7 +287,7 @@ int efio_mbdg_insert(ef_slot *slot, int num)
 	return ef_netmap_mbdg_insert((io_slot *)slot, num);
 }
 
-int efio_mbdg_start(void *_handle, int num, ...)
+int efio_mbdg_start(void *_handle, void *_pollback, int num, ...)
 {
 	va_list arg_ptr;
 	int n[MAX_FD] = {0};
@@ -312,5 +312,5 @@ int efio_mbdg_start(void *_handle, int num, ...)
 		fd[i]->bdg_handle = _handle;
 		io_fd[i] = fd[i]->fd;
 	}
-	ef_netmap_mbdg_start(n, io_fd, num, efio_bdg_cbk);
+	ef_netmap_mbdg_start(n, io_fd, num, efio_bdg_cbk, _pollback);
 }
