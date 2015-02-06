@@ -72,6 +72,7 @@
 			$strtime = "$arg_date $arg_time";
 			$datetime = strtotime($strtime);
 		}
+		flock($fd, LOCK_EX);
 		if($history && $datetime)
                 {
                         while(!feof($history))
@@ -100,7 +101,6 @@
                         }
                         fclose($history);
                 }
-                flock($fd, LOCK_EX);
                 while(1)
                 {
 			$attack = array();

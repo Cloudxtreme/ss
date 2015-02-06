@@ -229,7 +229,7 @@ static void count_thread(void *arg)
                 usleep(0);
                 check_num = 0;
             }
-            if(unlikely(ict->time - use->last_time >= 1000000) && ((use->modify > use->last_time) || (use->ab_time)))
+            if(unlikely(ict->time - use->last_time >= 1000000))/// && ((use->modify > use->last_time) || (use->ab_time)))
             {
 
                 for(i = 0; i < MAX_DETAIL_VALUE; i++)
