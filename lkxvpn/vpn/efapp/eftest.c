@@ -65,7 +65,7 @@ static int handle(int fd, ef_slot *slot, int num)
 
 static int read_thread()
 {
-    efio_mbdg_start(handle, fd_total, fd[0], fd[1], fd[2], fd[3]);
+    efio_mbdg_start(handle, NULL, fd_total, fd[0], fd[1], fd[2], fd[3]);
 }
 
 /* control-C handler */
